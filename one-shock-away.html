@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Your Finances Right · One Shock Away</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+<style>
+:root {
+  --bg: #0e0f13;
+  --bg2: #13141a;
+  --surface: #1a1b22;
+  --surface2: #20212a;
+  --border: #2a2b35;
+  --border2: #363744;
+  --navy: #0a0b10;
+  --navy2: #12131a;
+  --crimson: #c0392b;
+  --crimson2: #e74c3c;
+  --crimson3: #ff6b5b;
+  --amber: #d4880a;
+  --amber2: #f0a832;
+  --amber3: #ffc85e;
+  --green: #1a6b3c;
+  --green2: #27a05a;
+  --green3: #4dcc7e;
+  --blue: #1a3a6b;
+  --blue2: #2d6abf;
+  --blue3: #5b9ee8;
+  --gold: #b8922a;
+  --gold2: #d4a843;
+  --gold3: #f0c96a;
+  --purple2: #9b59b6;
+  --text: #e8e6e1;
+  --text2: #b8b4ab;
+  --text3: #787470;
+  --text4: #48444e;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
+/* ── HEADER ─────────────────────────────── */
+.app-header {
+  background: var(--navy);
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px; position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold2), var(--gold3));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.logo-text { font-family: 'Libre Baskerville', serif; font-size: 20px; color: #fff; letter-spacing: -0.3px; }
+.logo-text span { color: var(--gold3); font-style: italic; }
+.logo-sub { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.35); letter-spacing: 2px; margin-top: 1px; }
+
+.header-actions { display: flex; align-items: center; gap: 8px; }
+.btn-header {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 7px; border: none;
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500; transition: all 0.15s;
+}
+.btn-save { background: rgba(212,168,67,0.15); color: var(--gold3); border: 1px solid rgba(212,168,67,0.3); }
+.btn-save:hover { background: rgba(212,168,67,0.25); }
+.btn-load { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.15); }
+.btn-load:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.btn-report { background: linear-gradient(135deg, #8b1a1a, #c0392b); color: #fff; border: 1px solid #c0392b; }
+.btn-report:hover { filter: brightness(1.15); }
+.header-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--gold3); background: rgba(212,168,67,0.12);
+  border: 1px solid rgba(212,168,67,0.3); padding: 4px 12px;
+  border-radius: 20px; letter-spacing: 1px;
+}
+
+/* ── TAB NAV ─────────────────────────────── */
+.tab-nav {
+  background: var(--navy2); display: flex; overflow-x: auto;
+  scrollbar-width: none; padding: 0 40px;
+  border-bottom: 2px solid rgba(255,255,255,0.06);
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 14px 20px; background: none; border: none;
+  border-bottom: 2px solid transparent; color: rgba(255,255,255,0.45);
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500;
+  cursor: pointer; white-space: nowrap; transition: all 0.2s;
+  display: flex; align-items: center; gap: 7px;
+  letter-spacing: 0.3px; margin-bottom: -2px;
+}
+.tab-btn:hover { color: rgba(255,255,255,0.75); }
+.tab-btn.active { color: var(--gold3); border-bottom-color: var(--gold2); }
+.tab-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  background: rgba(255,255,255,0.08); border-radius: 3px; padding: 1px 5px;
+}
+.tab-btn.active .tab-num { background: rgba(212,168,67,0.2); color: var(--gold3); }
+
+/* ── CONTENT ─────────────────────────────── */
+.content { max-width: 1300px; margin: 0 auto; padding: 32px 32px 80px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── PAGE TITLE ─────────────────────────── */
+.page-title { font-family: 'Libre Baskerville', serif; font-size: 28px; color: #fff; margin-bottom: 4px; letter-spacing: -0.5px; }
+.page-title em { color: var(--crimson3); font-style: italic; }
+.page-sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; }
+
+/* ── GRID LAYOUTS ───────────────────────── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+/* ── SECTION ────────────────────────────── */
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; margin-bottom: 20px; }
+.section-title { font-family: 'Libre Baskerville', serif; font-size: 15px; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.section-sub { font-size: 12px; color: var(--text3); margin-bottom: 18px; }
+
+/* ── FORM ELEMENTS ──────────────────────── */
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 6px; letter-spacing: 0.4px; text-transform: uppercase; }
+.field input, .field select {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px; color: var(--text);
+  font-family: 'Outfit', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s;
+}
+.field input:focus, .field select:focus { border-color: var(--gold2); }
+.field input::placeholder { color: var(--text4); }
+.field select option { background: var(--bg2); }
+.field-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.prefix-input { position: relative; }
+.prefix-input .prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; pointer-events: none; }
+.prefix-input input { padding-left: 26px; }
+
+/* ── SLIDER ─────────────────────────────── */
+.slider-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.slider-row label { font-size: 11px; font-weight: 600; color: var(--text2); letter-spacing: 0.4px; text-transform: uppercase; min-width: 200px; }
+.slider-row input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--border2); cursor: pointer; }
+.slider-row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--gold2); cursor: pointer; box-shadow: 0 0 8px rgba(212,168,67,0.4); }
+.slider-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold3); min-width: 60px; text-align: right; }
+
+/* ── STAT CARDS ─────────────────────────── */
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; position: relative; overflow: hidden; }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.stat-card.red::before { background: linear-gradient(90deg, var(--crimson), var(--crimson2)); }
+.stat-card.amber::before { background: linear-gradient(90deg, var(--amber), var(--amber2)); }
+.stat-card.green::before { background: linear-gradient(90deg, var(--green2), var(--green3)); }
+.stat-card.blue::before { background: linear-gradient(90deg, var(--blue2), var(--blue3)); }
+.stat-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 6px; }
+.stat-val { font-family: 'Libre Baskerville', serif; font-size: 26px; color: #fff; margin-bottom: 2px; }
+.stat-val.danger { color: var(--crimson3); }
+.stat-val.warn { color: var(--amber3); }
+.stat-val.safe { color: var(--green3); }
+.stat-sub { font-size: 11px; color: var(--text3); }
+
+/* ── INSIGHTS ───────────────────────────── */
+.insight { border-radius: 8px; padding: 12px 16px; font-size: 13px; margin-bottom: 10px; border-left: 3px solid; line-height: 1.6; }
+.insight-red { background: rgba(192,57,43,0.1); border-color: var(--crimson2); color: var(--text2); }
+.insight-amber { background: rgba(212,136,10,0.1); border-color: var(--amber2); color: var(--text2); }
+.insight-green { background: rgba(26,107,60,0.12); border-color: var(--green2); color: var(--text2); }
+.insight-blue { background: rgba(45,106,191,0.1); border-color: var(--blue2); color: var(--text2); }
+.insight-purple { background: rgba(107,47,160,0.12); border-color: var(--purple2); color: var(--text2); }
+
+/* ── SHOCK CARD ─────────────────────────── */
+.shock-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+.shock-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.shock-title { font-size: 14px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 8px; }
+.shock-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+.badge-critical { background: rgba(192,57,43,0.25); color: var(--crimson3); border: 1px solid rgba(192,57,43,0.4); }
+.badge-danger   { background: rgba(212,136,10,0.2);  color: var(--amber3);   border: 1px solid rgba(212,136,10,0.4); }
+.badge-caution  { background: rgba(45,106,191,0.2);  color: var(--blue3);    border: 1px solid rgba(45,106,191,0.4); }
+.badge-ok       { background: rgba(26,107,60,0.2);   color: var(--green3);   border: 1px solid rgba(26,107,60,0.4); }
+.shock-body { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.shock-numbers { display: flex; gap: 20px; margin-top: 10px; flex-wrap: wrap; }
+.shock-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.shock-num span { font-size: 16px; font-weight: 600; display: block; }
+.shock-num span.red { color: var(--crimson3); }
+.shock-num span.amber { color: var(--amber3); }
+.shock-num span.grn { color: var(--green3); }
+
+/* ── FRAGILITY METER ─────────────────────── */
+.fragility-meter { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; }
+.meter-title { font-family: 'Libre Baskerville', serif; font-size: 18px; color: #fff; margin-bottom: 20px; }
+.meter-arc { position: relative; width: 220px; height: 120px; margin: 0 auto 16px; }
+.meter-arc svg { width: 100%; height: 100%; }
+.meter-score { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-family: 'Libre Baskerville', serif; font-size: 42px; font-weight: 700; line-height: 1; }
+.meter-grade { font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+.meter-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+/* ── RUNWAY BAR ─────────────────────────── */
+.runway-bar { height: 28px; border-radius: 6px; background: var(--border); overflow: hidden; position: relative; margin: 8px 0 4px; }
+.runway-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding: 0 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #fff; transition: width 0.8s ease; min-width: 2px; }
+.runway-ticks { display: flex; justify-content: space-between; font-size: 10px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+
+/* ── TABLES ─────────────────────────────── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.6px; text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+.data-table td { padding: 10px 12px; font-size: 13px; color: var(--text2); border-bottom: 1px solid rgba(255,255,255,0.03); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table .mono { font-family: 'JetBrains Mono', monospace; }
+.data-table .highlight { color: var(--crimson3); font-weight: 600; }
+.data-table .ok   { color: var(--green3); }
+.data-table .warn { color: var(--amber3); }
+
+/* ── TOAST ──────────────────────────────── */
+.toast { position: fixed; bottom: 32px; right: 32px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 14px 20px; font-size: 13px; color: var(--text); box-shadow: 0 8px 32px rgba(0,0,0,0.5); opacity: 0; transform: translateY(12px); transition: all 0.3s; z-index: 9999; pointer-events: none; }
+.toast.show { opacity: 1; transform: none; }
+
+/* ── BUTTONS ─────────────────────────────── */
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.2px; }
+.btn-primary { background: var(--gold); color: var(--navy); box-shadow: 0 4px 16px rgba(184,146,42,0.3); }
+.btn-primary:hover { background: var(--gold2); transform: translateY(-1px); }
+.btn-secondary { background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); }
+.btn-secondary:hover { border-color: var(--text3); color: var(--text); }
+.btn-danger { background: var(--crimson); color: #fff; }
+.btn-danger:hover { background: var(--crimson2); }
+.btn-ghost { background: transparent; color: var(--text3); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--border2); color: var(--text2); }
+.btn-row { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+
+/* ── SCENARIO SECTION ────────────────────── */
+.scenario-bar { background: var(--navy2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.scenario-bar label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.6px; text-transform: uppercase; white-space: nowrap; }
+.scenario-bar select { background: var(--bg2); border: 1px solid var(--border2); border-radius: 7px; padding: 8px 14px; color: var(--text); font-family: 'Outfit', sans-serif; font-size: 13px; cursor: pointer; outline: none; flex: 1; min-width: 260px; }
+.scenario-bar select:focus { border-color: var(--gold2); }
+.scenario-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 4px 10px; border-radius: 12px; white-space: nowrap; }
+.sb-simple   { background: rgba(26,107,60,0.2);  color: var(--green3);  border: 1px solid rgba(26,107,60,0.4); }
+.sb-medium   { background: rgba(45,106,191,0.2); color: var(--blue3);   border: 1px solid rgba(45,106,191,0.4); }
+.sb-hard     { background: rgba(212,136,10,0.2); color: var(--amber3);  border: 1px solid rgba(212,136,10,0.4); }
+.sb-critical { background: rgba(192,57,43,0.2);  color: var(--crimson3);border: 1px solid rgba(192,57,43,0.4); }
+
+/* ── HERO ───────────────────────────────── */
+.hero { background: linear-gradient(135deg, rgba(192,57,43,0.12) 0%, rgba(10,11,16,0) 60%); border: 1px solid rgba(192,57,43,0.2); border-radius: 16px; padding: 36px 40px; margin-bottom: 28px; position: relative; overflow: hidden; }
+.hero::after { content: '⚡'; position: absolute; right: 36px; top: 20px; font-size: 80px; opacity: 0.06; }
+.hero h1 { font-family: 'Libre Baskerville', serif; font-size: 32px; color: #fff; margin-bottom: 8px; letter-spacing: -0.5px; }
+.hero h1 em { color: var(--crimson3); font-style: italic; }
+.hero p { font-size: 14px; color: var(--text2); max-width: 640px; line-height: 1.7; margin-bottom: 16px; }
+.hero-stats { display: flex; gap: 28px; flex-wrap: wrap; }
+.hero-stat { font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+.hero-stat strong { color: var(--crimson3); font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+
+/* ── MISC ───────────────────────────────── */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+.box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.box-title { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 10px; }
+.prog-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin: 4px 0 8px; }
+.prog-fill { height: 100%; border-radius: 4px; transition: width 0.6s; }
+.chart-wrap { position: relative; height: 220px; }
+.scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.checklist { list-style: none; }
+.checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; color: var(--text2); }
+.checklist li:last-child { border-bottom: none; }
+.check-icon { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; margin-top: 1px; }
+.check-ok   { background: rgba(26,107,60,0.3);  color: var(--green3); }
+.check-bad  { background: rgba(192,57,43,0.3);  color: var(--crimson3); }
+.check-warn { background: rgba(212,136,10,0.25); color: var(--amber3); }
+.warning-banner { background: linear-gradient(135deg, rgba(192,57,43,0.15), rgba(212,136,10,0.08)); border: 1px solid rgba(192,57,43,0.3); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: flex; gap: 16px; align-items: flex-start; }
+.warning-icon { font-size: 28px; flex-shrink: 0; }
+.warning-text h3 { font-family: 'Libre Baskerville', serif; font-size: 16px; color: var(--crimson3); margin-bottom: 4px; }
+.warning-text p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+@media (max-width: 768px) {
+  .app-header { padding: 0 16px; }
+  .content { padding: 20px 16px 60px; }
+  .tab-nav { padding: 0 16px; }
+  .g2, .g3, .g4, .scenario-grid { grid-template-columns: 1fr; }
+  .hero { padding: 24px 20px; }
+  .btn-header span:not(:first-child) { display: none; }
+}
+@media print {
+  .app-header, .tab-nav, .btn-row, .toast, .scenario-bar { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon">⚖</div>
+    <div style="display:flex;flex-direction:column;gap:1px">
+      <div class="logo-text">Start Your <span>Finances Right</span></div>
+      <div class="logo-sub">ONE SHOCK AWAY · FRAGILITY CHECKER</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-header btn-save" onclick="saveToJSON()" title="Save your data as JSON">💾 Save</button>
+    <button class="btn-header btn-load" onclick="document.getElementById('jsonFileInput').click()" title="Load a saved JSON file">📂 Load</button>
+    <button class="btn-header btn-report" onclick="generatePrintReport()" title="Generate printable PDF report">📄 Full Report</button>
+    <div class="header-badge" style="margin-left:4px">🔒 LOCAL · PRIVATE</div>
+  </div>
+</header>
+
+<!-- ═══════════ TAB NAV ═══════════ -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('profile')">👤 Profile <span class="tab-num">01</span></button>
+  <button class="tab-btn" onclick="switchTab('income')">💼 Income &amp; Job <span class="tab-num">02</span></button>
+  <button class="tab-btn" onclick="switchTab('expenses')">🏠 Expenses <span class="tab-num">03</span></button>
+  <button class="tab-btn" onclick="switchTab('debt')">💳 Debt <span class="tab-num">04</span></button>
+  <button class="tab-btn" onclick="switchTab('assets')">🏦 Assets <span class="tab-num">05</span></button>
+  <button class="tab-btn" onclick="switchTab('dashboard')">📊 Dashboard <span class="tab-num">06</span></button>
+  <button class="tab-btn" onclick="switchTab('report')">🚨 Full Report <span class="tab-num">07</span></button>
+</nav>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCENARIO LOADER BAR (shown on every tab)   -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="scenario-bar">
+  <label>🧪 Load Test Scenario</label>
+  <select id="scenarioPicker" onchange="loadScenario(this.value)">
+    <option value="">— pick a scenario or enter your own data —</option>
+    <option value="1">Scenario 1 · Priya, F-1 OPT, Single Renter, Minimal Savings  [Simple]</option>
+    <option value="2">Scenario 2 · Raj & Meera, H-1B, Mortgage + 2 Kids, Dual Income  [Medium]</option>
+    <option value="3">Scenario 3 · James & Ashley, Citizens, High Debt, Low Savings  [Complex]</option>
+    <option value="4">Scenario 4 · Wei, H-1B GC-Pending, HCOL Over-Extended, Remittances  [Severe]</option>
+    <option value="5">Scenario 5 · Aisha & Carlos, Well-Prepared, Near-Resilient  [Healthy]</option>
+  </select>
+  <span id="scenarioBadge" style="display:none" class="scenario-badge"></span>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 1: PROFILE                              -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-profile" class="tab-panel active">
+  <div class="hero">
+    <h1>Are You <em>One Shock Away</em> from Financial Crisis?</h1>
+    <p>This tool stress-tests your finances against real emergencies — job loss, visa problems, medical crises, and more. Most people are more fragile than they think. Let's find out exactly where you stand.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">⚡ <strong>68%</strong> of Americans can't cover a $1,000 emergency</div>
+      <div class="hero-stat">⚡ <strong>54%</strong> of H-1B holders have &lt;3 months runway</div>
+      <div class="hero-stat">⚡ <strong>Job loss</strong> is the #1 path to financial crisis</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">👤 Personal Profile</div>
+    <div class="section-sub">Basic information to personalize your analysis</div>
+    <div class="g2">
+      <div>
+        <div class="field"><label>Your Name</label><input type="text" id="p_name" placeholder="e.g. Alex Chen"></div>
+        <div class="field"><label>Age</label><input type="number" id="p_age" placeholder="35"></div>
+        <div class="field"><label>Number of Dependents (kids, spouse, parents)</label><input type="number" id="p_dependents" placeholder="0" value="0"></div>
+      </div>
+      <div>
+        <div class="field"><label>Current City / State</label><input type="text" id="p_city" placeholder="e.g. Seattle, WA"></div>
+        <div class="field"><label>Marital Status</label>
+          <select id="p_marital"><option value="single">Single</option><option value="married">Married / Partnered</option><option value="divorced">Divorced / Separated</option></select>
+        </div>
+        <div class="field"><label>Spouse / Partner Employed?</label>
+          <select id="p_spouse_income"><option value="no">No / N/A</option><option value="parttime">Yes – Part-time</option><option value="fulltime">Yes – Full-time</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🌍 Immigration &amp; Visa Status</div>
+    <div class="section-sub">Visa status dramatically affects your options and timeline in a shock scenario</div>
+    <div class="field"><label>Immigration / Work Authorization Status</label>
+      <select id="p_visa" onchange="updateVisaFields()">
+        <option value="citizen">US Citizen / Permanent Resident (Green Card)</option>
+        <option value="h1b">H-1B Visa (Employer Sponsored)</option>
+        <option value="h4ead">H-4 EAD (Dependent Work Authorization)</option>
+        <option value="l1">L-1 (Intracompany Transfer)</option>
+        <option value="opt">F-1 OPT / STEM OPT</option>
+        <option value="o1">O-1 (Extraordinary Ability)</option>
+        <option value="ead">EAD / Other Work Permit</option>
+        <option value="other">Other / Not Applicable</option>
+      </select>
+    </div>
+    <div id="visa-extra">
+      <div class="g2">
+        <div class="field"><label>Visa Expiry Date</label><input type="month" id="p_visa_expiry"></div>
+        <div class="field"><label>Green Card / I-485 Status</label>
+          <select id="p_gc_stage">
+            <option value="none">Not Filed / Not Applicable</option>
+            <option value="perm">PERM Filed</option>
+            <option value="i140">I-140 Approved</option>
+            <option value="waiting">Waiting in Queue (Priority Date)</option>
+            <option value="485filed">I-485 Filed</option>
+          </select>
+        </div>
+      </div>
+      <div class="insight insight-red">⚠️ <strong>H-1B holders:</strong> Losing your job triggers a 60-day grace period before your status expires. This compresses every financial decision dramatically.</div>
+    </div>
+    <div class="g2" style="margin-top:14px">
+      <div class="field"><label>Years at Current Employer</label><input type="number" id="p_years_employer" placeholder="3" step="0.5"></div>
+      <div class="field"><label>Industry</label>
+        <select id="p_industry">
+          <option value="tech">Technology / Software</option>
+          <option value="finance">Finance / Banking</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="education">Education</option>
+          <option value="government">Government / Public Sector</option>
+          <option value="retail">Retail / Consumer</option>
+          <option value="manufacturing">Manufacturing</option>
+          <option value="consulting">Consulting / Professional Services</option>
+          <option value="startup">Startup (Series A or earlier)</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="switchTab('income')">Next: Income &amp; Job →</button></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 2: INCOME & JOB                         -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-income" class="tab-panel">
+  <div class="page-title">💼 Income &amp; <em>Job Security</em></div>
+  <div class="page-sub">Your income sources and how stable they really are</div>
+  <div class="section">
+    <div class="section-title">Monthly Take-Home Income</div>
+    <div class="section-sub">After-tax amounts you actually receive each month</div>
+    <div class="g2">
+      <div>
+        <div class="field"><label>Your Monthly Take-Home (After Tax)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="i_income" placeholder="8000"></div></div>
+        <div class="field"><label>Spouse / Partner Monthly Take-Home</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="i_spouse_income" placeholder="0" value="0"></div><div class="field-hint">Leave 0 if not applicable</div></div>
+        <div class="field"><label>Other Monthly Income (side income, rent, freelance)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="i_other_income" placeholder="0" value="0"></div></div>
+      </div>
+      <div>
+        <div class="field"><label>Annual Gross Salary (Pre-Tax)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="i_gross" placeholder="140000"></div></div>
+        <div class="field"><label>Expected Annual Bonus</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="i_bonus" placeholder="0" value="0"></div></div>
+        <div class="field"><label>RSU / Equity Vesting per Year</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="i_rsu" placeholder="0" value="0"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Job Stability Assessment</div>
+    <div class="section-sub">Rate your current situation honestly</div>
+    <div class="slider-row"><label>Job Security (1=firing imminent, 10=very safe)</label><input type="range" id="i_job_security" min="1" max="10" value="7" oninput="this.nextElementSibling.textContent=this.value+'/10'"><span class="slider-val">7/10</span></div>
+    <div class="slider-row"><label>Industry Stability (1=layoffs likely, 10=recession-proof)</label><input type="range" id="i_industry_stability" min="1" max="10" value="6" oninput="this.nextElementSibling.textContent=this.value+'/10'"><span class="slider-val">6/10</span></div>
+    <div class="slider-row"><label>Layoff Probability (%) in next 12 months</label><input type="range" id="i_layoff_prob" min="0" max="80" value="15" oninput="this.nextElementSibling.textContent=this.value+'%'"><span class="slider-val">15%</span></div>
+    <div class="slider-row"><label>Months to Find New Job (realistic estimate)</label><input type="range" id="i_job_search_months" min="1" max="18" value="4" oninput="this.nextElementSibling.textContent=this.value+' mo'"><span class="slider-val">4 mo</span></div>
+    <div class="g2" style="margin-top:8px">
+      <div class="field"><label>Employment Type</label>
+        <select id="i_employment_type"><option value="fulltime">Full-Time Employee (W-2)</option><option value="contract">Contractor / 1099</option><option value="self">Self-Employed</option><option value="parttime">Part-Time</option></select>
+      </div>
+      <div class="field"><label>Severance Package if Laid Off</label>
+        <select id="i_severance"><option value="none">None / Unknown</option><option value="1month">~1 Month Pay</option><option value="2month">~2 Months Pay</option><option value="3month">~3 Months Pay</option><option value="6month">~6 Months Pay</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Eligible for Unemployment Benefits?</label>
+      <select id="i_unemployment"><option value="yes_full">Yes – Full Eligibility</option><option value="yes_partial">Yes – Partial</option><option value="no_visa">No – Visa Restrictions (H-1B etc.)</option><option value="no_other">No – Other Reason</option></select>
+      <div class="field-hint">H-1B holders are generally ineligible for unemployment benefits</div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-ghost" onclick="switchTab('profile')">← Back</button><button class="btn btn-primary" onclick="switchTab('expenses')">Next: Expenses →</button></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 3: EXPENSES                             -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-expenses" class="tab-panel">
+  <div class="page-title">🏠 Monthly <em>Expenses</em></div>
+  <div class="page-sub">Be honest — this determines your true monthly burn rate</div>
+  <div class="section">
+    <div class="section-title">🏠 Housing</div>
+    <div class="g2">
+      <div class="field"><label>Mortgage or Rent</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_housing" placeholder="3500"></div></div>
+      <div class="field"><label>Property Tax (monthly equiv.)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_property_tax" placeholder="0" value="0"></div></div>
+      <div class="field"><label>HOA / Maintenance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_hoa" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Home / Renters Insurance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_home_ins" placeholder="100" value="0"></div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">👨‍👩‍👧 Family &amp; Children</div>
+    <div class="g2">
+      <div class="field"><label>Childcare / Daycare</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_childcare" placeholder="0" value="0"></div></div>
+      <div class="field"><label>School Tuition (monthly)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_school" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Kids Activities / Sports</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_activities" placeholder="0" value="0"></div></div>
+      <div class="field"><label>529 / College Savings</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_529" placeholder="0" value="0"></div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">🚗 Transport &amp; 🌎 Lifestyle</div>
+    <div class="g2">
+      <div class="field"><label>Car Payment(s) Total</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_car_payment" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Car Insurance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_car_ins" placeholder="150" value="0"></div></div>
+      <div class="field"><label>Gas / Commute / Transit</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_gas" placeholder="100" value="0"></div></div>
+      <div class="field"><label>International Travel (annual ÷ 12)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_travel" placeholder="0" value="0"></div><div class="field-hint">Home-country visits, visa runs, vacation</div></div>
+      <div class="field"><label>Dining Out / Takeout</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_dining" placeholder="400" value="0"></div></div>
+      <div class="field"><label>Groceries &amp; Household</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_groceries" placeholder="500" value="0"></div></div>
+      <div class="field"><label>Entertainment / Subscriptions</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_entertainment" placeholder="200" value="0"></div></div>
+      <div class="field"><label>Utilities (electric, gas, internet)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_utilities" placeholder="250" value="0"></div></div>
+      <div class="field"><label>Phone Plan(s)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_phone" placeholder="100" value="0"></div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">⚕️ Health &amp; Insurance</div>
+    <div class="g2">
+      <div class="field"><label>Health Insurance Premium</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_health_ins" placeholder="200" value="0"></div><div class="field-hint">Your portion. COBRA is ~3x this if laid off.</div></div>
+      <div class="field"><label>Out-of-Pocket Medical (avg)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_medical_oop" placeholder="100" value="0"></div></div>
+      <div class="field"><label>Life / Disability Insurance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="e_life_ins" placeholder="50" value="0"></div></div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-ghost" onclick="switchTab('income')">← Back</button><button class="btn btn-primary" onclick="switchTab('debt')">Next: Debt →</button></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 4: DEBT                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-debt" class="tab-panel">
+  <div class="page-title">💳 Debt &amp; <em>Obligations</em></div>
+  <div class="page-sub">Debt is leverage — it amplifies every shock. Know exactly what you owe.</div>
+  <div class="section">
+    <div class="section-title">🏠 Mortgage / Real Estate</div>
+    <div class="g2">
+      <div class="field"><label>Remaining Mortgage Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_mortgage_balance" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Monthly Mortgage Payment (P+I)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_mortgage_payment" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Home Current Market Value</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_home_value" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Interest Rate (%)</label><input type="number" id="d_mortgage_rate" placeholder="6.5" step="0.1" value="0"></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">🎓 Student &amp; Consumer Debt</div>
+    <div class="g2">
+      <div class="field"><label>Student Loan Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_student_balance" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Student Loan Monthly Payment</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_student_payment" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Credit Card Total Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_cc_balance" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Credit Card Monthly Minimum</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_cc_payment" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Car Loan(s) Total Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_car_balance" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Personal Loan Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_personal_balance" placeholder="0" value="0"></div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">👨‍👩‍👧 Family Obligations</div>
+    <div class="g2">
+      <div class="field"><label>Monthly Remittances to Family Abroad</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_remittances" placeholder="0" value="0"></div><div class="field-hint">Money sent to parents, siblings overseas</div></div>
+      <div class="field"><label>Child Support / Alimony Monthly</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="d_support" placeholder="0" value="0"></div></div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-ghost" onclick="switchTab('expenses')">← Back</button><button class="btn btn-primary" onclick="switchTab('assets')">Next: Assets →</button></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 5: ASSETS                               -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-assets" class="tab-panel">
+  <div class="page-title">🏦 Assets &amp; <em>Safety Net</em></div>
+  <div class="page-sub">Your financial cushion — the difference between a bump and a crisis</div>
+  <div class="section">
+    <div class="section-title">💵 Liquid Assets (Immediately Accessible)</div>
+    <div class="g2">
+      <div class="field"><label>Checking Account Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="a_checking" placeholder="5000" value="0"></div></div>
+      <div class="field"><label>Savings / HYSA Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="a_savings" placeholder="10000" value="0"></div></div>
+      <div class="field"><label>Taxable Brokerage / Money Market</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="a_brokerage" placeholder="0" value="0"></div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">📈 Retirement Accounts (Penalty to Access Early)</div>
+    <div class="g2">
+      <div class="field"><label>401k / 403b Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="a_401k" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Traditional IRA Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="a_ira" placeholder="0" value="0"></div></div>
+      <div class="field"><label>Roth IRA Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="a_roth" placeholder="0" value="0"></div></div>
+      <div class="field"><label>HSA Balance</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="a_hsa" placeholder="0" value="0"></div></div>
+    </div>
+    <div class="insight insight-amber">⚠️ 401k early withdrawals face a <strong>10% penalty + income tax</strong>. Roth IRA <em>contributions</em> (not earnings) can be withdrawn penalty-free.</div>
+  </div>
+  <div class="section">
+    <div class="section-title">🛡️ Protection &amp; Other Assets</div>
+    <div class="g2">
+      <div class="field"><label>Do you have Disability Insurance?</label>
+        <select id="a_disability"><option value="none">No / None</option><option value="employer">Employer-Provided</option><option value="private">Private Long-Term Policy</option><option value="both">Both</option></select>
+      </div>
+      <div class="field"><label>Life Insurance Coverage</label>
+        <select id="a_life_ins"><option value="none">None</option><option value="employer">Employer Only</option><option value="term">Term Life (10x+ salary)</option><option value="whole">Whole / Universal Life</option></select>
+      </div>
+      <div class="field"><label>Available Credit (Total Card Limits)</label><div class="prefix-input"><span class="prefix">$</span><input type="number" id="a_credit_limit" placeholder="10000" value="0"></div></div>
+      <div class="field"><label>Family / Friends Emergency Loan?</label>
+        <select id="a_family_loan"><option value="no">No / Unlikely</option><option value="small">Maybe – Small (&lt;$5K)</option><option value="medium">Yes – Medium ($5K–$20K)</option><option value="large">Yes – Large ($20K+)</option></select>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="switchTab('debt')">← Back</button>
+    <button class="btn btn-primary" onclick="generateDashboard(); switchTab('dashboard')">🚨 Run Fragility Analysis →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 6: DASHBOARD                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-dashboard" class="tab-panel">
+  <div class="page-title">📊 Fragility <em>Dashboard</em></div>
+  <div class="page-sub">Your real-time financial vulnerability snapshot</div>
+  <div id="dashboard-output">
+    <div class="insight insight-blue" style="text-align:center;padding:32px">⚡ Complete all tabs and click <strong>"Run Fragility Analysis"</strong> to see your results. Or load a test scenario above.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 7: FULL REPORT                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-report" class="tab-panel">
+  <div class="page-title">🚨 Full Fragility <em>Report</em></div>
+  <div class="page-sub">Comprehensive printable analysis</div>
+  <div id="report-output">
+    <div class="insight insight-blue" style="text-align:center;padding:32px">⚡ Run the Dashboard analysis first, then your full report will appear here.</div>
+  </div>
+  <div class="btn-row" id="report-btn-row" style="display:none">
+    <button class="btn btn-danger" onclick="generatePrintReport()">🖨️ Print / Save as PDF</button>
+    <button class="btn btn-ghost" onclick="switchTab('dashboard')">← Back to Dashboard</button>
+  </div>
+</div>
+
+</div><!-- /content -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                  -->
+<!-- ═══════════════════════════════════════════ -->
+<script>
+// ─────────────────────────────────────────────
+// FIELD REGISTRY — every input id in the tool
+// ─────────────────────────────────────────────
+const ALL_FIELD_IDS = [
+  'p_name','p_age','p_dependents','p_city','p_marital','p_spouse_income',
+  'p_visa','p_visa_expiry','p_gc_stage','p_years_employer','p_industry',
+  'i_income','i_spouse_income','i_other_income','i_gross','i_bonus','i_rsu',
+  'i_job_security','i_industry_stability','i_layoff_prob','i_job_search_months',
+  'i_employment_type','i_severance','i_unemployment',
+  'e_housing','e_property_tax','e_hoa','e_home_ins','e_childcare','e_school',
+  'e_activities','e_529','e_car_payment','e_car_ins','e_gas','e_travel',
+  'e_dining','e_groceries','e_entertainment','e_utilities','e_phone',
+  'e_health_ins','e_medical_oop','e_life_ins',
+  'd_mortgage_balance','d_mortgage_payment','d_home_value','d_mortgage_rate',
+  'd_student_balance','d_student_payment','d_cc_balance','d_cc_payment',
+  'd_car_balance','d_personal_balance','d_remittances','d_support',
+  'a_checking','a_savings','a_brokerage','a_401k','a_ira','a_roth','a_hsa',
+  'a_disability','a_life_ins','a_credit_limit','a_family_loan',
+];
+
+// ─────────────────────────────────────────────
+// 5 TEST SCENARIOS
+// ─────────────────────────────────────────────
+const SCENARIOS = {
+  '1': {
+    meta: { label:'Simple', badgeClass:'sb-simple', desc:'Priya · F-1 OPT · Single · Seattle' },
+    data: {
+      p_name:'Priya Nair', p_age:'27', p_dependents:'0', p_city:'Seattle, WA',
+      p_marital:'single', p_spouse_income:'no', p_visa:'opt', p_visa_expiry:'2025-11',
+      p_gc_stage:'none', p_years_employer:'0.8', p_industry:'tech',
+      i_income:'5800', i_spouse_income:'0', i_other_income:'0', i_gross:'90000',
+      i_bonus:'0', i_rsu:'0', i_job_security:'5', i_industry_stability:'5',
+      i_layoff_prob:'35', i_job_search_months:'6', i_employment_type:'fulltime',
+      i_severance:'none', i_unemployment:'no_visa',
+      e_housing:'2100', e_property_tax:'0', e_hoa:'0', e_home_ins:'20',
+      e_childcare:'0', e_school:'0', e_activities:'0', e_529:'0',
+      e_car_payment:'0', e_car_ins:'0', e_gas:'60', e_travel:'200',
+      e_dining:'400', e_groceries:'350', e_entertainment:'100',
+      e_utilities:'120', e_phone:'80', e_health_ins:'180', e_medical_oop:'50', e_life_ins:'0',
+      d_mortgage_balance:'0', d_mortgage_payment:'0', d_home_value:'0', d_mortgage_rate:'0',
+      d_student_balance:'32000', d_student_payment:'310', d_cc_balance:'1200', d_cc_payment:'35',
+      d_car_balance:'0', d_personal_balance:'0', d_remittances:'300', d_support:'0',
+      a_checking:'3500', a_savings:'4000', a_brokerage:'0', a_401k:'4000',
+      a_ira:'0', a_roth:'0', a_hsa:'0', a_disability:'employer',
+      a_life_ins:'none', a_credit_limit:'8000', a_family_loan:'small',
+    }
+  },
+  '2': {
+    meta: { label:'Medium', badgeClass:'sb-medium', desc:'Raj & Meera · H-1B · 2 Kids · San Jose' },
+    data: {
+      p_name:'Raj Sharma', p_age:'36', p_dependents:'2', p_city:'San Jose, CA',
+      p_marital:'married', p_spouse_income:'no', p_visa:'h1b', p_visa_expiry:'2026-04',
+      p_gc_stage:'waiting', p_years_employer:'4', p_industry:'tech',
+      i_income:'10500', i_spouse_income:'0', i_other_income:'0', i_gross:'165000',
+      i_bonus:'12000', i_rsu:'15000', i_job_security:'6', i_industry_stability:'5',
+      i_layoff_prob:'25', i_job_search_months:'5', i_employment_type:'fulltime',
+      i_severance:'2month', i_unemployment:'no_visa',
+      e_housing:'3600', e_property_tax:'480', e_hoa:'250', e_home_ins:'130',
+      e_childcare:'3200', e_school:'0', e_activities:'350', e_529:'300',
+      e_car_payment:'620', e_car_ins:'200', e_gas:'150', e_travel:'450',
+      e_dining:'700', e_groceries:'800', e_entertainment:'200',
+      e_utilities:'300', e_phone:'140', e_health_ins:'520', e_medical_oop:'120', e_life_ins:'80',
+      d_mortgage_balance:'780000', d_mortgage_payment:'3600', d_home_value:'1050000', d_mortgage_rate:'6.75',
+      d_student_balance:'18000', d_student_payment:'200', d_cc_balance:'6500', d_cc_payment:'130',
+      d_car_balance:'28000', d_personal_balance:'0', d_remittances:'600', d_support:'0',
+      a_checking:'14000', a_savings:'22000', a_brokerage:'8000', a_401k:'85000',
+      a_ira:'0', a_roth:'15000', a_hsa:'5500', a_disability:'employer',
+      a_life_ins:'term', a_credit_limit:'40000', a_family_loan:'medium',
+    }
+  },
+  '3': {
+    meta: { label:'Complex', badgeClass:'sb-hard', desc:'James & Ashley · Citizens · High Debt · Dallas' },
+    data: {
+      p_name:'James & Ashley Carter', p_age:'41', p_dependents:'3', p_city:'Dallas, TX',
+      p_marital:'married', p_spouse_income:'parttime', p_visa:'citizen', p_visa_expiry:'',
+      p_gc_stage:'none', p_years_employer:'2', p_industry:'finance',
+      i_income:'9200', i_spouse_income:'2100', i_other_income:'0', i_gross:'145000',
+      i_bonus:'8000', i_rsu:'0', i_job_security:'5', i_industry_stability:'5',
+      i_layoff_prob:'30', i_job_search_months:'5', i_employment_type:'fulltime',
+      i_severance:'1month', i_unemployment:'yes_full',
+      e_housing:'2800', e_property_tax:'420', e_hoa:'0', e_home_ins:'140',
+      e_childcare:'0', e_school:'1400', e_activities:'500', e_529:'150',
+      e_car_payment:'1050', e_car_ins:'280', e_gas:'250', e_travel:'600',
+      e_dining:'900', e_groceries:'950', e_entertainment:'350',
+      e_utilities:'320', e_phone:'160', e_health_ins:'680', e_medical_oop:'200', e_life_ins:'120',
+      d_mortgage_balance:'540000', d_mortgage_payment:'2800', d_home_value:'610000', d_mortgage_rate:'5.25',
+      d_student_balance:'48000', d_student_payment:'520', d_cc_balance:'22000', d_cc_payment:'440',
+      d_car_balance:'55000', d_personal_balance:'8000', d_remittances:'0', d_support:'0',
+      a_checking:'6000', a_savings:'8000', a_brokerage:'5000', a_401k:'62000',
+      a_ira:'12000', a_roth:'0', a_hsa:'1200', a_disability:'employer',
+      a_life_ins:'employer', a_credit_limit:'45000', a_family_loan:'no',
+    }
+  },
+  '4': {
+    meta: { label:'Severe', badgeClass:'sb-critical', desc:'Wei · H-1B GC-Pending · HCOL · Remittances · NYC' },
+    data: {
+      p_name:'Wei Zhang', p_age:'38', p_dependents:'2', p_city:'New York, NY',
+      p_marital:'married', p_spouse_income:'no', p_visa:'h1b', p_visa_expiry:'2025-08',
+      p_gc_stage:'i140', p_years_employer:'6', p_industry:'finance',
+      i_income:'12500', i_spouse_income:'0', i_other_income:'0', i_gross:'195000',
+      i_bonus:'20000', i_rsu:'25000', i_job_security:'4', i_industry_stability:'4',
+      i_layoff_prob:'40', i_job_search_months:'7', i_employment_type:'fulltime',
+      i_severance:'2month', i_unemployment:'no_visa',
+      e_housing:'5200', e_property_tax:'620', e_hoa:'800', e_home_ins:'180',
+      e_childcare:'3800', e_school:'0', e_activities:'400', e_529:'200',
+      e_car_payment:'0', e_car_ins:'0', e_gas:'80', e_travel:'600',
+      e_dining:'1200', e_groceries:'900', e_entertainment:'300',
+      e_utilities:'280', e_phone:'160', e_health_ins:'600', e_medical_oop:'150', e_life_ins:'100',
+      d_mortgage_balance:'1100000', d_mortgage_payment:'5200', d_home_value:'1350000', d_mortgage_rate:'7.1',
+      d_student_balance:'0', d_student_payment:'0', d_cc_balance:'18000', d_cc_payment:'360',
+      d_car_balance:'0', d_personal_balance:'12000', d_remittances:'1200', d_support:'0',
+      a_checking:'18000', a_savings:'25000', a_brokerage:'15000', a_401k:'120000',
+      a_ira:'0', a_roth:'8000', a_hsa:'3000', a_disability:'employer',
+      a_life_ins:'term', a_credit_limit:'60000', a_family_loan:'no',
+    }
+  },
+  '5': {
+    meta: { label:'Healthy', badgeClass:'sb-simple', desc:'Aisha & Carlos · EAD · Well-Prepared · Austin' },
+    data: {
+      p_name:'Aisha & Carlos Mendez', p_age:'39', p_dependents:'2', p_city:'Austin, TX',
+      p_marital:'married', p_spouse_income:'fulltime', p_visa:'ead', p_visa_expiry:'2027-03',
+      p_gc_stage:'485filed', p_years_employer:'7', p_industry:'healthcare',
+      i_income:'8500', i_spouse_income:'5500', i_other_income:'800', i_gross:'135000',
+      i_bonus:'5000', i_rsu:'0', i_job_security:'8', i_industry_stability:'9',
+      i_layoff_prob:'8', i_job_search_months:'3', i_employment_type:'fulltime',
+      i_severance:'3month', i_unemployment:'yes_full',
+      e_housing:'2400', e_property_tax:'300', e_hoa:'0', e_home_ins:'110',
+      e_childcare:'1200', e_school:'0', e_activities:'200', e_529:'500',
+      e_car_payment:'380', e_car_ins:'160', e_gas:'130', e_travel:'300',
+      e_dining:'500', e_groceries:'700', e_entertainment:'150',
+      e_utilities:'220', e_phone:'120', e_health_ins:'320', e_medical_oop:'80', e_life_ins:'90',
+      d_mortgage_balance:'320000', d_mortgage_payment:'2400', d_home_value:'520000', d_mortgage_rate:'3.25',
+      d_student_balance:'0', d_student_payment:'0', d_cc_balance:'0', d_cc_payment:'0',
+      d_car_balance:'12000', d_personal_balance:'0', d_remittances:'200', d_support:'0',
+      a_checking:'25000', a_savings:'60000', a_brokerage:'35000', a_401k:'180000',
+      a_ira:'22000', a_roth:'38000', a_hsa:'8000', a_disability:'both',
+      a_life_ins:'term', a_credit_limit:'50000', a_family_loan:'medium',
+    }
+  },
+};
+
+// ─────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────
+function $(id) { return document.getElementById(id); }
+function v(id, fb=0) { const el=$(id); if(!el) return fb; return parseFloat(el.value)||0; }
+function vs(id) { const el=$(id); return el ? el.value : ''; }
+function fmt(n) { return '$'+Math.abs(Math.round(n)).toLocaleString(); }
+function fmtK(n) { if(Math.abs(n)>=1000000) return '$'+(n/1000000).toFixed(1)+'M'; if(Math.abs(n)>=1000) return '$'+(n/1000).toFixed(0)+'K'; return '$'+Math.round(n); }
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  $('tab-'+name).classList.add('active');
+  const map = {profile:0,income:1,expenses:2,debt:3,assets:4,dashboard:5,report:6};
+  document.querySelectorAll('.tab-btn')[map[name]].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showToast(msg) {
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+function updateVisaFields() {
+  $('visa-extra').style.display = vs('p_visa')==='citizen' ? 'none' : 'block';
+}
+
+function runwayColor(m) {
+  if(m<2) return '#e74c3c'; if(m<4) return '#e07230';
+  if(m<6) return '#f0a832'; if(m<12) return '#2d6abf'; return '#27a05a';
+}
+function fragColor(s) {
+  if(s>=75) return '#e74c3c'; if(s>=55) return '#e07230';
+  if(s>=35) return '#f0a832'; return '#27a05a';
+}
+function dtiClass(r) { return r>0.5?'danger':r>0.36?'warn':'safe'; }
+
+// ─────────────────────────────────────────────
+// SCENARIO LOADER
+// ─────────────────────────────────────────────
+function loadScenario(key) {
+  if(!key) return;
+  const s = SCENARIOS[key];
+  if(!s) return;
+
+  // Populate fields
+  Object.entries(s.data).forEach(([id, val]) => {
+    const el = $(id);
+    if(!el) return;
+    el.value = val;
+    // Sync slider display values
+    if(el.type === 'range') {
+      const sibling = el.nextElementSibling;
+      if(sibling && sibling.classList.contains('slider-val')) {
+        if(id==='i_job_security'||id==='i_industry_stability') sibling.textContent = val+'/10';
+        else if(id==='i_layoff_prob') sibling.textContent = val+'%';
+        else if(id==='i_job_search_months') sibling.textContent = val+' mo';
+      }
+    }
+  });
+
+  updateVisaFields();
+
+  // Show badge
+  const badge = $('scenarioBadge');
+  badge.textContent = s.meta.label.toUpperCase() + ' · ' + s.meta.desc;
+  badge.className = 'scenario-badge ' + s.meta.badgeClass;
+  badge.style.display = 'inline-flex';
+
+  // Auto-generate dashboard
+  generateDashboard();
+  switchTab('dashboard');
+  showToast('✅ Loaded: ' + s.meta.desc);
+}
+
+// ─────────────────────────────────────────────
+// SAVE / LOAD JSON
+// ─────────────────────────────────────────────
+function saveToJSON() {
+  const inputs = {};
+  ALL_FIELD_IDS.forEach(id => { const el=$(id); if(el) inputs[id]=el.value; });
+
+  const payload = {
+    version: '1.0',
+    firm: 'Start Your Finances Right',
+    tool: 'One Shock Away · Financial Fragility Checker',
+    savedAt: new Date().toISOString(),
+    clientName: vs('p_name') || 'Client',
+    inputs,
+  };
+
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const safe = (vs('p_name')||'client').replace(/[^a-z0-9]/gi,'_').toLowerCase();
+  a.href     = url;
+  a.download = `syfr_osa_${safe}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('💾 Data saved as JSON — only on your device');
+}
+
+function loadFromFile(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.inputs) throw new Error('Invalid file format');
+
+      Object.entries(data.inputs).forEach(([id, val]) => {
+        const el = $(id);
+        if(!el) return;
+        el.value = val;
+        if(el.type==='range') {
+          const s = el.nextElementSibling;
+          if(s && s.classList.contains('slider-val')) {
+            if(id==='i_job_security'||id==='i_industry_stability') s.textContent=val+'/10';
+            else if(id==='i_layoff_prob') s.textContent=val+'%';
+            else if(id==='i_job_search_months') s.textContent=val+' mo';
+          }
+        }
+      });
+
+      updateVisaFields();
+      // Clear scenario picker
+      $('scenarioPicker').value='';
+      $('scenarioBadge').style.display='none';
+
+      generateDashboard();
+      switchTab('dashboard');
+      showToast(`📂 Loaded: ${data.clientName} (saved ${(data.savedAt||'').slice(0,10)})`);
+    } catch(err) {
+      alert('Could not load file: ' + err.message);
+    }
+    event.target.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ─────────────────────────────────────────────
+// CORE CALCULATIONS
+// ─────────────────────────────────────────────
+function calcAll() {
+  // Income
+  const monthlyNet  = v('i_income') + v('i_spouse_income') + v('i_other_income');
+  const sevMap      = {none:0,'1month':1,'2month':2,'3month':3,'6month':6};
+  const sevMonths   = sevMap[vs('i_severance')]||0;
+  const sevCash     = v('i_income') * sevMonths;
+  const ueEligible  = vs('i_unemployment')==='yes_full'||vs('i_unemployment')==='yes_partial';
+  const ueMonthly   = ueEligible ? Math.min(v('i_income')*0.5, 2200) : 0;
+  const jobSearchMo = v('i_job_search_months');
+  const layoffProb  = v('i_layoff_prob')/100;
+  const jobSec      = v('i_job_security');
+  const indSec      = v('i_industry_stability');
+
+  // Expenses
+  const housing   = v('e_housing')+v('e_property_tax')+v('e_hoa')+v('e_home_ins');
+  const family    = v('e_childcare')+v('e_school')+v('e_activities')+v('e_529');
+  const transport = v('e_car_payment')+v('e_car_ins')+v('e_gas');
+  const travel    = v('e_travel');
+  const food      = v('e_dining')+v('e_groceries');
+  const health    = v('e_health_ins')+v('e_medical_oop')+v('e_life_ins');
+  const lifestyle = v('e_entertainment')+v('e_utilities')+v('e_phone');
+  const burn      = housing+family+transport+travel+food+health+lifestyle;
+
+  // Debt
+  const debtPayments = v('d_mortgage_payment')+v('d_student_payment')+v('d_cc_payment')+v('e_car_payment')+v('d_remittances')+v('d_support');
+  const totalDebt    = v('d_mortgage_balance')+v('d_student_balance')+v('d_cc_balance')+v('d_car_balance')+v('d_personal_balance');
+  const homeEquity   = Math.max(0, v('d_home_value')-v('d_mortgage_balance'));
+  const dti          = monthlyNet>0 ? debtPayments/monthlyNet : 1;
+
+  // Savings
+  const surplus     = monthlyNet - burn;
+  const savingsRate = monthlyNet>0 ? surplus/monthlyNet : 0;
+
+  // Liquid
+  const liquid  = v('a_checking')+v('a_savings')+v('a_brokerage');
+  const roth    = v('a_roth');
+  const retAcct = v('a_401k')+v('a_ira')+roth+v('a_hsa');
+  const netWorth= liquid+retAcct+homeEquity+v('d_home_value')*0-totalDebt;
+  const totalAssets = liquid+retAcct+homeEquity;
+
+  // Runway scenarios
+  const baseRunway    = burn>0 ? liquid/burn : 99;
+  const crisisRunway  = burn>0 ? (liquid+sevCash)/burn : 99;
+  const fullRunway    = burn>0 ? (liquid+sevCash+ueMonthly*jobSearchMo)/burn : 99;
+  const leanBurn      = burn - v('e_529') - v('e_activities') - v('e_entertainment') - travel*0.5;
+  const leanRunway    = leanBurn>0 ? (liquid+sevCash)/leanBurn : 99;
+
+  // Visa
+  const visa       = vs('p_visa');
+  const isVisa     = visa!=='citizen';
+  const graceMap   = {h1b:2,l1:2,opt:0.17,o1:2,h4ead:2,ead:2,other:1};
+  const graceMo    = isVisa ? (graceMap[visa]||2) : 0;
+
+  // COBRA
+  const cobraMonthly = v('e_health_ins')*3.2;
+  const cobraDelta   = cobraMonthly - v('e_health_ins');
+
+  // Fragility Score (0=resilient, 100=crisis)
+  let fs = 0;
+  // Runway (0–30)
+  if(baseRunway<1)  fs+=30; else if(baseRunway<2) fs+=25; else if(baseRunway<3) fs+=20;
+  else if(baseRunway<6) fs+=12; else if(baseRunway<12) fs+=5;
+  // DTI (0–20)
+  if(dti>0.6) fs+=20; else if(dti>0.5) fs+=15; else if(dti>0.43) fs+=10; else if(dti>0.36) fs+=5;
+  // Job risk (0–20)
+  fs += Math.round(((10-jobSec)+(10-indSec))/20*20);
+  // Visa risk (0–15)
+  if(isVisa && graceMo<=2) fs+=15; else if(isVisa) fs+=8;
+  // Savings rate (0–10)
+  if(savingsRate<0) fs+=10; else if(savingsRate<0.05) fs+=8; else if(savingsRate<0.1) fs+=5; else if(savingsRate<0.2) fs+=2;
+  // Over-extended (0–5)
+  if(burn/monthlyNet>0.95) fs+=5; else if(burn/monthlyNet>0.85) fs+=3;
+  fs = Math.min(100, Math.max(0, fs));
+
+  let grade, gradeColor;
+  if(fs>=75)       { grade='CRITICAL';  gradeColor='#e74c3c'; }
+  else if(fs>=55)  { grade='HIGH RISK'; gradeColor='#e07230'; }
+  else if(fs>=35)  { grade='MODERATE';  gradeColor='#f0a832'; }
+  else if(fs>=15)  { grade='CAUTIOUS';  gradeColor='#2d6abf'; }
+  else             { grade='RESILIENT'; gradeColor='#27a05a'; }
+
+  // Shock scenarios
+  const shocks = [
+    {
+      id:'jobloss', icon:'💼', title:'Job Loss Today',
+      desc: `You lose your job tomorrow. ${isVisa?`On <strong>${visa.toUpperCase()}</strong>, your grace period is <strong>${Math.round(graceMo*30)} days</strong> — then you must leave or find a new sponsor.`:'No visa clock. But financial pressure is immediate.'}`,
+      runwayAfter: crisisRunway, runwayWithHelp: fullRunway,
+      details:[
+        {l:'Severance',    v:fmt(sevCash)},
+        {l:'Unemployment', v:ueEligible?fmt(ueMonthly)+'/mo':'Ineligible'},
+        {l:'Job Search',   v:jobSearchMo+' mo (est.)'},
+        {l:'Monthly Gap',  v:fmt(Math.max(0,burn-(v('i_spouse_income')+v('i_other_income')+ueMonthly)))},
+      ],
+      sev: crisisRunway<2?'CRITICAL': crisisRunway<4?'DANGER': crisisRunway<6?'CAUTION':'OK',
+    },
+    {
+      id:'visa', icon:'🌍', title:'Visa Denial / Status Issue',
+      desc: isVisa
+        ? `Renewal denied or employer revokes sponsorship. You face legal fees of $5K–$15K, possible relocation, and compressed job search all at once.`
+        : `You're a citizen/PR — direct visa shocks don't apply. However a dependent spouse on a visa could still trigger secondary effects.`,
+      runwayAfter: isVisa?(liquid-15000)/burn: baseRunway,
+      details:[
+        {l:'Legal Fees Est.', v:isVisa?'$5K–$15K':'N/A'},
+        {l:'Relocation Cost', v:isVisa?'$8K–$20K':'N/A'},
+        {l:'Grace Period',    v:isVisa?Math.round(graceMo*30)+' days':'N/A'},
+        {l:'Income Gap Risk', v:isVisa?'HIGH':'LOW'},
+      ],
+      sev: !isVisa?'OK': liquid<25000?'CRITICAL':'DANGER',
+    },
+    {
+      id:'medical', icon:'🏥', title:'Major Medical Emergency',
+      desc: 'Serious illness, accident, or surgery. Even with insurance, out-of-pocket maximums can run $10K–$20K per year. If laid off at the same time, COBRA costs multiply.',
+      runwayAfter: (liquid-15000)/burn,
+      details:[
+        {l:'Est. OOP Cost',       v:'$8K–$20K'},
+        {l:'COBRA if Laid Off',   v:fmt(cobraMonthly)+'/mo'},
+        {l:'COBRA vs. Now',       v:'+'+fmt(cobraDelta)+'/mo'},
+        {l:'Liquid After $15K',   v:fmt(Math.max(0,liquid-15000))},
+      ],
+      sev: liquid<15000?'CRITICAL': liquid<30000?'DANGER':'CAUTION',
+    },
+    {
+      id:'education', icon:'🎓', title:'Kids College Cost Shock',
+      desc: `4-year college runs $120K–$320K today. With ${v('p_dependents')} dependent(s) and ${fmt(v('e_529'))}/mo in 529 savings, are you on track?`,
+      details:[
+        {l:'529 Monthly',    v:fmt(v('e_529'))},
+        {l:'Dependents',     v:String(v('p_dependents')||0)},
+        {l:'Est. Per-Child', v:'$120K–$320K'},
+        {l:'Funding Status', v: v('p_dependents')>0&&v('e_529')<300?'UNDERFUNDED': v('p_dependents')>0&&v('e_529')<800?'LOW':'On Track'},
+      ],
+      sev: v('p_dependents')>0&&v('e_529')<300?'DANGER': v('p_dependents')>0&&v('e_529')<800?'CAUTION':'OK',
+    },
+    {
+      id:'home', icon:'🏠', title:'Major Home Repair',
+      desc: 'HVAC failure, roof replacement, flooding, or foundation issues run $15K–$50K with little warning. Home equity is illiquid — it can\'t pay the contractor.',
+      runwayAfter: (liquid-25000)/burn,
+      details:[
+        {l:'Repair Range',     v:'$15K–$50K'},
+        {l:'Home Equity',      v:fmt(homeEquity)},
+        {l:'Liquid After $25K',v:fmt(Math.max(0,liquid-25000))},
+        {l:'HELOC Possible?',  v:homeEquity>60000?'Yes':'Limited'},
+      ],
+      sev: liquid<25000?'CRITICAL': liquid<50000?'DANGER':'CAUTION',
+    },
+    {
+      id:'divorce', icon:'💔', title:'Divorce / Separation',
+      desc: `Divorce typically halves assets and doubles living costs overnight. Legal fees average $15K–$50K+ and contested cases can reach $100K.`,
+      details:[
+        {l:'Legal Fees Est.',  v:'$15K–$50K+'},
+        {l:'Asset Split Risk', v:'Up to 50%'},
+        {l:'Monthly Cost Jump',v:'~+40–60%'},
+        {l:'Single Runway',    v:(burn-v('i_spouse_income'))>0 ? (liquid/(burn-v('i_spouse_income'))).toFixed(1)+' mo' : '—'},
+      ],
+      sev: vs('p_marital')==='married' ? (liquid<30000?'DANGER':'CAUTION') : 'OK',
+    },
+  ];
+
+  return {
+    monthlyNet, burn, surplus, savingsRate,
+    housing, family, transport, travel, food, health, lifestyle,
+    liquid, retAcct, homeEquity, totalAssets, totalDebt, netWorth,
+    baseRunway, crisisRunway, fullRunway, leanRunway, leanBurn,
+    debtPayments, dti, sevCash, sevMonths, ueEligible, ueMonthly, jobSearchMo,
+    cobraMonthly, cobraDelta, isVisa, visa, graceMo,
+    fScore:fs, grade, gradeColor, shocks, layoffProb, jobSec, indSec,
+  };
+}
+
+// ─────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────
+let _dashChart = null;
+function generateDashboard() {
+  const d  = calcAll();
+  const out = $('dashboard-output');
+
+  const rBar = (months, max=24) => {
+    const p = Math.min(100,(months/max)*100);
+    const c = runwayColor(months);
+    return `<div class="runway-bar"><div class="runway-fill" style="width:${p}%;background:${c}">${months.toFixed(1)} mo</div></div>
+    <div class="runway-ticks"><span>0</span><span>6 mo</span><span>12 mo</span><span>18 mo</span><span>24+</span></div>`;
+  };
+
+  const sevBadge = sev => {
+    const m={CRITICAL:'badge-critical',DANGER:'badge-danger',CAUTION:'badge-caution',OK:'badge-ok'};
+    return `<span class="shock-badge ${m[sev]||'badge-caution'}">${sev}</span>`;
+  };
+
+  const arcPct = d.fScore/100;
+  const arcLen = Math.PI*90;
+  const arcColor = fragColor(d.fScore);
+  const eCats = [
+    {label:'Housing',     val:d.housing},
+    {label:'Family/Kids', val:d.family},
+    {label:'Food',        val:d.food},
+    {label:'Transport',   val:d.transport},
+    {label:'Health',      val:d.health},
+    {label:'Lifestyle',   val:d.lifestyle},
+    {label:'Travel',      val:d.travel},
+  ].filter(e=>e.val>0);
+
+  out.innerHTML = `
+  <div class="g2" style="margin-bottom:20px">
+    <div class="fragility-meter">
+      <div class="meter-title">Financial Fragility Score</div>
+      <div class="meter-arc">
+        <svg viewBox="0 0 220 120">
+          <path d="M20 110 A90 90 0 0 1 200 110" fill="none" stroke="#2a2b35" stroke-width="14" stroke-linecap="round"/>
+          <path d="M20 110 A90 90 0 0 1 200 110" fill="none" stroke="${arcColor}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${arcPct*arcLen} ${arcLen}" opacity="0.9"/>
+        </svg>
+        <div class="meter-score" style="color:${arcColor}">${d.fScore}</div>
+      </div>
+      <div class="meter-grade" style="color:${arcColor}">${d.grade}</div>
+      <div class="meter-sub">0 = Fully Resilient · 100 = Immediate Crisis</div>
+    </div>
+    <div>
+      <div class="g2" style="margin-bottom:14px">
+        <div class="stat-card ${d.baseRunway<3?'red':d.baseRunway<6?'amber':'green'}">
+          <div class="stat-label">Emergency Runway</div>
+          <div class="stat-val ${d.baseRunway<3?'danger':d.baseRunway<6?'warn':'safe'}">${d.baseRunway.toFixed(1)} mo</div>
+          <div class="stat-sub">From liquid savings only</div>
+        </div>
+        <div class="stat-card ${d.dti>0.43?'red':d.dti>0.36?'amber':'green'}">
+          <div class="stat-label">Debt-to-Income</div>
+          <div class="stat-val ${dtiClass(d.dti)}">${(d.dti*100).toFixed(0)}%</div>
+          <div class="stat-sub">Safe &lt;36% · Danger &gt;50%</div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="stat-card ${d.savingsRate<0.05?'red':d.savingsRate<0.15?'amber':'green'}">
+          <div class="stat-label">Monthly Savings Rate</div>
+          <div class="stat-val ${d.savingsRate<0?'danger':d.savingsRate<0.1?'warn':'safe'}">${(d.savingsRate*100).toFixed(1)}%</div>
+          <div class="stat-sub">${d.surplus>=0?'+':''}${fmt(d.surplus)}/mo surplus</div>
+        </div>
+        <div class="stat-card ${d.isVisa?'red':'green'}">
+          <div class="stat-label">Visa Vulnerability</div>
+          <div class="stat-val ${d.isVisa?'danger':'safe'}">${d.isVisa?(d.graceMo>0?Math.round(d.graceMo*30)+'d grace':'High Risk'):'None'}</div>
+          <div class="stat-sub">${d.isVisa?vs('p_visa').toUpperCase()+' — employer-tied':'Citizen / Permanent Resident'}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">⏱️ Survival Runway — How Long Can You Last?</div>
+    <div class="section-sub">Monthly burn: <strong>${fmt(d.burn)}</strong> · Monthly income: <strong>${fmt(d.monthlyNet)}</strong></div>
+    ${[[`Liquid savings only (${fmt(d.liquid)})`, d.baseRunway],
+       [`With severance (${fmt(d.sevCash)})`, d.crisisRunway],
+       [`With severance + ${d.ueEligible?'unemployment ('+fmt(d.ueMonthly)+'/mo)':'(unemployment ineligible)'}`, d.fullRunway],
+       [`Lean mode (cut travel, entertainment, activities)`, d.leanRunway],
+    ].map(([label,mo])=>`<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span style="color:var(--text2)">${label}</span>
+        <span style="font-family:'JetBrains Mono',monospace;color:${runwayColor(mo)}">${mo.toFixed(1)} months</span>
+      </div>${rBar(mo)}</div>`).join('')}
+    ${d.baseRunway<3?`<div class="insight insight-red">🚨 <strong>CRITICAL:</strong> Under 3 months of runway is a financial emergency. One missed paycheck starts a cascade — missed mortgage payments, credit damage, and housing instability.</div>`:
+      d.baseRunway<6?`<div class="insight insight-amber">⚠️ <strong>WARNING:</strong> Under 6 months is the "danger zone." Standard guidance is 6 months for single earners — but that assumes no visa complication or health crisis.</div>`:
+      `<div class="insight insight-green">✅ Your baseline runway is adequate. Review the shock scenarios below — compounding emergencies can drain this faster than expected.</div>`}
+  </div>
+
+  <div class="section">
+    <div class="section-title">💸 Monthly Expense Breakdown</div>
+    <div class="section-sub">Total: ${fmt(d.burn)}/month</div>
+    <div class="g2">
+      <div>${eCats.map(e=>{
+        const p=d.burn>0?(e.val/d.burn)*100:0;
+        const c=e.label==='Housing'&&p>35?'#e74c3c':e.label==='Housing'&&p>28?'#f0a832':'#2d6abf';
+        return `<div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+            <span style="color:var(--text2)">${e.label}</span>
+            <span style="font-family:'JetBrains Mono',monospace">${fmt(e.val)} <span style="color:var(--text3)">(${p.toFixed(0)}%)</span></span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${c}"></div></div>
+        </div>`;
+      }).join('')}</div>
+      <div><canvas id="expenseChart" style="max-height:220px"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">⚡ Shock Scenario Analysis</div>
+    <div class="section-sub">What breaks first if any of these hit right now?</div>
+    <div class="scenario-grid">
+    ${d.shocks.map(s=>`<div class="shock-card">
+      <div class="shock-header"><div class="shock-title">${s.icon} ${s.title}</div>${sevBadge(s.sev)}</div>
+      <div class="shock-body">${s.desc}</div>
+      <div class="shock-numbers">${s.details.map(dt=>`<div class="shock-num">
+        <small style="color:var(--text3)">${dt.l}</small>
+        <span class="${typeof dt.v==='string'&&(dt.v.includes('CRITICAL')||dt.v.includes('UNDERFUNDED')||dt.v.includes('HIGH'))?'red':typeof dt.v==='string'&&(dt.v.includes('On Track')||dt.v==='LOW')?'grn':''}">${dt.v}</span>
+      </div>`).join('')}</div>
+      ${s.runwayAfter!==undefined?`<div style="margin-top:10px;font-size:11px;color:var(--text3)">Runway after shock: <span style="color:${runwayColor(Math.max(0,s.runwayAfter))};font-family:'JetBrains Mono',monospace;font-size:13px">${Math.max(0,s.runwayAfter).toFixed(1)} mo</span></div>`:''}
+    </div>`).join('')}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">💳 Debt Snapshot</div>
+    <div class="g2">
+      <table class="data-table">
+        <thead><tr><th>Obligation</th><th>Balance</th><th>Monthly</th></tr></thead>
+        <tbody>
+          ${v('d_mortgage_balance')>0?`<tr><td>Mortgage</td><td class="mono">${fmt(v('d_mortgage_balance'))}</td><td class="mono warn">${fmt(v('d_mortgage_payment'))}</td></tr>`:''}
+          ${v('d_student_balance')>0?`<tr><td>Student Loans</td><td class="mono">${fmt(v('d_student_balance'))}</td><td class="mono warn">${fmt(v('d_student_payment'))}</td></tr>`:''}
+          ${v('d_cc_balance')>0?`<tr><td>Credit Cards</td><td class="mono highlight">${fmt(v('d_cc_balance'))}</td><td class="mono highlight">${fmt(v('d_cc_payment'))}</td></tr>`:''}
+          ${v('d_car_balance')>0?`<tr><td>Car Loan(s)</td><td class="mono">${fmt(v('d_car_balance'))}</td><td class="mono">${fmt(v('e_car_payment'))}</td></tr>`:''}
+          ${v('d_remittances')>0?`<tr><td>Remittances</td><td class="mono">—</td><td class="mono warn">${fmt(v('d_remittances'))}</td></tr>`:''}
+          <tr style="font-weight:600"><td style="color:#fff">Total</td><td class="mono" style="color:#fff">${fmt(d.totalDebt)}</td><td class="mono ${d.dti>0.43?'highlight':'warn'}">${fmt(d.debtPayments)}/mo</td></tr>
+        </tbody>
+      </table>
+      <div class="box">
+        <div class="box-title">Debt Health</div>
+        <ul class="checklist">
+          <li><div class="check-icon ${d.dti<=0.36?'check-ok':'check-bad'}">${d.dti<=0.36?'✓':'✗'}</div><div>DTI <strong>${(d.dti*100).toFixed(0)}%</strong> — target: &lt;36%</div></li>
+          <li><div class="check-icon ${v('d_cc_balance')===0?'check-ok':v('d_cc_balance')<5000?'check-warn':'check-bad'}">${v('d_cc_balance')===0?'✓':v('d_cc_balance')<5000?'!':'✗'}</div><div>CC balance <strong>${fmt(v('d_cc_balance'))}</strong> — goal: $0</div></li>
+          <li><div class="check-icon ${d.liquid>=d.totalDebt*0.1?'check-ok':'check-bad'}">${d.liquid>=d.totalDebt*0.1?'✓':'✗'}</div><div>Liquid vs. total debt ratio</div></li>
+          <li><div class="check-icon ${v('d_remittances')===0?'check-ok':v('d_remittances')/d.monthlyNet<0.08?'check-warn':'check-bad'}">${v('d_remittances')===0?'✓':v('d_remittances')/d.monthlyNet<0.08?'!':'✗'}</div><div>Remittances <strong>${fmt(v('d_remittances'))}/mo</strong></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🎯 Priority Actions to Reduce Fragility</div>
+    ${buildActions(d)}
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="generateReport();switchTab('report')">📄 Generate Full Report →</button>
+    <button class="btn btn-ghost" onclick="saveToJSON()">💾 Save This Data</button>
+  </div>`;
+
+  // Pie chart
+  if(_dashChart) { _dashChart.destroy(); _dashChart=null; }
+  setTimeout(()=>{
+    const ctx=$('expenseChart'); if(!ctx) return;
+    _dashChart = new Chart(ctx,{
+      type:'doughnut',
+      data:{
+        labels:eCats.map(e=>e.label),
+        datasets:[{data:eCats.map(e=>e.val),backgroundColor:['#c0392b','#d4880a','#2d6abf','#6b2fa0','#0d9488','#27a05a','#e07230'],borderColor:'#1a1b22',borderWidth:3}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#b8b4ab',font:{family:'Outfit',size:11},padding:12,boxWidth:12}}}}
+    });
+  },80);
+
+  showToast('⚡ Fragility analysis complete');
+}
+
+function buildActions(d) {
+  const acts=[];
+  if(d.baseRunway<3) acts.push({c:'insight-red',t:`🚨 Build Emergency Fund Immediately`,b:`${d.baseRunway.toFixed(1)} months of runway is a financial emergency. Pause all non-essential spending. Target: ${fmt(d.burn*(d.isVisa?10:6))}.`});
+  if(d.isVisa&&d.baseRunway<8) acts.push({c:'insight-red',t:`🌍 Visa-Adjusted Runway Required`,b:`On a ${vs('p_visa').toUpperCase()}, you need 8–10 months (not 3–6). Gap: ${fmt(Math.max(0,d.burn*10-d.liquid))}. No unemployment safety net means the fund is your only backstop.`});
+  if(d.dti>0.43) acts.push({c:'insight-amber',t:`💳 Reduce Debt Load`,b:`DTI of ${(d.dti*100).toFixed(0)}% is dangerous. Mandatory debt payments don't stop when income does. Pay off credit cards first (avalanche method).`});
+  if(v('d_cc_balance')>5000) acts.push({c:'insight-amber',t:`💳 Eliminate Credit Card Debt`,b:`${fmt(v('d_cc_balance'))} at ~22% APR costs ${fmt(v('d_cc_balance')*0.22/12)}/mo in pure interest. Pay this before adding to investments.`});
+  if(d.isVisa) acts.push({c:'insight-purple',t:`🌍 Build a Separate Visa Emergency Reserve`,b:`Keep $15K–$25K separate from your regular emergency fund. This covers attorney fees ($5K–$15K), relocation ($8K–$20K), and job-search costs abroad.`});
+  if(vs('i_unemployment')==='no_visa') acts.push({c:'insight-red',t:`⚠️ No Government Safety Net`,b:`As a visa holder you don't qualify for unemployment. Your emergency fund replaces what the government would provide for citizens. Size it accordingly: 8–12 months minimum.`});
+  if(d.cobraMonthly>1200) acts.push({c:'insight-amber',t:`🏥 Budget for COBRA Shock`,b:`If laid off, health insurance jumps from ${fmt(v('e_health_ins'))}/mo to ~${fmt(d.cobraMonthly)}/mo. That's +${fmt(d.cobraDelta)}/mo while income is zero.`});
+  if(v('p_dependents')>0&&v('e_529')<300) acts.push({c:'insight-amber',t:`🎓 Start College Savings`,b:`With ${v('p_dependents')} dependent(s) and ${fmt(v('e_529'))}/mo saved, you're significantly behind. Even $500/mo compounding over 18 years makes a major difference.`});
+  if(d.savingsRate<0.1&&acts.length<5) acts.push({c:'insight-amber',t:`📉 Increase Savings Rate`,b:`Saving ${(d.savingsRate*100).toFixed(1)}% won't build adequate resilience. Target cuts in dining (${fmt(v('e_dining'))}/mo), travel (${fmt(v('e_travel'))}/mo), and entertainment (${fmt(v('e_entertainment'))}/mo).`});
+  if(acts.length===0) acts.push({c:'insight-green',t:`✅ Strong Foundation`,b:`Your core metrics look solid. Focus on maintaining runway, growing it to 12 months, and ensuring income diversification in case of sector-specific shocks.`});
+  return acts.slice(0,5).map(a=>`<div class="insight ${a.c}"><strong>${a.t}:</strong> ${a.b}</div>`).join('');
+}
+
+// ─────────────────────────────────────────────
+// IN-PAGE REPORT (tab 7)
+// ─────────────────────────────────────────────
+function generateReport() {
+  const d   = calcAll();
+  const out = $('report-output');
+  const date= new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  out.innerHTML = `
+  <div class="warning-banner">
+    <div class="warning-icon">🚨</div>
+    <div class="warning-text">
+      <h3>Fragility Score: ${d.fScore}/100 — ${d.grade}</h3>
+      <p>This report surfaces exactly where your financial safety net has holes. Each section turns invisible risk into visible numbers — so you can act before a crisis forces your hand.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">📋 Executive Summary</div>
+    <div class="g3" style="margin-bottom:16px">
+      <div class="stat-card ${d.baseRunway<3?'red':d.baseRunway<6?'amber':'green'}"><div class="stat-label">Runway</div><div class="stat-val ${d.baseRunway<3?'danger':d.baseRunway<6?'warn':'safe'}">${d.baseRunway.toFixed(1)} mo</div><div class="stat-sub">Liquid only</div></div>
+      <div class="stat-card ${d.dti>0.43?'red':d.dti>0.36?'amber':'green'}"><div class="stat-label">Debt-to-Income</div><div class="stat-val ${dtiClass(d.dti)}">${(d.dti*100).toFixed(0)}%</div><div class="stat-sub">Safe: &lt;36%</div></div>
+      <div class="stat-card ${d.fScore>=55?'red':d.fScore>=35?'amber':'green'}"><div class="stat-label">Fragility Score</div><div class="stat-val ${d.fScore>=55?'danger':d.fScore>=35?'warn':'safe'}">${d.fScore}/100</div><div class="stat-sub">${d.grade}</div></div>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Metric</th><th>Your Number</th><th>Safe Benchmark</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Emergency Runway</td><td class="mono">${d.baseRunway.toFixed(1)} mo</td><td class="mono">${d.isVisa?'8–12 mo':'3–6 mo'}</td><td class="${d.baseRunway>=(d.isVisa?8:6)?'ok':d.baseRunway>=(d.isVisa?3:3)?'warn':'highlight'}">${d.baseRunway>=(d.isVisa?8:6)?'✅ Good':d.baseRunway>=3?'⚠️ Low':'🚨 Critical'}</td></tr>
+        <tr><td>Monthly Burn Rate</td><td class="mono">${fmt(d.burn)}</td><td class="mono">&lt;80% income</td><td class="${d.burn/d.monthlyNet<=0.8?'ok':'highlight'}">${d.burn/d.monthlyNet<=0.8?'✅ OK':'🚨 Over'}</td></tr>
+        <tr><td>Savings Rate</td><td class="mono">${(d.savingsRate*100).toFixed(1)}%</td><td class="mono">20%+</td><td class="${d.savingsRate>=0.2?'ok':d.savingsRate>=0.1?'warn':'highlight'}">${d.savingsRate>=0.2?'✅ Strong':d.savingsRate>=0.1?'⚠️ Low':'🚨 Too Low'}</td></tr>
+        <tr><td>Debt-to-Income</td><td class="mono">${(d.dti*100).toFixed(0)}%</td><td class="mono">&lt;36%</td><td class="${d.dti<=0.36?'ok':d.dti<=0.43?'warn':'highlight'}">${d.dti<=0.36?'✅ Healthy':d.dti<=0.43?'⚠️ High':'🚨 Dangerous'}</td></tr>
+        <tr><td>Visa / Immigration Risk</td><td class="mono">${d.isVisa?vs('p_visa').toUpperCase():'None'}</td><td class="mono">Citizen / PR</td><td class="${d.isVisa?'highlight':'ok'}">${d.isVisa?'⚠️ Employer-Tied':'✅ No Risk'}</td></tr>
+        <tr><td>Liquid Assets</td><td class="mono">${fmt(d.liquid)}</td><td class="mono">${fmt(d.burn*(d.isVisa?10:6))}+</td><td class="${d.liquid>=d.burn*(d.isVisa?10:6)?'ok':d.liquid>=d.burn*3?'warn':'highlight'}">${d.liquid>=d.burn*(d.isVisa?10:6)?'✅ Adequate':d.liquid>=d.burn*3?'⚠️ Low':'🚨 Critical'}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">⚡ Shock-by-Shock Analysis</div>
+    ${d.shocks.map(s=>{
+      const cls={CRITICAL:'insight-red',DANGER:'insight-amber',CAUTION:'insight-blue',OK:'insight-green'}[s.sev];
+      return `<div class="shock-card" style="margin-bottom:14px">
+        <div class="shock-header"><div class="shock-title" style="font-size:15px">${s.icon} ${s.title}</div><span class="shock-badge ${{CRITICAL:'badge-critical',DANGER:'badge-danger',CAUTION:'badge-caution',OK:'badge-ok'}[s.sev]}">${s.sev}</span></div>
+        <div class="shock-body" style="margin-bottom:10px">${s.desc}</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">
+          ${s.details.map(dt=>`<div class="box" style="padding:10px 12px"><div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">${dt.l}</div><div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:#fff">${dt.v}</div></div>`).join('')}
+        </div>
+        ${s.runwayAfter!==undefined?`<div class="insight ${cls}">After this shock, runway drops to <strong>${Math.max(0,s.runwayAfter).toFixed(1)} months</strong>${Math.max(0,s.runwayAfter)<3?' — crisis level.':Math.max(0,s.runwayAfter)<6?' — serious, act immediately.':' — survivable with discipline.'}</div>`:''}
+      </div>`;
+    }).join('')}
+  </div>
+
+  ${d.isVisa?`<div class="section">
+    <div class="section-title">🌍 Visa Fragility Deep-Dive</div>
+    <div class="warning-banner" style="margin-bottom:16px">
+      <div class="warning-icon">⏱️</div>
+      <div class="warning-text">
+        <h3>The ${vs('p_visa').toUpperCase()} Clock Problem</h3>
+        <p>A layoff simultaneously triggers a financial crisis AND an immigration crisis. You have <strong>${Math.round(d.graceMo*30)} days</strong> to find new sponsorship — or leave.</p>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="box">
+        <div class="box-title">Layoff Timeline</div>
+        <ul class="checklist">
+          <li><div class="check-icon check-warn">⚡</div><div><strong>Day 1:</strong> Layoff. Grace period clock starts. Income stops.</div></li>
+          <li><div class="check-icon check-warn">📋</div><div><strong>Week 1–2:</strong> Retain immigration attorney ($5K–$15K).</div></li>
+          <li><div class="check-icon check-warn">🔍</div><div><strong>Months 1–${Math.round(d.graceMo)}:</strong> Intensive sponsored job search. Pool is 20–30% smaller.</div></li>
+          <li><div class="check-icon check-bad">⏰</div><div><strong>Day ${Math.round(d.graceMo*30)}:</strong> Grace ends. Must have new sponsor, COS, or leave US.</div></li>
+          <li><div class="check-icon check-bad">✈️</div><div><strong>If no sponsor:</strong> Pack, arrange housing abroad, continue search remotely. Cost: $8K–$20K.</div></li>
+        </ul>
+      </div>
+      <div class="box">
+        <div class="box-title">What You Need (Visa-Specific)</div>
+        <div style="margin-bottom:12px"><div style="font-size:11px;color:var(--text2)">Visa-adjusted emergency fund</div><div style="font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--crimson3)">${fmt(d.burn*10)}</div><div style="font-size:11px;color:var(--text3)">10 months (not 3–6 like citizens)</div></div>
+        <div class="divider"></div>
+        <div style="margin-bottom:12px"><div style="font-size:11px;color:var(--text2)">Separate visa emergency reserve</div><div style="font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--amber3)">$15K–$25K</div><div style="font-size:11px;color:var(--text3)">Legal fees + relocation + buffer</div></div>
+        <div class="divider"></div>
+        <div><div style="font-size:11px;color:var(--text2)">You currently have (liquid)</div><div style="font-family:'JetBrains Mono',monospace;font-size:20px;color:${d.liquid>=d.burn*10+20000?'var(--green3)':'var(--crimson3)'}">${fmt(d.liquid)}</div><div style="font-size:11px;color:${d.liquid>=d.burn*10+20000?'var(--green2)':'var(--crimson2)'}">${d.liquid>=d.burn*10+20000?'✅ Visa-ready':'🚨 '+fmt(Math.max(0,d.burn*10+20000-d.liquid))+' short of visa-ready threshold'}</div></div>
+      </div>
+    </div>
+  </div>`:''}
+
+  <div class="section">
+    <div class="section-title">🎯 Personalized Action Plan</div>
+    ${buildActions(d)}
+    <div class="insight insight-blue" style="margin-top:12px">💡 <strong>Priority Order:</strong> Emergency fund first, high-interest debt second, then investments. A liquid emergency fund is the most important investment you can make — it's insurance against everything else.</div>
+  </div>
+
+  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-top:20px;font-size:11px;color:var(--text3);line-height:1.7">
+    <strong style="color:var(--text2)">Disclosure:</strong> This report is generated for informational and educational purposes only. It does not constitute financial, legal, or immigration advice. All figures are based on user-provided inputs and simplified models. Past performance is not indicative of future results. Consult a licensed financial advisor, CPA, and qualified immigration attorney before making major decisions. 🔒 All data is processed entirely in your browser — nothing is transmitted to any server.
+  </div>`;
+
+  $('report-btn-row').style.display='flex';
+  showToast('📄 Full report generated');
+}
+
+// ─────────────────────────────────────────────
+// PRINT REPORT
+// ─────────────────────────────────────────────
+function generatePrintReport() {
+  const d    = calcAll();
+  const name = vs('p_name') || 'Client';
+  const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const fragC= d.fScore>=55?'#c0392b':d.fScore>=35?'#d4880a':'#1a6b3c';
+
+  function sevBadge(sev) {
+    const colors={CRITICAL:'#e74c3c',DANGER:'#f0a832',CAUTION:'#5b9ee8',OK:'#4dcc7e'};
+    return `<span style="background:${colors[sev]}22;color:${colors[sev]};border:1px solid ${colors[sev]}55;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700;font-family:monospace">${sev}</span>`;
+  }
+
+  const html=`<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><title>One Shock Away · ${name} · ${date}</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;font-size:13px;background:#fff;color:#1a1612;line-height:1.5}
+.page{max-width:860px;margin:0 auto;padding:40px 48px;page-break-after:always}
+.rpt-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #ddd8ce}
+.rpt-logo{font-family:'Libre Baskerville',serif;font-size:22px;color:#0f1f35}
+.rpt-logo em{color:#b8922a;font-style:italic}
+.rpt-sub{font-size:10px;color:#8a7e6e;margin-top:2px;letter-spacing:1.5px;font-family:'JetBrains Mono',monospace}
+.rpt-meta{font-size:11px;color:#4a4236;text-align:right;line-height:1.8}
+.rpt-sect{background:#faf8f4;border:1px solid #ddd8ce;border-radius:8px;padding:18px 20px;margin-bottom:16px}
+.rpt-sect-title{font-family:'Libre Baskerville',serif;font-size:14px;color:#0f1f35;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.rpt-sect-title span{font-family:'JetBrains Mono',monospace;font-size:10px;color:#8a7e6e}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:#fff;border:1px solid #ddd8ce;border-radius:6px;padding:12px 14px}
+.stat-l{font-size:9px;font-weight:700;color:#8a7e6e;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:4px}
+.stat-v{font-family:'Libre Baskerville',serif;font-size:22px}
+.stat-v.danger{color:#c0392b}.stat-v.warn{color:#d4880a}.stat-v.safe{color:#1a6b3c}
+.stat-s{font-size:10px;color:#8a7e6e}
+.ins{border-radius:6px;padding:10px 14px;font-size:12px;margin-bottom:8px;border-left:3px solid}
+.ir{background:#fdf2f0;border-color:#c0392b}.ia{background:#fdf8f0;border-color:#d4880a}
+.ig{background:#f0fdf4;border-color:#1a6b3c}.ib{background:#f0f4fd;border-color:#2d6abf}
+table{width:100%;border-collapse:collapse}
+th{font-size:9px;font-weight:700;color:#8a7e6e;letter-spacing:0.6px;text-transform:uppercase;padding:7px 10px;text-align:left;border-bottom:1px solid #ddd8ce}
+td{padding:8px 10px;font-size:12px;color:#4a4236;border-bottom:1px solid #f5f2ec}
+.mono{font-family:'JetBrains Mono',monospace}
+.red{color:#c0392b;font-weight:600}.amb{color:#d4880a;font-weight:600}.grn{color:#1a6b3c;font-weight:600}
+.shock-row{background:#fff;border:1px solid #ddd8ce;border-radius:6px;padding:12px 14px;margin-bottom:10px}
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.prog-l{font-size:11px;color:#4a4236;min-width:200px}
+.prog-b{flex:1;height:9px;background:#e8e0d0;border-radius:5px;overflow:hidden}
+.prog-f{height:100%;border-radius:5px}
+.prog-v{font-family:'JetBrains Mono',monospace;font-size:11px;min-width:60px;text-align:right}
+.score-big{font-family:'Libre Baskerville',serif;font-size:52px;font-weight:700;color:${fragC};line-height:1}
+.rpt-footer{display:flex;justify-content:space-between;font-size:10px;color:#8a7e6e;margin-top:20px;padding-top:12px;border-top:1px solid #e8e0d0}
+.privacy{font-size:9px;color:#8a7e6e;background:#f5f2ec;border:1px solid #ddd8ce;border-radius:4px;padding:4px 8px;display:inline-flex;align-items:center;gap:4px}
+@media print{.page{padding:24px 32px}}
+</style></head><body>
+
+<!-- PAGE 1 -->
+<div class="page">
+<div class="rpt-header">
+  <div>
+    <div class="rpt-logo">Start Your <em>Finances Right</em></div>
+    <div class="rpt-sub">ONE SHOCK AWAY · FINANCIAL FRAGILITY REPORT</div>
+  </div>
+  <div class="rpt-meta">
+    <strong>${name}</strong><br>
+    ${vs('p_city')||''}<br>
+    ${date}<br>
+    <span class="privacy">🔒 LOCAL · PRIVATE · No data transmitted</span>
+  </div>
+</div>
+
+<div class="rpt-sect" style="border-color:${fragC}">
+  <div class="rpt-sect-title">Overall Financial Fragility Score <span>${d.grade}</span></div>
+  <div style="display:flex;gap:28px;align-items:center;margin-bottom:16px">
+    <div><div class="score-big">${d.fScore}</div><div style="font-size:11px;color:#8a7e6e;margin-top:4px">out of 100 · 0 = Resilient · 100 = Crisis</div></div>
+    <div style="flex:1">
+      <div class="prog-row"><div class="prog-l">Emergency Runway (${d.baseRunway.toFixed(1)} mo)</div><div class="prog-b"><div class="prog-f" style="width:${Math.min(100,d.baseRunway/12*100)}%;background:${d.baseRunway<3?'#c0392b':d.baseRunway<6?'#d4880a':'#1a6b3c'}"></div></div><div class="prog-v">${d.isVisa?'Target: 10 mo':'Target: 6 mo'}</div></div>
+      <div class="prog-row"><div class="prog-l">Debt-to-Income (${(d.dti*100).toFixed(0)}%)</div><div class="prog-b"><div class="prog-f" style="width:${Math.min(100,d.dti*200)}%;background:${d.dti>0.43?'#c0392b':d.dti>0.36?'#d4880a':'#1a6b3c'}"></div></div><div class="prog-v">Target: &lt;36%</div></div>
+      <div class="prog-row"><div class="prog-l">Savings Rate (${(d.savingsRate*100).toFixed(1)}%)</div><div class="prog-b"><div class="prog-f" style="width:${Math.min(100,d.savingsRate*300)}%;background:${d.savingsRate<0.05?'#c0392b':d.savingsRate<0.15?'#d4880a':'#1a6b3c'}"></div></div><div class="prog-v">Target: 20%</div></div>
+      <div class="prog-row"><div class="prog-l">Visa Risk</div><div class="prog-b"><div class="prog-f" style="width:${d.isVisa?75:5}%;background:${d.isVisa?'#c0392b':'#1a6b3c'}"></div></div><div class="prog-v">${d.isVisa?'HIGH':'NONE'}</div></div>
+    </div>
+  </div>
+  <div class="g4">
+    <div class="stat"><div class="stat-l">Liquid Savings</div><div class="stat-v ${d.liquid<d.burn*3?'danger':d.liquid<d.burn*6?'warn':'safe'}">${fmtK(d.liquid)}</div><div class="stat-s">${d.baseRunway.toFixed(1)} mo runway</div></div>
+    <div class="stat"><div class="stat-l">Monthly Burn</div><div class="stat-v">${fmtK(d.burn)}</div><div class="stat-s">${(d.burn/d.monthlyNet*100).toFixed(0)}% of income</div></div>
+    <div class="stat"><div class="stat-l">Total Debt</div><div class="stat-v ${d.dti>0.43?'danger':d.dti>0.36?'warn':'safe'}">${fmtK(d.totalDebt)}</div><div class="stat-s">DTI: ${(d.dti*100).toFixed(0)}%</div></div>
+    <div class="stat"><div class="stat-l">Net Worth</div><div class="stat-v ${d.totalAssets-d.totalDebt<0?'danger':'safe'}">${fmtK(d.totalAssets-d.totalDebt)}</div><div class="stat-s">Assets vs. Debt</div></div>
+  </div>
+</div>
+
+<div class="rpt-sect">
+  <div class="rpt-sect-title">Income &amp; Expense Summary</div>
+  <div class="g2">
+    <table>
+      <thead><tr><th>Income Source</th><th>Monthly</th></tr></thead>
+      <tbody>
+        <tr><td>Primary Take-Home</td><td class="mono">${fmt(v('i_income'))}</td></tr>
+        ${v('i_spouse_income')>0?`<tr><td>Spouse / Partner</td><td class="mono">${fmt(v('i_spouse_income'))}</td></tr>`:''}
+        ${v('i_other_income')>0?`<tr><td>Other</td><td class="mono">${fmt(v('i_other_income'))}</td></tr>`:''}
+        <tr style="font-weight:700"><td>Total Monthly</td><td class="mono">${fmt(d.monthlyNet)}</td></tr>
+        <tr><td>Monthly Surplus / (Deficit)</td><td class="mono ${d.surplus>=0?'grn':'red'}">${d.surplus>=0?'+':''}${fmt(d.surplus)}</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Expense Category</th><th>Monthly</th><th>% of Income</th></tr></thead>
+      <tbody>
+        <tr><td>Housing</td><td class="mono">${fmt(d.housing)}</td><td class="mono ${d.housing/d.monthlyNet>0.35?'red':''}">${d.monthlyNet>0?(d.housing/d.monthlyNet*100).toFixed(0):'—'}%</td></tr>
+        <tr><td>Family &amp; Children</td><td class="mono">${fmt(d.family)}</td><td class="mono">${d.monthlyNet>0?(d.family/d.monthlyNet*100).toFixed(0):'—'}%</td></tr>
+        <tr><td>Food &amp; Dining</td><td class="mono">${fmt(d.food)}</td><td class="mono">${d.monthlyNet>0?(d.food/d.monthlyNet*100).toFixed(0):'—'}%</td></tr>
+        <tr><td>Transportation</td><td class="mono">${fmt(d.transport)}</td><td class="mono">${d.monthlyNet>0?(d.transport/d.monthlyNet*100).toFixed(0):'—'}%</td></tr>
+        <tr><td>Health &amp; Insurance</td><td class="mono">${fmt(d.health)}</td><td class="mono">${d.monthlyNet>0?(d.health/d.monthlyNet*100).toFixed(0):'—'}%</td></tr>
+        <tr><td>Lifestyle &amp; Subscriptions</td><td class="mono">${fmt(d.lifestyle)}</td><td class="mono">${d.monthlyNet>0?(d.lifestyle/d.monthlyNet*100).toFixed(0):'—'}%</td></tr>
+        <tr><td>Travel</td><td class="mono">${fmt(d.travel)}</td><td class="mono">${d.monthlyNet>0?(d.travel/d.monthlyNet*100).toFixed(0):'—'}%</td></tr>
+        <tr style="font-weight:700"><td>Total Expenses</td><td class="mono">${fmt(d.burn)}</td><td class="mono">${d.monthlyNet>0?(d.burn/d.monthlyNet*100).toFixed(0):'—'}%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="rpt-footer"><span>Start Your Finances Right · One Shock Away Report</span><span>Page 1 of 3</span><span>${date}</span></div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+<div class="rpt-header">
+  <div><div class="rpt-logo">Start Your <em>Finances Right</em></div><div class="rpt-sub">ONE SHOCK AWAY · FINANCIAL FRAGILITY REPORT</div></div>
+  <div class="rpt-meta"><strong>${name}</strong><br>${date}</div>
+</div>
+<div class="rpt-sect">
+  <div class="rpt-sect-title">Survival Runway Analysis <span>4 scenarios</span></div>
+  ${[[`Liquid savings only`,d.baseRunway],[`With severance (${fmt(d.sevCash)})`,d.crisisRunway],[`With severance + ${d.ueEligible?'unemployment':'(unemployment ineligible)'}`,d.fullRunway],[`Lean mode (reduce discretionary)`,d.leanRunway]].map(([label,mo])=>{
+    const c=mo<3?'#c0392b':mo<6?'#d4880a':mo<12?'#2d6abf':'#1a6b3c';
+    return `<div class="prog-row" style="margin-bottom:8px">
+      <div class="prog-l" style="min-width:240px">${label}</div>
+      <div class="prog-b" style="height:12px"><div class="prog-f" style="width:${Math.min(100,mo/24*100)}%;background:${c}"></div></div>
+      <div class="prog-v" style="color:${c};font-size:13px;font-weight:700">${mo.toFixed(1)} mo</div>
+    </div>`;
+  }).join('')}
+</div>
+<div class="rpt-sect">
+  <div class="rpt-sect-title">Shock Scenario Analysis <span>What breaks first?</span></div>
+  ${d.shocks.map(s=>`<div class="shock-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div style="font-weight:600;font-size:13px;color:#0f1f35">${s.icon} ${s.title}</div>
+      ${sevBadge(s.sev)}
+    </div>
+    <div style="font-size:12px;color:#4a4236;margin-bottom:8px">${s.desc.replace(/<strong>/g,'').replace(/<\/strong>/g,'').replace(/<[^>]+>/g,'')}</div>
+    <div class="g4">
+      ${s.details.map(dt=>`<div style="background:#faf8f4;border:1px solid #e8e0d0;border-radius:4px;padding:8px 10px"><div style="font-size:9px;color:#8a7e6e;text-transform:uppercase;letter-spacing:0.5px">${dt.l}</div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;margin-top:2px">${dt.v}</div></div>`).join('')}
+    </div>
+    ${s.runwayAfter!==undefined?`<div style="margin-top:8px;font-size:11px;color:#8a7e6e">Runway after shock: <strong style="color:${Math.max(0,s.runwayAfter)<3?'#c0392b':Math.max(0,s.runwayAfter)<6?'#d4880a':'#1a6b3c'}">${Math.max(0,s.runwayAfter).toFixed(1)} months</strong></div>`:''}
+  </div>`).join('')}
+</div>
+<div class="rpt-footer"><span>Start Your Finances Right · One Shock Away Report</span><span>Page 2 of 3</span><span>${date}</span></div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page">
+<div class="rpt-header">
+  <div><div class="rpt-logo">Start Your <em>Finances Right</em></div><div class="rpt-sub">ONE SHOCK AWAY · FINANCIAL FRAGILITY REPORT</div></div>
+  <div class="rpt-meta"><strong>${name}</strong><br>${date}</div>
+</div>
+${d.isVisa?`<div class="rpt-sect" style="border-color:#c0392b">
+  <div class="rpt-sect-title">Visa &amp; Immigration Risk <span>${vs('p_visa').toUpperCase()} — ${Math.round(d.graceMo*30)}-Day Grace Period</span></div>
+  <div class="g2">
+    <div>
+      <div class="ins ir">🌍 <strong>Dual Crisis Risk.</strong> On a ${vs('p_visa').toUpperCase()}, a layoff triggers both a financial and immigration crisis simultaneously. You have <strong>${Math.round(d.graceMo*30)} days</strong> to find new sponsorship.</div>
+      <div class="ins ia" style="margin-top:8px">⚠️ <strong>No Unemployment Benefits.</strong> Unlike citizens, visa holders do not qualify. Your emergency fund is the only backstop — size it to 8–12 months minimum.</div>
+    </div>
+    <table>
+      <thead><tr><th>Item</th><th>Status</th><th>Target</th></tr></thead>
+      <tbody>
+        <tr><td>Current Liquid</td><td class="mono">${fmt(d.liquid)}</td><td class="mono">${fmt(d.burn*10)}</td></tr>
+        <tr><td>Gap to Visa-Safe</td><td class="mono ${d.liquid<d.burn*10?'red':'grn'}">${d.liquid>=d.burn*10?'✅ On Track':'🚨 '+fmt(d.burn*10-d.liquid)+' short'}</td><td></td></tr>
+        <tr><td>Visa Reserve ($15K–$25K)</td><td class="mono ${d.liquid<25000?'red':'grn'}">${d.liquid>=25000?'✅ Covered':'🚨 Missing'}</td><td></td></tr>
+        <tr><td>Unemployment Eligible?</td><td class="mono red">No — Visa</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>`:''}
+<div class="rpt-sect">
+  <div class="rpt-sect-title">Priority Action Plan <span>Execute in order of urgency</span></div>
+  ${[
+    d.baseRunway<3 ? {c:'ir',t:'🚨 Build Emergency Fund Immediately',b:`Only ${d.baseRunway.toFixed(1)} months of runway. Pause all non-essential spending. Target: ${fmt(d.burn*(d.isVisa?10:6))}.`} : null,
+    d.isVisa&&d.baseRunway<8 ? {c:'ir',t:`🌍 Visa-Adjusted Fund Required`,b:`On ${vs('p_visa').toUpperCase()}, need 8–10 months (not 3–6). Current gap: ${fmt(Math.max(0,d.burn*10-d.liquid))}.`} : null,
+    d.dti>0.43 ? {c:'ia',t:'💳 Reduce Debt Load',b:`DTI ${(d.dti*100).toFixed(0)}% is dangerous. Mandatory payments don't stop when income does. Pay credit cards first.`} : null,
+    vs('i_unemployment')==='no_visa' ? {c:'ir',t:'⚠️ No Safety Net — Build Bigger Cushion',b:'No unemployment benefits as a visa holder. Your fund is your only backstop.'} : null,
+    d.savingsRate<0.1 ? {c:'ia',t:'📉 Increase Savings Rate',b:`Saving ${(d.savingsRate*100).toFixed(1)}% is insufficient. Identify 3–5 discretionary cuts and redirect to savings.`} : null,
+    v('p_dependents')>0&&v('e_529')<300 ? {c:'ia',t:'🎓 Start College Savings',b:`${v('p_dependents')} dependent(s), only ${fmt(v('e_529'))}/mo saved. Even $500/mo started now makes a major difference.`} : null,
+    {c:'ig',t:'📊 Run This Analysis Annually',b:'Re-run after any major life event: new job, new child, mortgage change, or market downturn.'},
+    {c:'ib',t:'💼 Diversify Income Sources',b:'A single employer-tied income is your biggest vulnerability. Even $1K/mo from a side stream dramatically increases resilience.'},
+  ].filter(Boolean).slice(0,6).map(a=>`<div class="ins ${a.c}"><strong>${a.t}:</strong> ${a.b}</div>`).join('')}
+</div>
+<div class="rpt-sect">
+  <div class="rpt-sect-title">Net Worth Snapshot</div>
+  <div class="g2">
+    <table>
+      <thead><tr><th>Asset</th><th>Value</th></tr></thead>
+      <tbody>
+        ${d.liquid>0?`<tr><td>Liquid (Cash + Brokerage)</td><td class="mono grn">${fmt(d.liquid)}</td></tr>`:''}
+        ${d.retAcct>0?`<tr><td>Retirement Accounts</td><td class="mono">${fmt(d.retAcct)}</td></tr>`:''}
+        ${d.homeEquity>0?`<tr><td>Home Equity</td><td class="mono">${fmt(d.homeEquity)}</td></tr>`:''}
+        <tr style="font-weight:700"><td>Total Assets</td><td class="mono">${fmt(d.totalAssets)}</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Liability</th><th>Balance</th><th>Monthly</th></tr></thead>
+      <tbody>
+        ${v('d_mortgage_balance')>0?`<tr><td>Mortgage</td><td class="mono">${fmt(v('d_mortgage_balance'))}</td><td class="mono">${fmt(v('d_mortgage_payment'))}</td></tr>`:''}
+        ${v('d_student_balance')>0?`<tr><td>Student Loans</td><td class="mono">${fmt(v('d_student_balance'))}</td><td class="mono">${fmt(v('d_student_payment'))}</td></tr>`:''}
+        ${v('d_cc_balance')>0?`<tr><td>Credit Cards</td><td class="mono red">${fmt(v('d_cc_balance'))}</td><td class="mono red">${fmt(v('d_cc_payment'))}</td></tr>`:''}
+        ${v('d_car_balance')>0?`<tr><td>Car Loan(s)</td><td class="mono">${fmt(v('d_car_balance'))}</td><td class="mono">${fmt(v('e_car_payment'))}</td></tr>`:''}
+        <tr style="font-weight:700"><td>Net Worth</td><td class="mono ${d.totalAssets-d.totalDebt>=0?'grn':'red'}" colspan="2">${fmt(d.totalAssets-d.totalDebt)}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div style="background:#faf8f4;border:1px solid #ddd8ce;border-radius:6px;padding:10px 14px;margin-top:16px;font-size:10px;color:#8a7e6e;line-height:1.7">
+  <strong>Disclosure:</strong> This report is for informational and educational purposes only. Not financial, legal, or immigration advice. Figures are based on user-provided inputs and simplified models. Past performance is not indicative of future results. Consult a licensed financial advisor, CPA, and qualified immigration attorney before making major decisions. 🔒 All data is processed entirely in your browser — nothing is transmitted to any server.
+</div>
+<div class="rpt-footer"><span>Start Your Finances Right · One Shock Away Report</span><span>Page 3 of 3</span><span>${date}</span></div>
+</div>
+
+<script>window.onload=()=>window.print();<\/script>
+</body></html>`;
+
+  const win = window.open('','_blank');
+  if(!win) { alert('Please allow popups to generate the PDF report.'); return; }
+  win.document.write(html);
+  win.document.close();
+  showToast('📄 Report opened — Cmd+P / Ctrl+P to save as PDF');
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+updateVisaFields();
+</script>
+</body>
+</html>

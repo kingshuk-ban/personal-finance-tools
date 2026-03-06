@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Your Finances Right · Medium-Term Wealth Builder</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2ec;
+  --bg2: #ede9e0;
+  --surface: #ffffff;
+  --surface2: #faf8f4;
+  --border: #ddd8ce;
+  --border2: #c8c1b4;
+  --navy: #0f1f35;
+  --navy2: #1a2f4a;
+  --gold: #b8922a;
+  --gold2: #d4a843;
+  --gold3: #f0c96a;
+  --green: #1a6b3c;
+  --green2: #27a05a;
+  --green3: #4dcc7e;
+  --red: #8b1a1a;
+  --red2: #cc3333;
+  --blue: #1a3a6b;
+  --blue2: #2d6abf;
+  --blue3: #5b9ee8;
+  --purple: #4a1a6b;
+  --purple2: #8b5cf6;
+  --orange: #8b3a1a;
+  --orange2: #e07230;
+  --teal: #0d5e5e;
+  --teal2: #0d9488;
+  --text: #1a1612;
+  --text2: #4a4236;
+  --text3: #8a7e6e;
+  --text4: #b8ae9e;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── HEADER ─────────────────────────────── */
+.app-header {
+  background: var(--navy);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+.logo { display: flex; align-items: center; gap: 12px; }
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold2), var(--gold3));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.logo-text {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 20px; color: #fff; letter-spacing: -0.3px;
+}
+.logo-text span { color: var(--gold3); font-style: italic; }
+.header-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--gold3);
+  background: rgba(212,168,67,0.15);
+  border: 1px solid rgba(212,168,67,0.3);
+  padding: 4px 12px; border-radius: 20px; letter-spacing: 1px;
+}
+.header-actions { display: flex; align-items: center; gap: 8px; }
+.btn-header {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 7px; border: none;
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500; transition: all 0.15s;
+}
+.btn-save { background: rgba(212,168,67,0.15); color: var(--gold3); border: 1px solid rgba(212,168,67,0.3); }
+.btn-save:hover { background: rgba(212,168,67,0.25); }
+.btn-load { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.15); }
+.btn-load:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.btn-pdf { background: linear-gradient(135deg,#1a3a6b,#2d6abf); color: #fff; border: 1px solid #2d6abf; }
+.btn-pdf:hover { filter: brightness(1.15); }
+
+/* ── TAB NAV ─────────────────────────────── */
+.tab-nav {
+  background: var(--navy2);
+  display: flex; overflow-x: auto; scrollbar-width: none;
+  padding: 0 40px;
+  border-bottom: 2px solid rgba(255,255,255,0.06);
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 14px 20px;
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255,255,255,0.45);
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  white-space: nowrap; transition: all 0.2s;
+  display: flex; align-items: center; gap: 7px;
+  letter-spacing: 0.3px; margin-bottom: -2px;
+}
+.tab-btn:hover { color: rgba(255,255,255,0.75); }
+.tab-btn.active { color: var(--gold3); border-bottom-color: var(--gold2); }
+.tab-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  background: rgba(255,255,255,0.08); border-radius: 3px; padding: 1px 5px;
+}
+.tab-btn.active .tab-num { background: rgba(212,168,67,0.2); color: var(--gold3); }
+
+/* ── CONTENT ─────────────────────────────── */
+.content { max-width: 1300px; margin: 0 auto; padding: 32px 32px 80px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── PAGE TITLE ─────────────────────────── */
+.page-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 28px; color: var(--navy);
+  margin-bottom: 4px; letter-spacing: -0.5px;
+}
+.page-title em { color: var(--gold); font-style: italic; }
+.page-sub { font-size: 13px; color: var(--text3); margin-bottom: 28px; font-weight: 300; }
+
+/* ── GRID ────────────────────────────────── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+.g5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; }
+.mb20 { margin-bottom: 20px; }
+.mb28 { margin-bottom: 28px; }
+.mt20 { margin-top: 20px; }
+
+/* ── CARD ────────────────────────────────── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.card-sm { padding: 16px 18px; }
+.card-title {
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.card-title .dot { width: 6px; height: 6px; border-radius: 50%; }
+.section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.section-label { font-family: 'Libre Baskerville', serif; font-size: 17px; color: var(--navy); }
+.section-rule { flex: 1; height: 1px; background: var(--border); }
+
+/* ── FORM ─────────────────────────────── */
+.form-group { margin-bottom: 16px; }
+.form-group:last-child { margin-bottom: 0; }
+label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
+.label-hint { font-weight: 300; color: var(--text3); font-size: 11px; margin-left: 4px; }
+input[type="text"], input[type="number"], select, textarea {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 12px; color: var(--text);
+  font-family: 'Outfit', sans-serif; font-size: 13px; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+input:focus, select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,146,42,0.12); }
+.input-wrap { position: relative; }
+.input-pre, .input-suf {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  font-size: 12px; color: var(--text3); pointer-events: none;
+  font-family: 'JetBrains Mono', monospace;
+}
+.input-pre { left: 10px; }
+.input-suf { right: 10px; }
+.input-wrap.has-pre input { padding-left: 22px; }
+.input-wrap.has-suf input { padding-right: 28px; }
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a7e6e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 32px; cursor: pointer;
+}
+.g2-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.g3-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+/* ── STAT CARDS ──────────────────────────── */
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 20px;
+  position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.stat-card.gold::before { background: linear-gradient(90deg, var(--gold), var(--gold3)); }
+.stat-card.green::before { background: var(--green2); }
+.stat-card.blue::before { background: var(--blue2); }
+.stat-card.purple::before { background: var(--purple2); }
+.stat-card.red::before { background: var(--red2); }
+.stat-card.teal::before { background: var(--teal2); }
+.stat-card.orange::before { background: var(--orange2); }
+.stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.stat-value { font-family: 'Libre Baskerville', serif; font-size: 28px; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+.stat-sub { font-size: 11px; color: var(--text3); font-weight: 300; }
+
+/* ── BUTTONS ─────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 20px; border-radius: 8px; border: none;
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 500; transition: all 0.15s;
+}
+.btn-primary { background: var(--navy); color: #fff; }
+.btn-primary:hover { background: var(--navy2); }
+.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #fff; box-shadow: 0 2px 8px rgba(184,146,42,0.3); }
+.btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(184,146,42,0.4); }
+.btn-outline { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
+.btn-outline:hover { border-color: var(--navy); color: var(--navy); }
+.btn-danger { background: transparent; border: 1px solid #fca5a5; color: var(--red2); padding: 5px 10px; font-size: 12px; }
+.btn-danger:hover { background: #fee2e2; }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+.btn-teal { background: var(--teal); color: #fff; }
+.btn-teal:hover { background: var(--teal2); }
+
+/* ── TAGS ────────────────────────────────── */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+}
+.tag-roth { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+.tag-taxable { background: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
+.tag-hsa { background: #dbeafe; color: #1e3a8a; border: 1px solid #93c5fd; }
+.tag-529 { background: #ede9fe; color: #4c1d95; border: 1px solid #c4b5fd; }
+.tag-realestate { background: #f0fdf4; color: #14532d; border: 1px solid #86efac; }
+.tag-other { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+.tag-cash { background: #fef9c3; color: #713f12; border: 1px solid #fef08a; }
+
+/* ── TABLE ───────────────────────────────── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text3); padding: 0 14px 12px; text-align: left;
+  border-bottom: 2px solid var(--border);
+}
+.data-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg2); }
+.data-table .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.data-table .total-row td { font-weight: 600; background: var(--bg2); color: var(--navy); border-top: 2px solid var(--border2); }
+
+/* ── CHART CARD ──────────────────────────── */
+.chart-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px;
+}
+.chart-title {
+  font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 20px;
+}
+
+/* ── INSIGHT BOX ─────────────────────────── */
+.insight {
+  border-radius: 10px; padding: 14px 18px;
+  font-size: 13px; line-height: 1.7; margin-bottom: 12px; border-left: 3px solid;
+}
+.insight-gold { background: #fffbeb; border-color: var(--gold2); color: #78350f; }
+.insight-green { background: #f0fdf4; border-color: var(--green2); color: #14532d; }
+.insight-blue { background: #eff6ff; border-color: var(--blue2); color: #1e3a8a; }
+.insight-red { background: #fef2f2; border-color: var(--red2); color: #7f1d1d; }
+.insight-purple { background: #faf5ff; border-color: var(--purple2); color: #4c1d95; }
+.insight-teal { background: #f0fdfa; border-color: var(--teal2); color: #0d5e5e; }
+.insight strong { font-weight: 600; }
+.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+/* ── PROGRESS BARS ───────────────────────── */
+.progress-bar-wrap { margin-bottom: 14px; }
+.progress-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 12px; }
+.progress-bar-label { color: var(--text2); font-weight: 500; }
+.progress-bar-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); }
+.progress-bar-bg { height: 10px; background: var(--bg2); border-radius: 5px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 5px; transition: width 0.8s ease; }
+
+/* ── GOAL CARDS ──────────────────────────── */
+.goal-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px 20px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative; overflow: hidden;
+}
+.goal-card::before {
+  content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+}
+.goal-card.funded::before { background: var(--green2); }
+.goal-card.partial::before { background: var(--gold2); }
+.goal-card.unfunded::before { background: var(--red2); }
+.goal-card:hover { border-color: var(--border2); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.goal-card-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 15px; color: var(--navy); margin-bottom: 4px;
+}
+.goal-badge {
+  display: inline-flex; align-items: center; padding: 2px 8px;
+  border-radius: 4px; font-size: 9px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.goal-badge.funded { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+.goal-badge.partial { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.goal-badge.unfunded { background: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
+
+/* ── STRESSOR BANNER ─────────────────────── */
+.stressor-banner {
+  background: linear-gradient(135deg, #7f1d1d, #991b1b);
+  border-radius: 12px; padding: 20px 24px; color: #fff; margin-bottom: 20px;
+}
+.stressor-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 18px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+}
+.stressor-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.stressor-item {
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 500;
+}
+
+/* ── ALLOCATION ARCHITECTURE ────────────── */
+.alloc-tier {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; margin-bottom: 14px;
+}
+.alloc-tier-header {
+  padding: 14px 20px; display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.tier-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Libre Baskerville', serif; font-size: 14px;
+  font-weight: 700; flex-shrink: 0;
+}
+.tier-1 .tier-num { background: #fef3c7; color: #92400e; border: 2px solid #fde68a; }
+.tier-2 .tier-num { background: #dbeafe; color: #1e3a8a; border: 2px solid #93c5fd; }
+.tier-3 .tier-num { background: #d1fae5; color: #065f46; border: 2px solid #a7f3d0; }
+.tier-4 .tier-num { background: #ede9fe; color: #4c1d95; border: 2px solid #c4b5fd; }
+.alloc-tier-body { padding: 14px 20px; }
+
+/* ── SCORE RING ──────────────────────────── */
+.score-ring-wrap { display: flex; flex-direction: column; align-items: center; padding: 28px; }
+.score-ring { position: relative; width: 180px; height: 180px; }
+.score-ring svg { transform: rotate(-90deg); }
+.score-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-number { font-family: 'Libre Baskerville', serif; font-size: 46px; font-weight: 700; line-height: 1; }
+.score-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+.score-grade { font-family: 'Libre Baskerville', serif; font-size: 20px; font-weight: 700; margin-top: 14px; letter-spacing: 1px; }
+
+/* ── PRIORITY HEAT ───────────────────────── */
+.priority-dot {
+  display: inline-block; width: 10px; height: 10px;
+  border-radius: 50%; margin-right: 4px;
+}
+.p1 { background: #ef4444; }
+.p2 { background: #f97316; }
+.p3 { background: #eab308; }
+.p4 { background: #22c55e; }
+.p5 { background: #3b82f6; }
+
+/* ── ADD FORMS ───────────────────────────── */
+.add-form {
+  background: var(--bg2); border: 2px dashed var(--border2);
+  border-radius: 10px; padding: 20px; margin-top: 16px;
+}
+
+/* ── ACCOUNT ROW ─────────────────────────── */
+.account-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 130px 120px 110px auto;
+  gap: 10px; align-items: center;
+  padding: 12px 16px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 9px; margin-bottom: 8px;
+}
+.account-row-header {
+  display: grid;
+  grid-template-columns: 1fr 120px 130px 120px 110px auto;
+  gap: 10px; padding: 0 16px 10px;
+  font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--text3);
+  border-bottom: 2px solid var(--border); margin-bottom: 10px;
+}
+
+/* ── UTILITY ─────────────────────────────── */
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-gap { display: flex; align-items: center; gap: 10px; }
+.flex-wrap { display: flex; flex-wrap: wrap; gap: 10px; }
+.pos { color: var(--green2); }
+.neg { color: var(--red2); }
+.gold-text { color: var(--gold); }
+.navy-text { color: var(--navy); }
+.muted { color: var(--text3); }
+hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+.hidden { display: none; }
+.disclaimer {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 18px; font-size: 11px; color: var(--text3);
+  line-height: 1.7; margin-top: 32px;
+}
+
+/* ── TOAST ───────────────────────────────── */
+.toast {
+  position: fixed; bottom: 32px; right: 32px;
+  background: var(--navy); color: #fff;
+  padding: 12px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 500;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 999;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+@media (max-width: 900px) {
+  .g2, .g3, .g4, .g5 { grid-template-columns: 1fr 1fr; }
+  .content { padding: 20px 16px 60px; }
+  .tab-nav { padding: 0 16px; }
+  .app-header { padding: 0 20px; }
+  .account-row, .account-row-header { grid-template-columns: 1fr 1fr 1fr auto; }
+}
+</style>
+<input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon">🎯</div>
+    <div style="display:flex;flex-direction:column;gap:1px">
+      <div class="logo-text">Start Your <span>Finances Right</span></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:2px">MEDIUM-TERM WEALTH BUILDER</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-header btn-save" onclick="saveToJSON()">💾 Save Plan</button>
+    <button class="btn-header btn-load" onclick="document.getElementById('jsonFileInput').click()">📂 Load Plan</button>
+    <button class="btn-header btn-pdf" onclick="generateReport()">📄 Full Report</button>
+    <div class="header-badge" style="margin-left:8px">🔒 LOCAL · PRIVATE</div>
+  </div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab(0)"><span class="tab-num">01</span> Profile & Goals</button>
+  <button class="tab-btn" onclick="showTab(1)"><span class="tab-num">02</span> Accounts & Holdings</button>
+  <button class="tab-btn" onclick="showTab(2)"><span class="tab-num">03</span> Goal Funding Analysis</button>
+  <button class="tab-btn" onclick="showTab(3)"><span class="tab-num">04</span> Allocation Architecture</button>
+  <button class="tab-btn" onclick="showTab(4)"><span class="tab-num">05</span> Tax Optimization</button>
+  <button class="tab-btn" onclick="showTab(5)"><span class="tab-num">06</span> Action Plan</button>
+</nav>
+
+<main class="content">
+
+<!-- ════════════════════════════════════════ -->
+<!-- TAB 1: PROFILE & GOALS                  -->
+<!-- ════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-0">
+  <div class="page-title">Profile &amp; <em>Goals</em></div>
+  <div class="page-sub">Define your 1–7 year financial goals. This is your bridge between daily life and long-term wealth — flexibility, safety, and growth all at once.</div>
+
+  <!-- Summary strip -->
+  <div class="g5 mb20">
+    <div class="stat-card gold">
+      <div class="stat-label">Total Goals</div>
+      <div class="stat-value" id="s-totalGoals">0</div>
+      <div class="stat-sub">Active medium-term goals</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">Total Needed</div>
+      <div class="stat-value" id="s-totalNeeded">$0</div>
+      <div class="stat-sub">Sum of all goal targets</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Current Portfolio</div>
+      <div class="stat-value" id="s-portfolio">$0</div>
+      <div class="stat-sub">All mid-term accounts</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-label">Goal Coverage</div>
+      <div class="stat-value" id="s-coverage">—</div>
+      <div class="stat-sub">% of goals funded</div>
+    </div>
+    <div class="stat-card" id="s-scoreCard" style="border-top:3px solid var(--teal2)">
+      <div class="stat-label">Health Score</div>
+      <div class="stat-value" id="s-score">—</div>
+      <div class="stat-sub" id="s-scoreGrade">–</div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <!-- Personal Info -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--navy)"></span>Personal Information</div>
+      <div class="g2-form">
+        <div class="form-group">
+          <label>Name <span class="label-hint">(optional)</span></label>
+          <input type="text" id="p-name" placeholder="e.g. Alex Johnson" oninput="recalcAll()">
+        </div>
+        <div class="form-group">
+          <label>Current Age</label>
+          <input type="number" id="p-age" value="35" min="20" max="70" oninput="recalcAll()">
+        </div>
+        <div class="form-group">
+          <label>Annual Gross Income</label>
+          <div class="input-wrap has-pre"><span class="input-pre">$</span>
+          <input type="number" id="p-income" value="120000" oninput="recalcAll()"></div>
+        </div>
+        <div class="form-group">
+          <label>Monthly Take-Home Pay</label>
+          <div class="input-wrap has-pre"><span class="input-pre">$</span>
+          <input type="number" id="p-takehome" value="7500" oninput="recalcAll()"></div>
+        </div>
+        <div class="form-group">
+          <label>Monthly Fixed Expenses</label>
+          <div class="input-wrap has-pre"><span class="input-pre">$</span>
+          <input type="number" id="p-expenses" value="4500" oninput="recalcAll()"></div>
+        </div>
+        <div class="form-group">
+          <label>Filing Status</label>
+          <select id="p-filing" onchange="recalcAll()">
+            <option value="single">Single</option>
+            <option value="married" selected>Married Filing Jointly</option>
+            <option value="hoh">Head of Household</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Savings & Cashflow -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green2)"></span>Monthly Cashflow & Savings Capacity</div>
+      <div id="cashflowDisplay">
+        <div class="insight insight-blue" style="margin-bottom:12px">
+          Enter your income and expenses above to see your savings capacity.
+        </div>
+      </div>
+      <hr>
+      <div class="form-group">
+        <label>Monthly Amount Available for Goals <span class="label-hint">(override auto-calc)</span></label>
+        <div class="input-wrap has-pre"><span class="input-pre">$</span>
+        <input type="number" id="p-savingsRate" value="0" placeholder="auto" oninput="recalcAll()"></div>
+      </div>
+      <div class="form-group">
+        <label>Expected Annual Return on Savings <span class="label-hint">medium-term horizon</span></label>
+        <div class="input-wrap has-suf"><span class="input-suf">%</span>
+        <input type="number" id="p-returnRate" value="6" step="0.5" oninput="recalcAll()"></div>
+      </div>
+      <div class="form-group">
+        <label>Inflation Assumption</label>
+        <div class="input-wrap has-suf"><span class="input-suf">%</span>
+        <input type="number" id="p-inflation" value="3" step="0.5" oninput="recalcAll()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOALS SECTION -->
+  <div class="section-head mb20">
+    <div class="section-label">Your 1–7 Year <em style="color:var(--gold);font-style:italic">Goals</em></div>
+    <div class="section-rule"></div>
+    <button class="btn btn-gold btn-sm" onclick="toggleGoalForm()">+ Add Goal</button>
+  </div>
+
+  <!-- Add Goal Form -->
+  <div class="add-form hidden" id="addGoalForm">
+    <div class="card-title" style="margin-bottom:16px"><span class="dot" style="background:var(--gold)"></span>New Goal</div>
+    <div class="g3-form">
+      <div class="form-group">
+        <label>Goal Category</label>
+        <select id="g-category" onchange="prefillGoalName()">
+          <option value="debt">💳 Pay Off Debt</option>
+          <option value="career">💼 Career Transition Fund</option>
+          <option value="college">🎓 College Savings (529)</option>
+          <option value="vacation">✈️ Vacation / Travel</option>
+          <option value="car">🚗 Buy a New Car</option>
+          <option value="realestate">🏠 Real Estate Down Payment</option>
+          <option value="business">🚀 Start a Business</option>
+          <option value="wedding">💍 Wedding / Life Event</option>
+          <option value="renovation">🔨 Home Renovation</option>
+          <option value="emergency">🛡️ Emergency Fund Extension</option>
+          <option value="invest">📈 General Wealth Building</option>
+          <option value="other">⭐ Other Goal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Goal Name</label>
+        <input type="text" id="g-name" placeholder="e.g. Buy a Tesla Model 3">
+      </div>
+      <div class="form-group">
+        <label>Amount Needed (Future Value)</label>
+        <div class="input-wrap has-pre"><span class="input-pre">$</span>
+        <input type="number" id="g-amount" placeholder="0"></div>
+      </div>
+      <div class="form-group">
+        <label>Timeline <span class="label-hint">(years from now)</span></label>
+        <select id="g-years">
+          <option value="1">1 year</option>
+          <option value="2">2 years</option>
+          <option value="3" selected>3 years</option>
+          <option value="4">4 years</option>
+          <option value="5">5 years</option>
+          <option value="6">6 years</option>
+          <option value="7">7 years</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Priority Level</label>
+        <select id="g-priority">
+          <option value="1">🔴 Critical — Must happen</option>
+          <option value="2">🟠 High — Strong need</option>
+          <option value="3" selected>🟡 Medium — Important</option>
+          <option value="4">🟢 Nice-to-have</option>
+          <option value="5">🔵 Aspirational / Flexible</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Emotional Weight <span class="label-hint">(how much does this matter to you?)</span></label>
+        <select id="g-emotion">
+          <option value="very-high">💖 Very High — Life-defining</option>
+          <option value="high" selected>❤️ High — Major milestone</option>
+          <option value="medium">💛 Medium — Meaningful</option>
+          <option value="low">💙 Low — Convenience</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes <span class="label-hint">(optional context)</span></label>
+      <input type="text" id="g-notes" placeholder="e.g. Need this before kids start college in 2028">
+    </div>
+    <div class="flex-gap mt20">
+      <button class="btn btn-primary" onclick="addGoal()">Add Goal</button>
+      <button class="btn btn-outline" onclick="toggleGoalForm()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Goals List -->
+  <div id="goalsList"></div>
+
+  <div class="disclaimer">
+    <strong>🔒 Local &amp; Private:</strong> All data entered here stays entirely in your browser. Nothing is transmitted to any server. Save your plan as a JSON file using the Save button to persist across sessions.
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- TAB 2: ACCOUNTS & HOLDINGS              -->
+<!-- ════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-1">
+  <div class="page-title">Accounts &amp; <em>Holdings</em></div>
+  <div class="page-sub">Enter accounts appropriate for a 1–7 year horizon. Long-lock retirement accounts (401k, traditional IRA with 10+ year horizon) belong in the retirement planner. Roth IRA contributions and 529 plans are included here due to their flexibility.</div>
+
+  <!-- Summary -->
+  <div class="g4 mb20">
+    <div class="stat-card gold">
+      <div class="stat-label">Total Mid-Term</div>
+      <div class="stat-value" id="a-total">$0</div>
+      <div class="stat-sub">All accounts combined</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">Liquid (Taxable)</div>
+      <div class="stat-value" id="a-taxable">$0</div>
+      <div class="stat-sub">No penalties to access</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Tax-Advantaged</div>
+      <div class="stat-value" id="a-taxAdv">$0</div>
+      <div class="stat-sub">Roth, HSA, 529</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">Monthly Contributions</div>
+      <div class="stat-value" id="a-monthly">$0</div>
+      <div class="stat-sub">Total added per month</div>
+    </div>
+  </div>
+
+  <!-- Account list -->
+  <div class="card mb20">
+    <div class="flex-between" style="margin-bottom:16px">
+      <div class="card-title" style="margin-bottom:0"><span class="dot" style="background:var(--navy)"></span>Your Mid-Term Accounts</div>
+      <button class="btn btn-gold btn-sm" onclick="toggleAccountForm()">+ Add Account</button>
+    </div>
+
+    <div class="account-row-header">
+      <div>Account / Name</div>
+      <div>Type</div>
+      <div>Current Value</div>
+      <div>Monthly Contrib.</div>
+      <div>Return</div>
+      <div></div>
+    </div>
+    <div id="accountsList"></div>
+
+    <!-- Add Account Form -->
+    <div class="add-form hidden" id="addAccountForm">
+      <div class="card-title" style="margin-bottom:16px"><span class="dot" style="background:var(--gold)"></span>New Account</div>
+      <div class="g3-form">
+        <div class="form-group">
+          <label>Account Nickname</label>
+          <input type="text" id="a-name" placeholder="e.g. Fidelity Brokerage">
+        </div>
+        <div class="form-group">
+          <label>Account Type</label>
+          <select id="a-type">
+            <optgroup label="── Tax-Advantaged (Flexible)">
+              <option value="roth-ira">Roth IRA (contributions accessible)</option>
+              <option value="hsa">HSA — Health Savings Account</option>
+              <option value="529">529 College Savings</option>
+            </optgroup>
+            <optgroup label="── Taxable Brokerage">
+              <option value="brokerage">Taxable Brokerage (General)</option>
+              <option value="stocks">Individual Stocks</option>
+              <option value="etfs">ETFs / Index Funds</option>
+              <option value="mutual-funds">Mutual Funds</option>
+              <option value="bonds">Bonds / Bond Funds</option>
+            </optgroup>
+            <optgroup label="── Cash & Near-Cash">
+              <option value="hysavings">High-Yield Savings Account</option>
+              <option value="money-market">Money Market / CDs</option>
+              <option value="ibonds">I-Bonds / TIPS</option>
+            </optgroup>
+            <optgroup label="── Real Estate (Liquid)">
+              <option value="reits">REITs</option>
+              <option value="re-crowd">RE Crowdfunding (Fundrise/Arrived)</option>
+            </optgroup>
+            <optgroup label="── Other">
+              <option value="crypto">Cryptocurrency</option>
+              <option value="rsus">RSUs / Vesting Equity</option>
+              <option value="business">Business Equity / Stake</option>
+              <option value="other">Other Asset</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Current Value</label>
+          <div class="input-wrap has-pre"><span class="input-pre">$</span>
+          <input type="number" id="a-value" placeholder="0"></div>
+        </div>
+        <div class="form-group">
+          <label>Monthly Contribution</label>
+          <div class="input-wrap has-pre"><span class="input-pre">$</span>
+          <input type="number" id="a-contrib" placeholder="0"></div>
+        </div>
+        <div class="form-group">
+          <label>Expected Annual Return <span class="label-hint">(override)</span></label>
+          <div class="input-wrap has-suf"><span class="input-suf">%</span>
+          <input type="number" id="a-return" placeholder="auto" step="0.5"></div>
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <input type="text" id="a-notes" placeholder="e.g. VTSAX + international 80/20">
+        </div>
+      </div>
+      <div class="flex-gap mt20">
+        <button class="btn btn-primary" onclick="addAccount()">Add Account</button>
+        <button class="btn btn-outline" onclick="toggleAccountForm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="g2 mb20">
+    <div class="chart-card">
+      <div class="chart-title">Account Type Distribution</div>
+      <canvas id="accountPieChart" height="280"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Projected Growth by Account (Next 7 Years)</div>
+      <canvas id="growthChart" height="280"></canvas>
+    </div>
+  </div>
+
+  <!-- Liquidity Spectrum -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal2)"></span>Liquidity Spectrum — Access Without Penalty</div>
+    <div id="liquiditySpectrum">
+      <div class="insight insight-blue">Add accounts above to see your liquidity spectrum.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- TAB 3: GOAL FUNDING ANALYSIS            -->
+<!-- ════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-2">
+  <div class="page-title">Goal Funding <em>Analysis</em></div>
+  <div class="page-sub">See exactly which goals are on track, which are under-funded, and where the stressors are. Red means action required.</div>
+
+  <!-- Stressor Banner (dynamic) -->
+  <div id="stressorBanner" class="hidden"></div>
+
+  <!-- Summary stats -->
+  <div class="g4 mb20">
+    <div class="stat-card green">
+      <div class="stat-label">Fully Funded</div>
+      <div class="stat-value" id="gf-funded">0</div>
+      <div class="stat-sub">Goals on track</div>
+    </div>
+    <div class="stat-card gold">
+      <div class="stat-label">Partially Funded</div>
+      <div class="stat-value" id="gf-partial">0</div>
+      <div class="stat-sub">Need more savings</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">Underfunded</div>
+      <div class="stat-value" id="gf-unfunded">0</div>
+      <div class="stat-sub">Significant gap</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-label">Total Funding Gap</div>
+      <div class="stat-value" id="gf-gap">$0</div>
+      <div class="stat-sub">Additional savings needed</div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div id="goalCardsContainer">
+      <div class="insight insight-blue">Add goals and accounts to see funding analysis.</div>
+    </div>
+    <div>
+      <div class="chart-card mb20">
+        <div class="chart-title">Goal Funding Status</div>
+        <canvas id="fundingChart" height="260"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--purple2)"></span>Monthly Savings Required per Goal</div>
+        <div id="monthlySavingsBreakdown">
+          <div class="muted" style="font-size:13px">Add goals to see monthly breakdown.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Priority Matrix -->
+  <div class="card mb20">
+    <div class="card-title"><span class="dot" style="background:var(--gold)"></span>Priority × Timeline Matrix</div>
+    <div id="priorityMatrix">
+      <div class="muted" style="font-size:13px">Add goals to populate the priority matrix.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- TAB 4: ALLOCATION ARCHITECTURE          -->
+<!-- ════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-3">
+  <div class="page-title">Allocation <em>Architecture</em></div>
+  <div class="page-sub">A tiered, goal-based framework assigns the right account to each goal — matching risk, liquidity, and tax treatment to your specific timeline and needs.</div>
+
+  <div class="g2 mb28">
+    <!-- Score Ring -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal2)"></span>Portfolio Health Score</div>
+      <div class="score-ring-wrap">
+        <div class="score-ring">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle cx="90" cy="90" r="76" fill="none" stroke="var(--bg2)" stroke-width="14"/>
+            <circle id="scoreArc" cx="90" cy="90" r="76" fill="none" stroke="var(--teal2)" stroke-width="14"
+              stroke-linecap="round" stroke-dasharray="477.5" stroke-dashoffset="477.5"
+              style="transition:stroke-dashoffset 1s ease,stroke 0.5s"/>
+          </svg>
+          <div class="score-center">
+            <div class="score-number" id="scoreNum" style="color:var(--teal2)">—</div>
+            <div class="score-label" style="color:var(--text3)">SCORE</div>
+          </div>
+        </div>
+        <div class="score-grade" id="scoreGrade" style="color:var(--teal2)">Add goals &amp; accounts</div>
+      </div>
+
+      <!-- Score factors -->
+      <div id="scoreFactors" style="padding: 0 8px 8px"></div>
+    </div>
+
+    <!-- Tier summary -->
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--gold)"></span>Recommended Allocation Mix</div>
+      <div id="allocationSummary">
+        <div class="insight insight-blue">Complete goals and accounts to generate your recommended allocation.</div>
+      </div>
+      <hr>
+      <div class="chart-card" style="border:none;padding:0">
+        <div class="chart-title">Suggested Allocation by Goal Type</div>
+        <canvas id="allocationChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier Architecture -->
+  <div class="section-head mb20">
+    <div class="section-label">Tiered <em style="color:var(--gold);font-style:italic">Bucket</em> Framework</div>
+    <div class="section-rule"></div>
+  </div>
+
+  <div id="tierArchitecture">
+    <!-- Rendered dynamically -->
+    <div class="alloc-tier tier-1">
+      <div class="alloc-tier-header">
+        <div class="tier-num">1</div>
+        <div>
+          <div style="font-weight:600;color:var(--navy);font-size:14px">Safety Bucket — 0–2 Years</div>
+          <div style="font-size:12px;color:var(--text3)">Cash, HYSA, CDs, Money Market — no risk, fully liquid</div>
+        </div>
+        <div style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold)" id="tier1-pct">—</div>
+      </div>
+      <div class="alloc-tier-body">
+        <div class="insight insight-gold">Keep 3–12 months of all near-term goal funding here. This buffer prevents selling growth assets at a loss during short-term market dips.</div>
+        <div id="tier1-goals" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="alloc-tier tier-2">
+      <div class="alloc-tier-header">
+        <div class="tier-num">2</div>
+        <div>
+          <div style="font-weight:600;color:var(--navy);font-size:14px">Stability Bucket — 2–4 Years</div>
+          <div style="font-size:12px;color:var(--text3)">Bonds, balanced funds, I-Bonds, conservative ETFs — modest growth + protection</div>
+        </div>
+        <div style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--blue2)" id="tier2-pct">—</div>
+      </div>
+      <div class="alloc-tier-body">
+        <div class="insight insight-blue">Mid-range goals benefit from some growth while maintaining downside protection. Target 3–5% real return with lower volatility.</div>
+        <div id="tier2-goals" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="alloc-tier tier-3">
+      <div class="alloc-tier-header">
+        <div class="tier-num">3</div>
+        <div>
+          <div style="font-weight:600;color:var(--navy);font-size:14px">Growth Bucket — 4–7 Years</div>
+          <div style="font-size:12px;color:var(--text3)">Index funds, ETFs, growth stocks, REITs — equity-heavy for maximum growth</div>
+        </div>
+        <div style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green2)" id="tier3-pct">—</div>
+      </div>
+      <div class="alloc-tier-body">
+        <div class="insight insight-green">Longer-horizon goals can absorb market volatility. Equity-heavy allocation targets 6–9% annual return. Roth IRA is ideal here — tax-free growth.</div>
+        <div id="tier3-goals" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="alloc-tier tier-4">
+      <div class="alloc-tier-header">
+        <div class="tier-num">4</div>
+        <div>
+          <div style="font-weight:600;color:var(--navy);font-size:14px">Opportunity Bucket — 529 / HSA / Tax-Advantaged</div>
+          <div style="font-size:12px;color:var(--text3)">Tax-advantaged vehicles that serve dual purposes — growth + specific goal</div>
+        </div>
+        <div style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple2)" id="tier4-pct">—</div>
+      </div>
+      <div class="alloc-tier-body">
+        <div class="insight insight-purple">529 for college saves state taxes. HSA triples as emergency/retirement/medical fund. Maximize these before taxable accounts for specific-purpose goals.</div>
+        <div id="tier4-goals" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- TAB 5: TAX OPTIMIZATION                 -->
+<!-- ════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-4">
+  <div class="page-title">Tax <em>Optimization</em></div>
+  <div class="page-sub">Medium-term investing has unique tax considerations. The right account choice can save thousands over 3–7 years — and set you up for long-term tax efficiency.</div>
+
+  <div class="g4 mb20">
+    <div class="stat-card gold">
+      <div class="stat-label">Est. Tax Bracket</div>
+      <div class="stat-value" id="tx-bracket">—</div>
+      <div class="stat-sub">Marginal federal rate</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-label">Cap Gains Rate</div>
+      <div class="stat-value" id="tx-capgains">—</div>
+      <div class="stat-sub">Long-term ≥ 1 year</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Tax-Free Growth</div>
+      <div class="stat-value" id="tx-taxfree">$0</div>
+      <div class="stat-sub">Roth + HSA + 529</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-label">Est. Annual Tax Drag</div>
+      <div class="stat-value" id="tx-drag">$0</div>
+      <div class="stat-sub">On taxable accounts</div>
+    </div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--navy)"></span>Tax Efficiency by Account Type</div>
+      <div id="taxEfficiencyTable">
+        <div class="insight insight-blue">Add accounts to see tax efficiency breakdown.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--gold)"></span>Tax-Smart Sequencing Rules</div>
+      <div class="insight insight-green" style="margin-bottom:10px">
+        <strong>Rule 1 — Hold > 1 Year:</strong> Always hold taxable investments for over 12 months. Short-term gains taxed as ordinary income; long-term rates are dramatically lower.
+      </div>
+      <div class="insight insight-blue" style="margin-bottom:10px">
+        <strong>Rule 2 — Asset Location:</strong> Put high-growth assets in Roth IRA. Keep bonds and income in taxable (where you'll do tax-loss harvesting). REITs belong in Roth/HSA.
+      </div>
+      <div class="insight insight-gold" style="margin-bottom:10px">
+        <strong>Rule 3 — Tax-Loss Harvesting:</strong> When a taxable position is down, sell and reinvest in a similar fund. Capture the loss to offset gains elsewhere — no wait, just swap similar funds.
+      </div>
+      <div class="insight insight-purple" style="margin-bottom:10px">
+        <strong>Rule 4 — 529 First for College:</strong> State deduction on contributions + tax-free growth. Even a 1-year window is worth using if your state has deductions.
+      </div>
+      <div class="insight insight-teal">
+        <strong>Rule 5 — HSA Triple-Tax:</strong> Contribute pre-tax, grow tax-free, withdraw tax-free for medical. After 65, withdraw for anything (ordinary income only). Ultimate vehicle for unexpected costs.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tax-loss harvesting calendar -->
+  <div class="card mb20">
+    <div class="card-title"><span class="dot" style="background:var(--teal2)"></span>Tax Action Calendar — Medium-Term Horizon</div>
+    <div class="g3">
+      <div style="background:var(--bg2);border-radius:10px;padding:16px">
+        <div style="font-weight:600;color:var(--navy);font-size:13px;margin-bottom:8px">⚡ Year 1 Actions</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          • Max HSA contributions ($4,300 single / $8,550 family)<br>
+          • Maximize Roth IRA if eligible ($7,000 / $8,000 if 50+)<br>
+          • Fund 529 for any education goals<br>
+          • Identify tax-loss harvest candidates in taxable<br>
+          • Document cost basis for all new positions
+        </div>
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:16px">
+        <div style="font-weight:600;color:var(--navy);font-size:13px;margin-bottom:8px">🔄 Ongoing (Each Year)</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          • Review gain/loss positions in December<br>
+          • Harvest losses to offset capital gains<br>
+          • Rebalance in tax-advantaged accounts first<br>
+          • Review RSU/option vesting and tax impact<br>
+          • Evaluate Roth conversion opportunities
+        </div>
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:16px">
+        <div style="font-weight:600;color:var(--navy);font-size:13px;margin-bottom:8px">🏁 Pre-Goal Withdrawal</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8">
+          • Sell taxable positions in low-income years<br>
+          • 0% LTCG if income &lt; $47,025 (single 2024)<br>
+          • Withdraw Roth contributions first (always tax-free)<br>
+          • Use HSA for any qualified medical in that year<br>
+          • Stage withdrawals over 2 tax years if large
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roth vs Taxable comparison -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--green2)"></span>Roth IRA vs. Taxable Brokerage — Side by Side <span class="label-hint">(for medium-term goals)</span></div>
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Roth IRA</th>
+            <th>Taxable Brokerage</th>
+            <th>HYSA / CDs</th>
+            <th>529 (Education)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Contribution Limit</td><td>$7,000 / yr</td><td>Unlimited</td><td>Unlimited</td><td>Unlimited (gift tax after $18k)</td></tr>
+          <tr><td>Tax on Growth</td><td class="pos">Tax-free</td><td class="neg">Capital gains tax</td><td class="neg">Ordinary income</td><td class="pos">Tax-free (if qualified)</td></tr>
+          <tr><td>Penalty-Free Access</td><td>Contributions only, anytime</td><td>Anytime</td><td>Anytime (penalties on CDs)</td><td>Education expenses only</td></tr>
+          <tr><td>State Tax Deduction</td><td>No</td><td>No</td><td>No</td><td class="pos">Yes (most states)</td></tr>
+          <tr><td>Best Horizon</td><td>4–7 years</td><td>1–7 years</td><td>1–2 years</td><td>Any (education use only)</td></tr>
+          <tr><td>Risk Level</td><td>Your choice</td><td>Your choice</td><td>Very Low</td><td>Your choice</td></tr>
+          <tr><td>Flexibility</td><td>Medium (contrib. only)</td><td class="pos">Very High</td><td>High</td><td class="neg">Low (non-edu = penalty)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════ -->
+<!-- TAB 6: ACTION PLAN                      -->
+<!-- ════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-5">
+  <div class="page-title">Your <em>Action Plan</em></div>
+  <div class="page-sub">A prioritized, personalized set of actions to keep every goal on track — with special attention to stressors and gaps.</div>
+
+  <div id="actionPlanContent">
+    <div class="insight insight-blue">Add goals and accounts on tabs 1 and 2 to generate your personalized action plan.</div>
+  </div>
+
+  <div class="disclaimer mt20">
+    <strong>Important Disclosure:</strong> This medium-term wealth plan is prepared by Start Your Finances Right for informational and educational purposes only. It does not constitute investment, tax, legal, or financial advice. All projections are estimates based on user-provided assumptions and may differ materially from actual outcomes. Investing involves risk, including possible loss of principal. Past performance is not indicative of future results. Tax rules are subject to change. Please consult a qualified financial advisor, CPA, or attorney before making financial decisions. This tool runs entirely in your browser — no data is transmitted or stored externally.
+  </div>
+</div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+const state = {
+  goals: [],
+  accounts: [],
+  nextGoalId: 1,
+  nextAccId: 1,
+};
+
+/* ═══════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════ */
+const fmt = v => v == null ? '—' : '$' + Math.round(v).toLocaleString();
+const fmtPct = v => Math.round(v * 100) + '%';
+const fmtShort = v => v >= 1e6 ? '$' + (v/1e6).toFixed(1) + 'M' : v >= 1e3 ? '$' + Math.round(v/1e3) + 'k' : '$' + Math.round(v);
+const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+function fv(pv, r, n, pmt = 0) {
+  // Future value: FV(pv, annual_rate, years, annual_pmt)
+  const m = r / 12;
+  const months = n * 12;
+  if (r === 0) return pv + pmt * months;
+  return pv * Math.pow(1 + r, n) + pmt * ((Math.pow(1 + m, months) - 1) / m) * 12 / 12;
+}
+
+function pmt(pv_target, pv_now, r, n) {
+  // Monthly savings needed to reach pv_target in n years given pv_now
+  const m = r / 12;
+  const months = n * 12;
+  if (r === 0) return Math.max(0, (pv_target - pv_now) / months);
+  const growthPV = pv_now * Math.pow(1 + r, n);
+  const gap = pv_target - growthPV;
+  if (gap <= 0) return 0;
+  return gap * m / (Math.pow(1 + m, months) - 1);
+}
+
+function showTab(i) {
+  document.querySelectorAll('.tab-panel').forEach((p, j) => {
+    p.classList.toggle('active', j === i);
+  });
+  document.querySelectorAll('.tab-btn').forEach((b, j) => {
+    b.classList.toggle('active', j === i);
+  });
+  recalcAll();
+}
+
+function showToast(msg, dur = 2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function toggleGoalForm() {
+  document.getElementById('addGoalForm').classList.toggle('hidden');
+}
+function toggleAccountForm() {
+  document.getElementById('addAccountForm').classList.toggle('hidden');
+}
+
+function val(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  return el.tagName === 'SELECT' || el.type === 'text' ? el.value : parseFloat(el.value) || 0;
+}
+
+/* ═══════════════════════════════════════════════
+   DEFAULT RETURN RATES BY TYPE
+═══════════════════════════════════════════════ */
+const DEFAULT_RETURNS = {
+  'roth-ira': 0.07, 'hsa': 0.07, '529': 0.065,
+  'brokerage': 0.07, 'stocks': 0.09, 'etfs': 0.075, 'mutual-funds': 0.07,
+  'bonds': 0.04, 'hysavings': 0.048, 'money-market': 0.045, 'ibonds': 0.04,
+  'reits': 0.07, 're-crowd': 0.08, 'crypto': 0.12, 'rsus': 0.09,
+  'business': 0.08, 'other': 0.06,
+};
+
+const ACCOUNT_LABELS = {
+  'roth-ira': 'Roth IRA', 'hsa': 'HSA', '529': '529 Plan',
+  'brokerage': 'Brokerage', 'stocks': 'Stocks', 'etfs': 'ETFs',
+  'mutual-funds': 'Mutual Funds', 'bonds': 'Bonds',
+  'hysavings': 'HYSA', 'money-market': 'Money Market', 'ibonds': 'I-Bonds',
+  'reits': 'REITs', 're-crowd': 'RE Crowdfunding',
+  'crypto': 'Crypto', 'rsus': 'RSUs', 'business': 'Business',
+  'other': 'Other',
+};
+
+const ACCOUNT_TAG = {
+  'roth-ira': 'tag-roth', 'hsa': 'tag-hsa', '529': 'tag-529',
+  'brokerage': 'tag-taxable', 'stocks': 'tag-taxable', 'etfs': 'tag-taxable',
+  'mutual-funds': 'tag-taxable', 'bonds': 'tag-taxable',
+  'hysavings': 'tag-cash', 'money-market': 'tag-cash', 'ibonds': 'tag-cash',
+  'reits': 'tag-realestate', 're-crowd': 'tag-realestate',
+  'crypto': 'tag-other', 'rsus': 'tag-taxable', 'business': 'tag-other', 'other': 'tag-other',
+};
+
+/* ─────────────────────── liquidity tiers ─── */
+function getLiquidityTier(type) {
+  if (['hysavings','money-market'].includes(type)) return 1; // immediate
+  if (['brokerage','etfs','stocks','mutual-funds','bonds','reits'].includes(type)) return 2; // T+2
+  if (['roth-ira','ibonds'].includes(type)) return 3; // accessible w/ rules
+  if (['hsa','529'].includes(type)) return 4; // purpose-restricted
+  if (['re-crowd','business','rsus'].includes(type)) return 5; // illiquid
+  return 3;
+}
+
+function getLiquidityLabel(type) {
+  const t = getLiquidityTier(type);
+  return ['','Immediate (T+0)','2–3 Business Days','Accessible (contributions)','Purpose-Restricted','Semi-Liquid / Illiquid'][t];
+}
+
+/* ═══════════════════════════════════════════════
+   GOAL PREFILL
+═══════════════════════════════════════════════ */
+const GOAL_DEFAULTS = {
+  'debt': { name: 'Pay Off High-Interest Debt', amount: 20000 },
+  'career': { name: 'Career Transition Fund', amount: 30000 },
+  'college': { name: 'College Savings Fund', amount: 50000 },
+  'vacation': { name: 'Dream Vacation', amount: 10000 },
+  'car': { name: 'New Vehicle Purchase', amount: 35000 },
+  'realestate': { name: 'Real Estate Down Payment', amount: 80000 },
+  'business': { name: 'Business Startup Capital', amount: 40000 },
+  'wedding': { name: 'Wedding & Celebration', amount: 25000 },
+  'renovation': { name: 'Home Renovation', amount: 30000 },
+  'emergency': { name: 'Extended Emergency Fund', amount: 20000 },
+  'invest': { name: 'Wealth Building Portfolio', amount: 100000 },
+  'other': { name: 'Personal Goal', amount: 10000 },
+};
+
+function prefillGoalName() {
+  const cat = val('g-category');
+  const d = GOAL_DEFAULTS[cat] || {};
+  document.getElementById('g-name').value = d.name || '';
+  document.getElementById('g-amount').value = d.amount || '';
+}
+
+/* ═══════════════════════════════════════════════
+   ADD / DELETE GOAL
+═══════════════════════════════════════════════ */
+function addGoal() {
+  const name = document.getElementById('g-name').value.trim();
+  const amount = parseFloat(document.getElementById('g-amount').value) || 0;
+  if (!name || amount <= 0) { showToast('⚠️ Please enter a goal name and amount.'); return; }
+  state.goals.push({
+    id: state.nextGoalId++,
+    category: val('g-category'),
+    name,
+    amount,
+    years: parseInt(val('g-years')),
+    priority: parseInt(val('g-priority')),
+    emotion: val('g-emotion'),
+    notes: document.getElementById('g-notes').value.trim(),
+  });
+  toggleGoalForm();
+  recalcAll();
+  showToast('✅ Goal added: ' + name);
+}
+
+function deleteGoal(id) {
+  state.goals = state.goals.filter(g => g.id !== id);
+  recalcAll();
+}
+
+/* ═══════════════════════════════════════════════
+   ADD / DELETE ACCOUNT
+═══════════════════════════════════════════════ */
+function addAccount() {
+  const name = document.getElementById('a-name').value.trim();
+  const value = parseFloat(document.getElementById('a-value').value) || 0;
+  const type = val('a-type');
+  if (!name) { showToast('⚠️ Please enter an account name.'); return; }
+  const customReturn = parseFloat(document.getElementById('a-return').value);
+  state.accounts.push({
+    id: state.nextAccId++,
+    name,
+    type,
+    value,
+    monthly: parseFloat(document.getElementById('a-contrib').value) || 0,
+    returnRate: isNaN(customReturn) ? null : customReturn / 100,
+    notes: document.getElementById('a-notes').value.trim(),
+  });
+  toggleAccountForm();
+  recalcAll();
+  showToast('✅ Account added: ' + name);
+}
+
+function deleteAccount(id) {
+  state.accounts = state.accounts.filter(a => a.id !== id);
+  recalcAll();
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER GOAL ROWS (Tab 1)
+═══════════════════════════════════════════════ */
+const PRIORITY_COLORS = ['','#ef4444','#f97316','#eab308','#22c55e','#3b82f6'];
+const PRIORITY_LABELS = ['','Critical','High','Medium','Nice-to-have','Aspirational'];
+const EMOTION_EMOJI = { 'very-high': '💖', 'high': '❤️', 'medium': '💛', 'low': '💙' };
+const CAT_EMOJI = {
+  'debt':'💳','career':'💼','college':'🎓','vacation':'✈️','car':'🚗',
+  'realestate':'🏠','business':'🚀','wedding':'💍','renovation':'🔨',
+  'emergency':'🛡️','invest':'📈','other':'⭐'
+};
+
+function renderGoals() {
+  const container = document.getElementById('goalsList');
+  if (state.goals.length === 0) {
+    container.innerHTML = `<div class="insight insight-gold" id="goalsEmpty">No goals added yet. Click <strong>+ Add Goal</strong> to start. Common goals: real estate down payment, college savings, car purchase, career transition fund, or debt payoff.</div>`;
+    return;
+  }
+  const returnRate = val('p-returnRate') / 100 || 0.06;
+  let html = '<div class="g2">';
+  state.goals.forEach(g => {
+    const monthly = pmt(g.amount, 0, returnRate, g.years);
+    html += `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;border-left:4px solid ${PRIORITY_COLORS[g.priority]}">
+      <div class="flex-between" style="margin-bottom:8px">
+        <div style="font-family:'Libre Baskerville',serif;font-size:15px;color:var(--navy)">${CAT_EMOJI[g.category] || '⭐'} ${g.name}</div>
+        <button class="btn-danger btn" onclick="deleteGoal(${g.id})">✕</button>
+      </div>
+      <div class="flex-wrap" style="margin-bottom:10px;gap:6px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--navy);font-weight:600">${fmt(g.amount)}</span>
+        <span class="tag tag-other">${g.years} yr${g.years > 1 ? 's' : ''}</span>
+        <span style="font-size:11px;font-weight:600;color:${PRIORITY_COLORS[g.priority]};text-transform:uppercase;letter-spacing:0.5px">● ${PRIORITY_LABELS[g.priority]}</span>
+        <span style="font-size:12px">${EMOTION_EMOJI[g.emotion] || ''}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text3)">Monthly savings needed: <strong style="color:var(--navy);font-family:'JetBrains Mono',monospace">${fmt(monthly)}/mo</strong></div>
+      ${g.notes ? `<div style="font-size:11px;color:var(--text3);margin-top:6px;font-style:italic">${g.notes}</div>` : ''}
+    </div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER ACCOUNTS (Tab 2)
+═══════════════════════════════════════════════ */
+function renderAccounts() {
+  const container = document.getElementById('accountsList');
+  if (state.accounts.length === 0) {
+    container.innerHTML = `<div class="insight insight-blue" id="accountsEmpty">No accounts added yet. Add your taxable brokerage, Roth IRA, HSA, 529, money market, or other mid-term holdings.</div>`;
+    return;
+  }
+  let html = '';
+  state.accounts.forEach(a => {
+    const r = a.returnRate !== null ? a.returnRate : DEFAULT_RETURNS[a.type] || 0.06;
+    const label = ACCOUNT_LABELS[a.type] || a.type;
+    const tag = ACCOUNT_TAG[a.type] || 'tag-other';
+    html += `
+    <div class="account-row">
+      <div>
+        <div style="font-weight:500;color:var(--navy)">${a.name}</div>
+        ${a.notes ? `<div style="font-size:11px;color:var(--text3)">${a.notes}</div>` : ''}
+      </div>
+      <div><span class="tag ${tag}">${label}</span></div>
+      <div class="num">${fmt(a.value)}</div>
+      <div class="num">${fmt(a.monthly)}/mo</div>
+      <div class="num">${(r * 100).toFixed(1)}%</div>
+      <div><button class="btn-danger btn" onclick="deleteAccount(${a.id})">✕</button></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════
+   COMPUTE CORE NUMBERS
+═══════════════════════════════════════════════ */
+function computeTotals() {
+  const r = val('p-returnRate') / 100 || 0.06;
+  let totalPortfolio = 0, taxable = 0, taxAdv = 0, monthly = 0;
+  state.accounts.forEach(a => {
+    totalPortfolio += a.value;
+    monthly += a.monthly;
+    if (['roth-ira','hsa','529'].includes(a.type)) taxAdv += a.value;
+    else if (['hysavings','money-market','ibonds','brokerage','etfs','stocks','mutual-funds','bonds','reits'].includes(a.type)) taxable += a.value;
+  });
+  return { totalPortfolio, taxable, taxAdv, monthly, r };
+}
+
+function computeGoalFunding() {
+  const { totalPortfolio, r } = computeTotals();
+  const returnRate = r;
+  const results = [];
+  let available = totalPortfolio;
+
+  // Sort by priority then timeline
+  const sorted = [...state.goals].sort((a, b) => a.priority - b.priority || a.years - b.years);
+
+  sorted.forEach(g => {
+    // Earmark existing capital toward this goal (its present value)
+    const pvNeeded = returnRate > 0
+      ? g.amount / Math.pow(1 + returnRate, g.years)
+      : g.amount;
+    const earmark = Math.min(available, pvNeeded);
+    available = Math.max(0, available - earmark);
+
+    // What earmarked capital grows to by goal date
+    const futureOfEarmark = fv(earmark, returnRate, g.years, 0);
+
+    // Gap remaining after capital does its work
+    const gap = Math.max(0, g.amount - futureOfEarmark);
+
+    // Monthly needed ONLY for the remaining gap
+    const monthlyNeeded = pmt(g.amount, earmark, returnRate, g.years);
+
+    // Monthly if starting from scratch (shown on Tab 1)
+    const monthlyFromScratch = pmt(g.amount, 0, returnRate, g.years);
+
+    const pct = Math.min(1, g.amount > 0 ? futureOfEarmark / g.amount : 0);
+    const funded = pct >= 0.9;
+    const partial = !funded && pct >= 0.4;
+    const status = funded ? 'funded' : partial ? 'partial' : 'unfunded';
+
+    results.push({ ...g, pct, funded, partial, status, gap, monthlyNeeded, monthlyFromScratch, futureOfEarmark, earmark });
+  });
+  return results;
+}
+
+/* ═══════════════════════════════════════════════
+   UPDATE SUMMARY STRIP
+═══════════════════════════════════════════════ */
+function updateSummary() {
+  const { totalPortfolio, taxable, taxAdv, monthly } = computeTotals();
+  const fundingResults = computeGoalFunding();
+  const totalNeeded = state.goals.reduce((s, g) => s + g.amount, 0);
+  const nFunded = fundingResults.filter(g => g.status === 'funded').length;
+  const coverage = state.goals.length > 0 ? Math.round(nFunded / state.goals.length * 100) : 0;
+
+  set('s-totalGoals', state.goals.length);
+  set('s-totalNeeded', fmt(totalNeeded));
+  set('s-portfolio', fmt(totalPortfolio));
+  set('s-coverage', state.goals.length > 0 ? coverage + '%' : '—');
+
+  // Account summary
+  set('a-total', fmt(totalPortfolio));
+  set('a-taxable', fmt(taxable));
+  set('a-taxAdv', fmt(taxAdv));
+  set('a-monthly', fmt(monthly) + '/mo');
+
+  // Health score
+  const score = computeHealthScore(fundingResults);
+  set('s-score', score > 0 ? score : '—');
+  const grade = score >= 85 ? 'Excellent 🟢' : score >= 70 ? 'On Track 🟡' : score >= 50 ? 'Needs Work 🟠' : 'At Risk 🔴';
+  set('s-scoreGrade', grade);
+}
+
+function set(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+
+/* ═══════════════════════════════════════════════
+   HEALTH SCORE
+═══════════════════════════════════════════════ */
+function computeHealthScore(fundingResults) {
+  if (state.goals.length === 0 || state.accounts.length === 0) return 0;
+  const { totalPortfolio, taxable, taxAdv, monthly } = computeTotals();
+  const totalNeeded = state.goals.reduce((s, g) => s + g.amount, 0);
+  const returnRate = val('p-returnRate') / 100 || 0.06;
+
+  // Factor 1: Coverage ratio (40 pts)
+  const fundedCount = fundingResults.filter(g => g.status === 'funded').length;
+  const coverageScore = state.goals.length > 0 ? (fundedCount / state.goals.length) * 40 : 0;
+
+  // Factor 2: Diversification (20 pts)
+  const types = new Set(state.accounts.map(a => a.type)).size;
+  const divScore = Math.min(20, types * 4);
+
+  // Factor 3: Liquidity (20 pts)
+  const liquid = taxable;
+  const nearTermGoals = state.goals.filter(g => g.years <= 2).reduce((s, g) => s + g.amount, 0);
+  const liqScore = nearTermGoals > 0 ? clamp(liquid / nearTermGoals, 0, 1) * 20 : 15;
+
+  // Factor 4: Monthly savings (20 pts)
+  const totalMonthlyNeeded = fundingResults.reduce((s, g) => s + g.monthlyNeeded, 0);
+  const savingsScore = totalMonthlyNeeded > 0 ? clamp(monthly / totalMonthlyNeeded, 0, 1) * 20 : 10;
+
+  return Math.round(coverageScore + divScore + liqScore + savingsScore);
+}
+
+/* ═══════════════════════════════════════════════
+   CASHFLOW DISPLAY
+═══════════════════════════════════════════════ */
+function updateCashflow() {
+  const takehome = val('p-takehome');
+  const expenses = val('p-expenses');
+  const savingsRate = val('p-savingsRate');
+  const surplus = takehome - expenses;
+  const available = savingsRate > 0 ? savingsRate : Math.max(0, surplus);
+
+  const cls = surplus >= 1000 ? 'insight-green' : surplus >= 0 ? 'insight-gold' : 'insight-red';
+  document.getElementById('cashflowDisplay').innerHTML = `
+    <div class="insight ${cls}" style="margin-bottom:0">
+      <div class="flex-between">
+        <span>Monthly Take-Home</span>
+        <strong style="font-family:'JetBrains Mono',monospace">${fmt(takehome)}</strong>
+      </div>
+      <div class="flex-between">
+        <span>Fixed Expenses</span>
+        <strong style="font-family:'JetBrains Mono',monospace;color:var(--red2)">–${fmt(expenses)}</strong>
+      </div>
+      <div class="flex-between" style="border-top:1px solid rgba(0,0,0,0.08);margin-top:8px;padding-top:8px">
+        <strong>Available for Goals</strong>
+        <strong style="font-family:'JetBrains Mono',monospace;font-size:15px">${fmt(available)}/mo</strong>
+      </div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER GOAL FUNDING ANALYSIS (Tab 3)
+═══════════════════════════════════════════════ */
+function renderGoalFunding() {
+  const results = computeGoalFunding();
+  const funded = results.filter(g => g.status === 'funded').length;
+  const partial = results.filter(g => g.status === 'partial').length;
+  const unfunded = results.filter(g => g.status === 'unfunded').length;
+  const totalGap = results.reduce((s, g) => s + g.gap, 0);
+
+  set('gf-funded', funded);
+  set('gf-partial', partial);
+  set('gf-unfunded', unfunded);
+  set('gf-gap', fmt(totalGap));
+
+  // Stressor Banner
+  const stressorBanner = document.getElementById('stressorBanner');
+  const stressors = results.filter(g => g.status === 'unfunded' && g.priority <= 2);
+  if (stressors.length > 0) {
+    stressorBanner.classList.remove('hidden');
+    stressorBanner.innerHTML = `
+      <div class="stressor-banner">
+        <div class="stressor-title">⚠️ Goal Stressors Detected</div>
+        <div style="font-size:13px;opacity:0.9">These high-priority goals are significantly underfunded and require immediate action:</div>
+        <div class="stressor-list">
+          ${stressors.map(g => `
+            <div class="stressor-item">
+              ${CAT_EMOJI[g.category] || '⭐'} ${g.name}
+              <span style="margin-left:6px;opacity:0.7;font-family:'JetBrains Mono',monospace;font-size:11px">Gap: ${fmt(g.gap)}</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    stressorBanner.classList.add('hidden');
+  }
+
+  // Goal cards
+  const container = document.getElementById('goalCardsContainer');
+  if (results.length === 0) {
+    container.innerHTML = '<div class="insight insight-blue">Add goals and accounts to see funding analysis.</div>';
+  } else {
+    container.innerHTML = results.map(g => {
+      const barColor = g.status === 'funded' ? 'var(--green2)' : g.status === 'partial' ? 'var(--gold2)' : 'var(--red2)';
+      return `
+      <div class="goal-card ${g.status}" style="margin-bottom:14px">
+        <div class="flex-between" style="margin-bottom:6px">
+          <div class="goal-card-title">${CAT_EMOJI[g.category] || '⭐'} ${g.name}</div>
+          <span class="goal-badge ${g.status}">${g.status === 'funded' ? '✓ Funded' : g.status === 'partial' ? '~ Partial' : '✕ Underfunded'}</span>
+        </div>
+        <div class="flex-between" style="font-size:12px;color:var(--text3);margin-bottom:10px">
+          <span>Target: <strong style="color:var(--navy)">${fmt(g.amount)}</strong></span>
+          <span>Timeline: <strong style="color:var(--navy)">${g.years} yr${g.years > 1 ? 's' : ''}</strong></span>
+          <span>${PRIORITY_LABELS[g.priority]}</span>
+        </div>
+        <div class="progress-bar-bg" style="height:8px;margin-bottom:6px">
+          <div class="progress-bar-fill" style="width:${Math.round(g.pct * 100)}%;background:${barColor}"></div>
+        </div>
+        <div class="flex-between" style="font-size:11px;color:var(--text3);margin-bottom:8px">
+          <span>Capital covers: <strong style="color:var(--navy);font-family:'JetBrains Mono',monospace">${fmtShort(g.futureOfEarmark)}</strong> (${Math.round(g.pct * 100)}%)</span>
+          ${g.gap > 0 ? `<span class="neg">Remaining gap: ${fmt(g.gap)}</span>` : '<span class="pos">Fully covered by capital ✓</span>'}
+        </div>
+        <div style="background:var(--bg2);border-radius:8px;padding:10px 12px;font-size:12px">
+          <div class="flex-between" style="margin-bottom:4px">
+            <span style="color:var(--text3)">📦 Capital earmarked (today)</span>
+            <span style="font-family:'JetBrains Mono',monospace;color:var(--blue2)">${fmt(g.earmark)}</span>
+          </div>
+          <div class="flex-between" style="margin-bottom:6px">
+            <span style="color:var(--text3)">📈 Grows to by goal date</span>
+            <span style="font-family:'JetBrains Mono',monospace;color:var(--green2)">${fmt(g.futureOfEarmark)}</span>
+          </div>
+          ${g.gap > 0 ? `
+          <div style="border-top:1px solid var(--border);padding-top:6px" class="flex-between">
+            <span style="color:var(--text2);font-weight:500">💰 Monthly savings still needed</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${g.status === 'partial' ? 'var(--gold)' : 'var(--red2)'}; font-size:13px">${fmt(g.monthlyNeeded)}/mo</span>
+          </div>
+          <div class="flex-between" style="margin-top:3px">
+            <span style="font-size:11px;color:var(--text3)">vs. starting from scratch</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);text-decoration:line-through">${fmt(g.monthlyFromScratch)}/mo</span>
+          </div>` : `
+          <div style="border-top:1px solid var(--border);padding-top:6px;color:var(--green);font-weight:500;font-size:12px">
+            ✅ No additional monthly savings needed for this goal
+          </div>`}
+        </div>
+        ${g.notes ? `<div style="font-size:11px;color:var(--text3);margin-top:6px;font-style:italic">${g.notes}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // Monthly savings breakdown
+  const breakdown = document.getElementById('monthlySavingsBreakdown');
+  if (results.length > 0) {
+    const { monthly: currentMonthly } = computeTotals();
+    const totalNeeded = results.reduce((s, g) => s + g.monthlyNeeded, 0);
+    breakdown.innerHTML = results.map(g => `
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-header">
+          <span class="progress-bar-label">${CAT_EMOJI[g.category] || '⭐'} ${g.name}</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            ${g.monthlyFromScratch > g.monthlyNeeded ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text4);text-decoration:line-through">${fmt(g.monthlyFromScratch)}/mo</span>` : ''}
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:${g.monthlyNeeded === 0 ? 'var(--green2)' : 'var(--navy)'}">${g.monthlyNeeded === 0 ? '✓ Covered' : fmt(g.monthlyNeeded)+'/mo'}</span>
+          </div>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" style="width:${totalNeeded > 0 ? Math.round(g.monthlyNeeded / totalNeeded * 100) : 0}%;background:${PRIORITY_COLORS[g.priority]}"></div>
+        </div>
+      </div>`).join('') +
+      `<hr><div class="flex-between" style="font-size:13px;font-weight:600;color:var(--navy);margin-top:8px">
+        <span>Total Required</span>
+        <span style="font-family:'JetBrains Mono',monospace">${fmt(totalNeeded)}/mo</span>
+      </div>
+      <div class="flex-between" style="font-size:12px;color:var(--text3)">
+        <span>Currently Saving</span>
+        <span style="font-family:'JetBrains Mono',monospace;color:${currentMonthly >= totalNeeded ? 'var(--green2)' : 'var(--red2)'}">${fmt(currentMonthly)}/mo</span>
+      </div>
+      <div class="flex-between" style="font-size:12px;margin-top:4px">
+        <span>${currentMonthly >= totalNeeded ? '✓ Surplus' : '⚠ Shortfall'}</span>
+        <span style="font-family:'JetBrains Mono',monospace;color:${currentMonthly >= totalNeeded ? 'var(--green2)' : 'var(--red2)'}">${currentMonthly >= totalNeeded ? '+' : ''}${fmt(currentMonthly - totalNeeded)}/mo</span>
+      </div>`;
+  }
+
+  // Priority matrix
+  const matrix = document.getElementById('priorityMatrix');
+  if (results.length > 0) {
+    const shortTerm = results.filter(g => g.years <= 2);
+    const midTerm = results.filter(g => g.years > 2 && g.years <= 4);
+    const longTerm = results.filter(g => g.years > 4);
+    const renderGoalPill = g => `<span style="display:inline-flex;align-items:center;gap:5px;background:${g.status==='funded'?'#d1fae5':g.status==='partial'?'#fef3c7':'#fee2e2'};border:1px solid ${g.status==='funded'?'#a7f3d0':g.status==='partial'?'#fde68a':'#fca5a5'};border-radius:6px;padding:4px 10px;font-size:11px;font-weight:500;margin:3px">
+      ${CAT_EMOJI[g.category]||'⭐'} ${g.name} <span style="font-family:'JetBrains Mono',monospace;font-size:10px">${fmt(g.amount)}</span>
+    </span>`;
+    matrix.innerHTML = `
+    <div class="g3">
+      <div style="background:var(--bg2);border-radius:10px;padding:16px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">⚡ Short-Term (1–2 yrs)</div>
+        ${shortTerm.length ? shortTerm.map(renderGoalPill).join('') : '<span style="font-size:12px;color:var(--text3)">No goals in this range</span>'}
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:16px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">🔄 Mid-Range (3–4 yrs)</div>
+        ${midTerm.length ? midTerm.map(renderGoalPill).join('') : '<span style="font-size:12px;color:var(--text3)">No goals in this range</span>'}
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:16px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">🚀 Longer-Horizon (5–7 yrs)</div>
+        ${longTerm.length ? longTerm.map(renderGoalPill).join('') : '<span style="font-size:12px;color:var(--text3)">No goals in this range</span>'}
+      </div>
+    </div>`;
+  } else {
+    matrix.innerHTML = '<div class="muted" style="font-size:13px">Add goals to populate the priority matrix.</div>';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER ALLOCATION ARCHITECTURE (Tab 4)
+═══════════════════════════════════════════════ */
+function renderAllocation() {
+  const results = computeGoalFunding();
+  const score = computeHealthScore(results);
+  const { totalPortfolio, taxable, taxAdv } = computeTotals();
+
+  // Score ring
+  const arc = 477.5;
+  const offset = arc - (score / 100) * arc;
+  const arcEl = document.getElementById('scoreArc');
+  const color = score >= 85 ? '#27a05a' : score >= 70 ? '#d4a843' : score >= 50 ? '#e07230' : '#cc3333';
+  if (arcEl) {
+    arcEl.style.strokeDashoffset = offset;
+    arcEl.style.stroke = color;
+  }
+  set('scoreNum', score > 0 ? score : '—');
+  const grade = score >= 85 ? 'Excellent' : score >= 70 ? 'On Track' : score >= 50 ? 'Needs Work' : score > 0 ? 'At Risk' : '—';
+  const scoreGrade = document.getElementById('scoreGrade');
+  if (scoreGrade) { scoreGrade.textContent = grade; scoreGrade.style.color = color; }
+  if (document.getElementById('scoreNum')) document.getElementById('scoreNum').style.color = color;
+
+  // Score factors
+  const factorsEl = document.getElementById('scoreFactors');
+  if (factorsEl && state.goals.length > 0 && state.accounts.length > 0) {
+    const funded = results.filter(g => g.status === 'funded').length;
+    const f1 = Math.round((funded / state.goals.length) * 100);
+    const f2 = Math.min(100, new Set(state.accounts.map(a => a.type)).size * 20);
+    const nearTermGoals = state.goals.filter(g => g.years <= 2).reduce((s, g) => s + g.amount, 0);
+    const f3 = nearTermGoals > 0 ? Math.min(100, Math.round(taxable / nearTermGoals * 100)) : 80;
+    const totalMonthlyNeeded = results.reduce((s, g) => s + g.monthlyNeeded, 0);
+    const { monthly } = computeTotals();
+    const f4 = totalMonthlyNeeded > 0 ? Math.min(100, Math.round(monthly / totalMonthlyNeeded * 100)) : 50;
+    factorsEl.innerHTML = [
+      { label: 'Goal Coverage', score: f1 },
+      { label: 'Diversification', score: f2 },
+      { label: 'Liquidity Buffer', score: f3 },
+      { label: 'Monthly Savings Rate', score: f4 },
+    ].map(f => {
+      const c = f.score >= 80 ? 'var(--green2)' : f.score >= 60 ? 'var(--gold2)' : 'var(--red2)';
+      return `<div class="progress-bar-wrap">
+        <div class="progress-bar-header">
+          <span class="progress-bar-label">${f.label}</span>
+          <strong style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${c}">${f.score}/100</strong>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${f.score}%;background:${c}"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Allocation Summary
+  const allocSummary = document.getElementById('allocationSummary');
+  if (state.goals.length > 0) {
+    const safety = state.goals.filter(g => g.years <= 2).reduce((s, g) => s + g.amount, 0);
+    const stability = state.goals.filter(g => g.years > 2 && g.years <= 4).reduce((s, g) => s + g.amount, 0);
+    const growth = state.goals.filter(g => g.years > 4).reduce((s, g) => s + g.amount, 0);
+    const total = safety + stability + growth || 1;
+    const sp = Math.round(safety / total * 100), stp = Math.round(stability / total * 100), gp = Math.round(growth / total * 100);
+    allocSummary.innerHTML = [
+      { label: 'Safety Bucket (HYSA/CD)', pct: sp, color: '#eab308' },
+      { label: 'Stability Bucket (Bonds/Balanced)', pct: stp, color: '#3b82f6' },
+      { label: 'Growth Bucket (Equities/Roth)', pct: gp, color: '#22c55e' },
+    ].map(({ label, pct, color }) => `
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-header">
+          <span class="progress-bar-label">${label}</span>
+          <span class="progress-bar-val">${pct}%</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>`).join('');
+  }
+
+  // Tier goal assignments
+  const tierAssignments = { 1: [], 2: [], 3: [], 4: [] };
+  results.forEach(g => {
+    if (g.category === 'college' || g.category === 'emergency') tierAssignments[4].push(g);
+    else if (g.years <= 2) tierAssignments[1].push(g);
+    else if (g.years <= 4) tierAssignments[2].push(g);
+    else tierAssignments[3].push(g);
+  });
+
+  const totalN = results.length || 1;
+  for (let t = 1; t <= 4; t++) {
+    const pctEl = document.getElementById(`tier${t}-pct`);
+    const goalsEl = document.getElementById(`tier${t}-goals`);
+    if (pctEl) pctEl.textContent = tierAssignments[t].length > 0 ? Math.round(tierAssignments[t].length / totalN * 100) + '% of goals' : 'No goals assigned';
+    if (goalsEl) {
+      goalsEl.innerHTML = tierAssignments[t].length > 0
+        ? tierAssignments[t].map(g => `
+          <div class="flex-between" style="padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:6px">
+            <span style="font-size:12px;font-weight:500">${CAT_EMOJI[g.category] || '⭐'} ${g.name}</span>
+            <div class="flex-gap">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">${fmt(g.amount)} · ${g.years}yr</span>
+              <span class="goal-badge ${g.status}">${g.status === 'funded' ? '✓' : g.status === 'partial' ? '~' : '✕'}</span>
+            </div>
+          </div>`).join('')
+        : '<span style="font-size:12px;color:var(--text3)">No goals assigned to this tier.</span>';
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   TAX OPTIMIZATION (Tab 5)
+═══════════════════════════════════════════════ */
+function renderTaxOptimization() {
+  const income = val('p-income');
+  const filing = val('p-filing');
+
+  // Marginal bracket
+  const bracketsSingle = [[0,0.10],[11600,0.12],[47150,0.22],[100525,0.24],[191950,0.32],[243725,0.35],[609350,0.37]];
+  const bracketsMarried = [[0,0.10],[23200,0.12],[94300,0.22],[201050,0.24],[383900,0.32],[487450,0.35],[731200,0.37]];
+  const brackets = filing === 'married' ? bracketsMarried : bracketsSingle;
+  let bracket = 0.10;
+  for (const [threshold, rate] of brackets) { if (income >= threshold) bracket = rate; }
+
+  // Cap gains rate
+  const cgSingle = income < 47025 ? 0 : income < 518900 ? 0.15 : 0.20;
+  const cgMarried = income < 94050 ? 0 : income < 583750 ? 0.15 : 0.20;
+  const capGains = filing === 'married' ? cgMarried : cgSingle;
+
+  set('tx-bracket', Math.round(bracket * 100) + '%');
+  set('tx-capgains', Math.round(capGains * 100) + '%');
+
+  const taxAdv = state.accounts.filter(a => ['roth-ira','hsa','529'].includes(a.type)).reduce((s, a) => s + a.value, 0);
+  set('tx-taxfree', fmt(taxAdv));
+
+  // Tax drag estimate
+  const taxableVal = state.accounts.filter(a => !['roth-ira','hsa','529','hysavings','money-market','ibonds'].includes(a.type)).reduce((s, a) => s + a.value, 0);
+  const avgDiv = 0.015; // 1.5% dividend yield assumption
+  const drag = taxableVal * avgDiv * capGains;
+  set('tx-drag', fmt(drag) + '/yr');
+
+  // Efficiency table
+  const taxTable = document.getElementById('taxEfficiencyTable');
+  if (state.accounts.length > 0) {
+    const rows = state.accounts.map(a => {
+      const r = a.returnRate !== null ? a.returnRate : DEFAULT_RETURNS[a.type] || 0.06;
+      let taxTreatment, efficiency;
+      if (['roth-ira'].includes(a.type)) { taxTreatment = '✅ Tax-Free Growth + Withdrawal'; efficiency = 100; }
+      else if (['hsa'].includes(a.type)) { taxTreatment = '✅ Triple Tax-Advantaged'; efficiency = 100; }
+      else if (['529'].includes(a.type)) { taxTreatment = '✅ Tax-Free (Qualified Use)'; efficiency = 95; }
+      else if (['hysavings','money-market','ibonds'].includes(a.type)) { taxTreatment = '⚠️ Ordinary Income on Interest'; efficiency = 40; }
+      else if (['brokerage','etfs','stocks','mutual-funds','reits'].includes(a.type)) { taxTreatment = '🔄 Cap Gains (LT preferred)'; efficiency = 70; }
+      else if (['bonds'].includes(a.type)) { taxTreatment = '⚠️ Ordinary Income'; efficiency = 45; }
+      else { taxTreatment = '🔄 Varies'; efficiency = 60; }
+      const c = efficiency >= 90 ? 'var(--green2)' : efficiency >= 60 ? 'var(--gold2)' : 'var(--red2)';
+      return `<tr>
+        <td><strong>${a.name}</strong></td>
+        <td><span class="tag ${ACCOUNT_TAG[a.type] || 'tag-other'}">${ACCOUNT_LABELS[a.type] || a.type}</span></td>
+        <td>${fmt(a.value)}</td>
+        <td style="font-size:12px">${taxTreatment}</td>
+        <td><div style="display:flex;align-items:center;gap:8px">
+          <div style="width:60px;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden">
+            <div style="width:${efficiency}%;height:100%;background:${c};border-radius:3px"></div>
+          </div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${c}">${efficiency}/100</span>
+        </div></td>
+      </tr>`;
+    }).join('');
+    taxTable.innerHTML = `<div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Account</th><th>Type</th><th>Balance</th><th>Tax Treatment</th><th>Efficiency</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   ACTION PLAN (Tab 6)
+═══════════════════════════════════════════════ */
+function renderActionPlan() {
+  if (state.goals.length === 0 && state.accounts.length === 0) return;
+
+  const results = computeGoalFunding();
+  const score = computeHealthScore(results);
+  const { totalPortfolio, monthly: currentMonthly } = computeTotals();
+  const totalNeeded = results.reduce((s, g) => s + g.monthlyNeeded, 0);
+  const stressors = results.filter(g => g.status === 'unfunded' && g.priority <= 2);
+  const partials = results.filter(g => g.status === 'partial');
+  const roth = state.accounts.filter(a => a.type === 'roth-ira');
+  const hsa = state.accounts.filter(a => a.type === 'hsa');
+  const savings = state.accounts.filter(a => ['hysavings','money-market'].includes(a.type));
+  const nearTermGoals = results.filter(g => g.years <= 2);
+  const liquidBalance = savings.reduce((s, a) => s + a.value, 0);
+  const nearTermNeeded = nearTermGoals.reduce((s, g) => s + g.amount, 0);
+
+  const actions = [];
+
+  // Critical stressors first
+  stressors.forEach(g => {
+    actions.push({
+      cls: 'insight-red',
+      text: `<strong>🚨 Critical Gap — ${g.name}:</strong> This ${PRIORITY_LABELS[g.priority].toLowerCase()} goal needs ${fmt(g.amount)} in ${g.years} year${g.years > 1 ? 's' : ''} but is significantly underfunded. You need <strong>${fmt(g.monthlyNeeded)}/month</strong> dedicated to this goal. Consider re-prioritizing discretionary spending immediately.`
+    });
+  });
+
+  // Savings gap
+  if (currentMonthly < totalNeeded) {
+    actions.push({ cls: 'insight-gold', text: `<strong>⚠️ Monthly Savings Gap:</strong> Your goals require <strong>${fmt(totalNeeded)}/month</strong> but you're currently saving <strong>${fmt(currentMonthly)}/month</strong> — a shortfall of <strong>${fmt(totalNeeded - currentMonthly)}/month</strong>. Identify expense reductions or income increases to close this gap.` });
+  }
+
+  // Liquidity
+  if (nearTermNeeded > 0 && liquidBalance < nearTermNeeded * 0.6) {
+    actions.push({ cls: 'insight-gold', text: `<strong>💧 Low Liquidity Buffer:</strong> You have ${fmt(liquidBalance)} in liquid cash vs. ${fmt(nearTermNeeded)} needed for short-term goals. Build your cash/HYSA balance to cover at least 60% of near-term goals before investing in growth assets.` });
+  }
+
+  // Roth IRA
+  if (roth.length === 0) {
+    actions.push({ cls: 'insight-blue', text: `<strong>📚 Open a Roth IRA:</strong> No Roth IRA detected. For 4–7 year goals, a Roth IRA provides tax-free growth with full access to contributions at any time. Contribute the maximum ($7,000/year) if income-eligible. This is your best medium-term growth vehicle.` });
+  }
+
+  // HSA
+  if (hsa.length === 0) {
+    actions.push({ cls: 'insight-teal', text: `<strong>🏥 Consider an HSA:</strong> If you have a High-Deductible Health Plan, an HSA is the most tax-efficient account available. Contributions are pre-tax, growth is tax-free, and withdrawals for medical are tax-free. Post-65, it works like a traditional IRA for non-medical use.` });
+  }
+
+  // Partial goals advice
+  partials.slice(0, 2).forEach(g => {
+    actions.push({ cls: 'insight-purple', text: `<strong>📈 Boost Funding — ${g.name}:</strong> This goal is ${Math.round(g.pct * 100)}% funded. You're on a path but need an extra <strong>${fmt(g.monthlyNeeded - currentMonthly / results.length)}/month</strong> to fully fund it. Consider automating this contribution to separate it from discretionary spending.` });
+  });
+
+  // General wealth building
+  if (score >= 70) {
+    actions.push({ cls: 'insight-green', text: `<strong>✅ Great Foundation:</strong> Your medium-term plan scores <strong>${score}/100</strong>. Continue your current savings trajectory, automate contributions, and review this plan annually or after any major life change (income shift, new family member, or real estate move).` });
+  }
+
+  // Tax optimization
+  const income = val('p-income');
+  if (income > 0 && roth.length > 0) {
+    actions.push({ cls: 'insight-blue', text: `<strong>💡 Asset Location:</strong> Place your highest-growth assets inside your Roth IRA (total stock market index fund) and keep more conservative/income assets in taxable accounts. Every dollar of tax-free growth in Roth is worth more than the same dollar in a taxable account.` });
+  }
+
+  // Automation tip
+  actions.push({ cls: 'insight-gold', text: `<strong>⚙️ Automate Everything:</strong> The #1 predictor of goal achievement is automation. Set up separate automatic transfers on payday — one for each goal category. Name accounts after goals. "Real Estate Down Payment" fund hits differently than "Savings Account 2."` });
+
+  const content = document.getElementById('actionPlanContent');
+  content.innerHTML = `
+    <div class="g5 mb20">
+      <div class="stat-card ${score >= 85 ? 'green' : score >= 70 ? 'gold' : score >= 50 ? 'orange' : 'red'}">
+        <div class="stat-label">Overall Score</div>
+        <div class="stat-value">${score}/100</div>
+        <div class="stat-sub">${score >= 85 ? 'Excellent' : score >= 70 ? 'On Track' : score >= 50 ? 'Needs Work' : 'At Risk'}</div>
+      </div>
+      <div class="stat-card ${stressors.length === 0 ? 'green' : 'red'}">
+        <div class="stat-label">Stressors</div>
+        <div class="stat-value">${stressors.length}</div>
+        <div class="stat-sub">${stressors.length === 0 ? 'None detected' : 'Need attention'}</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Goals Tracked</div>
+        <div class="stat-value">${state.goals.length}</div>
+        <div class="stat-sub">${results.filter(g => g.status === 'funded').length} fully funded</div>
+      </div>
+      <div class="stat-card ${currentMonthly >= totalNeeded ? 'green' : 'gold'}">
+        <div class="stat-label">Monthly Gap</div>
+        <div class="stat-value">${currentMonthly >= totalNeeded ? '✓' : fmt(totalNeeded - currentMonthly)}</div>
+        <div class="stat-sub">${currentMonthly >= totalNeeded ? 'Savings sufficient' : 'Additional needed/mo'}</div>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-label">Portfolio</div>
+        <div class="stat-value">${fmtShort(totalPortfolio)}</div>
+        <div class="stat-sub">Mid-term accounts</div>
+      </div>
+    </div>
+    <div class="section-head mb20" style="margin-top:8px">
+      <div class="section-label">Priority <em style="color:var(--gold);font-style:italic">Actions</em></div>
+      <div class="section-rule"></div>
+      <span style="font-size:12px;color:var(--text3)">${actions.length} recommendations</span>
+    </div>
+    ${actions.map(a => `<div class="insight ${a.cls}">${a.text}</div>`).join('')}
+  `;
+}
+
+/* ═══════════════════════════════════════════════
+   LIQUIDITY SPECTRUM (Tab 2)
+═══════════════════════════════════════════════ */
+function renderLiquiditySpectrum() {
+  if (state.accounts.length === 0) return;
+  const tiers = [
+    { t: 1, label: 'Immediate', sub: 'Same day / T+0', color: '#22c55e', accounts: [] },
+    { t: 2, label: 'Near-Liquid', sub: '2–3 business days', color: '#3b82f6', accounts: [] },
+    { t: 3, label: 'Accessible', sub: 'With rules / restrictions', color: '#eab308', accounts: [] },
+    { t: 4, label: 'Purpose-Tied', sub: 'Specific use required', color: '#a855f7', accounts: [] },
+    { t: 5, label: 'Semi-Illiquid', sub: 'Lock-up / limited exit', color: '#ef4444', accounts: [] },
+  ];
+  state.accounts.forEach(a => {
+    const t = getLiquidityTier(a.type);
+    tiers[t - 1].accounts.push(a);
+  });
+  const spectrum = document.getElementById('liquiditySpectrum');
+  spectrum.innerHTML = tiers.map(tier => `
+    <div style="margin-bottom:12px">
+      <div class="flex-between" style="margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:10px;height:10px;border-radius:50%;background:${tier.color}"></div>
+          <strong style="font-size:12px">${tier.label}</strong>
+          <span style="font-size:11px;color:var(--text3)">${tier.sub}</span>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3)">${fmt(tier.accounts.reduce((s,a)=>s+a.value,0))}</span>
+      </div>
+      ${tier.accounts.length > 0
+        ? tier.accounts.map(a => `<span style="display:inline-flex;gap:6px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;margin:2px;font-size:11px;font-weight:500">${a.name} <span class="tag ${ACCOUNT_TAG[a.type]||'tag-other'}">${ACCOUNT_LABELS[a.type]||a.type}</span> <span style="font-family:'JetBrains Mono',monospace;color:var(--text3)">${fmt(a.value)}</span></span>`).join('')
+        : '<span style="font-size:11px;color:var(--text4)">No accounts in this tier</span>'}
+    </div>`).join('') ;
+}
+
+/* ═══════════════════════════════════════════════
+   CHARTS
+═══════════════════════════════════════════════ */
+let charts = {};
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+function renderAccountPieChart() {
+  destroyChart('accountPie');
+  const ctx = document.getElementById('accountPieChart');
+  if (!ctx || state.accounts.length === 0) return;
+  const COLORS = ['#d4a843','#2d6abf','#8b5cf6','#0d9488','#27a05a','#e07230','#cc3333','#3b82f6','#22c55e'];
+  charts['accountPie'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: state.accounts.map(a => a.name),
+      datasets: [{ data: state.accounts.map(a => a.value), backgroundColor: COLORS.slice(0, state.accounts.length), borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: { plugins: { legend: { position: 'bottom', labels: { font: { family: 'Outfit', size: 11 } } } }, cutout: '60%' }
+  });
+}
+
+function renderGrowthChart() {
+  destroyChart('growth');
+  const ctx = document.getElementById('growthChart');
+  if (!ctx || state.accounts.length === 0) return;
+  const COLORS = ['#d4a843','#2d6abf','#8b5cf6','#0d9488','#27a05a','#e07230','#cc3333'];
+  const years = [0, 1, 2, 3, 4, 5, 6, 7];
+  const datasets = state.accounts.slice(0, 6).map((a, i) => {
+    const r = a.returnRate !== null ? a.returnRate : DEFAULT_RETURNS[a.type] || 0.06;
+    const data = years.map(y => Math.round(fv(a.value, r, y, a.monthly * 12)));
+    return { label: a.name, data, borderColor: COLORS[i % COLORS.length], fill: false, tension: 0.3, borderWidth: 2, pointRadius: 3 };
+  });
+  charts['growth'] = new Chart(ctx, {
+    type: 'line',
+    data: { labels: years.map(y => `Yr ${y}`), datasets },
+    options: {
+      plugins: { legend: { position: 'bottom', labels: { font: { family: 'Outfit', size: 11 } } } },
+      scales: {
+        y: { ticks: { callback: v => fmtShort(v), font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { ticks: { font: { family: 'Outfit', size: 10 } } }
+      }
+    }
+  });
+}
+
+function renderFundingChart() {
+  destroyChart('funding');
+  const ctx = document.getElementById('fundingChart');
+  if (!ctx || state.goals.length === 0) return;
+  const results = computeGoalFunding();
+  charts['funding'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: results.map(g => g.name.length > 16 ? g.name.slice(0, 14) + '…' : g.name),
+      datasets: [
+        { label: 'Projected', data: results.map(g => Math.min(g.futureOfEarmark, g.amount)), backgroundColor: results.map(g => g.status === 'funded' ? '#27a05a' : g.status === 'partial' ? '#d4a843' : '#cc3333') },
+        { label: 'Target', data: results.map(g => g.amount), backgroundColor: 'rgba(0,0,0,0.05)', borderColor: results.map(g => PRIORITY_COLORS[g.priority]), borderWidth: 2, borderDash: [4, 4] }
+      ]
+    },
+    options: {
+      plugins: { legend: { position: 'top', labels: { font: { family: 'Outfit', size: 11 } } } },
+      scales: {
+        y: { ticks: { callback: v => fmtShort(v), font: { family: 'JetBrains Mono', size: 10 } } },
+        x: { ticks: { font: { family: 'Outfit', size: 10 } } }
+      }
+    }
+  });
+}
+
+function renderAllocationChart() {
+  destroyChart('alloc');
+  const ctx = document.getElementById('allocationChart');
+  if (!ctx || state.goals.length === 0) return;
+  const safety = state.goals.filter(g => g.years <= 2).reduce((s, g) => s + g.amount, 0);
+  const stability = state.goals.filter(g => g.years > 2 && g.years <= 4).reduce((s, g) => s + g.amount, 0);
+  const growth = state.goals.filter(g => g.years > 4).reduce((s, g) => s + g.amount, 0);
+  charts['alloc'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Safety (0–2yr)','Stability (2–4yr)','Growth (4–7yr)'],
+      datasets: [{ data: [safety, stability, growth], backgroundColor: ['#eab308','#3b82f6','#22c55e'], borderWidth: 2, borderColor: '#fff' }]
+    },
+    options: { plugins: { legend: { position: 'bottom', labels: { font: { family: 'Outfit', size: 11 } } } }, cutout: '55%' }
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   MASTER RECALC
+═══════════════════════════════════════════════ */
+function recalcAll() {
+  updateCashflow();
+  updateSummary();
+  renderGoals();
+  renderAccounts();
+  renderGoalFunding();
+  renderAllocation();
+  renderTaxOptimization();
+  renderActionPlan();
+  renderLiquiditySpectrum();
+  renderAccountPieChart();
+  renderGrowthChart();
+  renderFundingChart();
+  renderAllocationChart();
+}
+
+/* ═══════════════════════════════════════════════
+   SAVE / LOAD JSON
+═══════════════════════════════════════════════ */
+function saveToJSON() {
+  const data = {
+    version: '1.0',
+    tool: 'SYFR Medium-Term Wealth Builder',
+    savedAt: new Date().toISOString(),
+    profile: {
+      name: val('p-name'), age: val('p-age'), income: val('p-income'),
+      takehome: val('p-takehome'), expenses: val('p-expenses'),
+      filing: val('p-filing'), savingsRate: val('p-savingsRate'),
+      returnRate: val('p-returnRate'), inflation: val('p-inflation'),
+    },
+    goals: state.goals,
+    accounts: state.accounts,
+    nextGoalId: state.nextGoalId,
+    nextAccId: state.nextAccId,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const name = (val('p-name') || 'client').replace(/\s+/g, '-').toLowerCase();
+  a.download = `syfr-midterm-${name}-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('💾 Plan saved as JSON file');
+}
+
+function loadFromFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.profile) {
+        Object.entries(data.profile).forEach(([k, v]) => {
+          const el = document.getElementById('p-' + k);
+          if (el) el.value = v;
+        });
+      }
+      if (data.goals) { state.goals = data.goals; state.nextGoalId = data.nextGoalId || state.goals.length + 1; }
+      if (data.accounts) { state.accounts = data.accounts; state.nextAccId = data.nextAccId || state.accounts.length + 1; }
+      recalcAll();
+      showToast('📂 Plan loaded successfully');
+    } catch (err) {
+      showToast('❌ Error loading file. Make sure it is a valid SYFR JSON plan.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+/* ═══════════════════════════════════════════════
+   PDF REPORT
+═══════════════════════════════════════════════ */
+function generateReport() {
+  const results = computeGoalFunding();
+  const score = computeHealthScore(results);
+  const { totalPortfolio, taxable, taxAdv, monthly } = computeTotals();
+  const totalNeeded = state.goals.reduce((s, g) => s + g.amount, 0);
+  const p = {
+    name: val('p-name') || 'Client',
+    age: val('p-age'),
+    income: val('p-income'),
+    returnRate: val('p-returnRate'),
+    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+  };
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>SYFR Medium-Term Plan — ${p.name}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#fff;color:#1a1612;font-family:'Outfit',sans-serif;font-size:12px;line-height:1.5}
+    .page{max-width:900px;margin:0 auto;padding:48px;page-break-after:always}
+    h1{font-family:'Libre Baskerville',serif;font-size:28px;color:#0f1f35;margin-bottom:6px}
+    h2{font-family:'Libre Baskerville',serif;font-size:18px;color:#0f1f35;margin:24px 0 10px}
+    .header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #ddd8ce;padding-bottom:20px;margin-bottom:28px}
+    .logo{font-family:'Libre Baskerville',serif;font-size:22px;color:#0f1f35}
+    .logo span{color:#b8922a;font-style:italic}
+    .sub{font-size:11px;color:#8a7e6e;margin-top:2px;font-family:'JetBrains Mono',monospace}
+    .meta{text-align:right;font-size:11px;color:#8a7e6e}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+    .stat{background:#f5f2ec;border-radius:8px;padding:14px;border-left:3px solid #d4a843}
+    .stat-l{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8a7e6e;margin-bottom:4px}
+    .stat-v{font-family:'Libre Baskerville',serif;font-size:22px;color:#0f1f35}
+    .stat-s{font-size:10px;color:#8a7e6e}
+    table{width:100%;border-collapse:collapse;margin:12px 0}
+    th{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8a7e6e;padding:0 10px 8px;text-align:left;border-bottom:2px solid #ddd8ce}
+    td{padding:9px 10px;border-bottom:1px solid #ede9e0;font-size:11px}
+    .funded{color:#27a05a;font-weight:700}
+    .partial{color:#d4a843;font-weight:700}
+    .unfunded{color:#cc3333;font-weight:700}
+    .insight{padding:10px 14px;border-radius:8px;font-size:11px;line-height:1.7;margin-bottom:8px;border-left:3px solid}
+    .gold{background:#fffbeb;border-color:#d4a843;color:#78350f}
+    .green{background:#f0fdf4;border-color:#27a05a;color:#14532d}
+    .red{background:#fef2f2;border-color:#cc3333;color:#7f1d1d}
+    .blue{background:#eff6ff;border-color:#2d6abf;color:#1e3a8a}
+    .footer{display:flex;justify-content:space-between;font-size:9px;color:#b8ae9e;margin-top:40px;padding-top:12px;border-top:1px solid #ddd8ce}
+    @media print{.page{padding:32px;max-width:100%}}
+  </style></head><body>
+  <div class="page">
+    <div class="header">
+      <div><div class="logo">Start Your <span>Finances Right</span></div><div class="sub">MEDIUM-TERM WEALTH BUILDER REPORT</div></div>
+      <div class="meta"><strong>${p.name}</strong> · Age ${p.age}<br>${p.date}</div>
+    </div>
+    <h1>Medium-Term Financial <em style="font-style:italic">Goals Plan</em></h1>
+    <p style="font-size:12px;color:#4a4236;margin:8px 0 24px">1–7 Year Horizon · ${state.goals.length} Goals Tracked · ${score}/100 Health Score</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-l">Portfolio</div><div class="stat-v">${fmtShort(totalPortfolio)}</div><div class="stat-s">All mid-term accounts</div></div>
+      <div class="stat"><div class="stat-l">Total Goals</div><div class="stat-v">${fmt(totalNeeded)}</div><div class="stat-s">Sum of targets</div></div>
+      <div class="stat"><div class="stat-l">Health Score</div><div class="stat-v">${score}/100</div><div class="stat-s">${score>=85?'Excellent':score>=70?'On Track':score>=50?'Needs Work':'At Risk'}</div></div>
+      <div class="stat"><div class="stat-l">Monthly Gap</div><div class="stat-v">${monthly >= results.reduce((s,g)=>s+g.monthlyNeeded,0) ? '✓' : fmt(results.reduce((s,g)=>s+g.monthlyNeeded,0)-monthly)}</div><div class="stat-s">${monthly >= results.reduce((s,g)=>s+g.monthlyNeeded,0) ? 'Sufficient' : 'Needed/mo'}</div></div>
+    </div>
+    <h2>Goals &amp; Funding Status</h2>
+    <table><thead><tr><th>Goal</th><th>Target</th><th>Timeline</th><th>Priority</th><th>Projected</th><th>Gap</th><th>Status</th><th>Mo. Needed</th></tr></thead><tbody>
+    ${results.map(g=>`<tr><td><strong>${g.name}</strong></td><td style="font-family:'JetBrains Mono',monospace">${fmt(g.amount)}</td><td>${g.years} yr</td><td>${PRIORITY_LABELS[g.priority]}</td><td style="font-family:'JetBrains Mono',monospace">${fmt(g.futureOfEarmark)}</td><td class="${g.gap>0?'unfunded':'funded'}" style="font-family:'JetBrains Mono',monospace">${g.gap>0?'-'+fmt(g.gap):'✓'}</td><td class="${g.status}">${g.status.toUpperCase()}</td><td style="font-family:'JetBrains Mono',monospace">${fmt(g.monthlyNeeded)}/mo</td></tr>`).join('')}
+    </tbody></table>
+    <h2>Accounts &amp; Holdings</h2>
+    <table><thead><tr><th>Account</th><th>Type</th><th>Balance</th><th>Monthly Contrib.</th><th>Return</th></tr></thead><tbody>
+    ${state.accounts.map(a=>{const r=a.returnRate!==null?a.returnRate:DEFAULT_RETURNS[a.type]||0.06;return`<tr><td><strong>${a.name}</strong>${a.notes?`<br><span style="color:#8a7e6e;font-size:10px">${a.notes}</span>`:''}</td><td>${ACCOUNT_LABELS[a.type]||a.type}</td><td style="font-family:'JetBrains Mono',monospace">${fmt(a.value)}</td><td style="font-family:'JetBrains Mono',monospace">${fmt(a.monthly)}/mo</td><td>${(r*100).toFixed(1)}%</td></tr>`}).join('')}
+    </tbody></table>
+    <div class="footer"><span>Start Your Finances Right · Confidential Client Report</span><span>${p.date}</span></div>
+  </div>
+  <div class="page">
+    <div class="header">
+      <div><div class="logo">Start Your <span>Finances Right</span></div><div class="sub">MEDIUM-TERM WEALTH BUILDER REPORT</div></div>
+      <div class="meta"><strong>${p.name}</strong> · Age ${p.age}<br>${p.date}</div>
+    </div>
+    <h2>Priority Action Plan</h2>
+    ${results.filter(g=>g.status==='unfunded'&&g.priority<=2).map(g=>`<div class="insight red">🚨 <strong>Critical Gap — ${g.name}:</strong> ${PRIORITY_LABELS[g.priority]} goal needs ${fmt(g.amount)} in ${g.years} year${g.years>1?'s':''}. Monthly required: <strong>${fmt(g.monthlyNeeded)}/month</strong>.</div>`).join('')}
+    <div class="insight gold">💡 <strong>Monthly Savings Overview:</strong> Your goals require <strong>${fmt(results.reduce((s,g)=>s+g.monthlyNeeded,0))}/month</strong> total. You are currently saving <strong>${fmt(monthly)}/month</strong>.</div>
+    <div class="insight blue">📊 <strong>Portfolio Health:</strong> Score of ${score}/100. Tax-advantaged accounts hold ${fmt(taxAdv)} (${totalPortfolio>0?Math.round(taxAdv/totalPortfolio*100):0}% of portfolio). Liquid assets: ${fmt(taxable)}.</div>
+    <h2>Allocation Architecture</h2>
+    ${[{t:1,label:'Safety Bucket (0–2 yrs)',desc:'Cash, HYSA, CDs, Money Market',years:[1,2]},{t:2,label:'Stability Bucket (2–4 yrs)',desc:'Bonds, balanced funds, I-Bonds',years:[3,4]},{t:3,label:'Growth Bucket (4–7 yrs)',desc:'Index funds, ETFs, Roth IRA',years:[5,6,7]}].map(tier=>{
+      const tierGoals=results.filter(g=>tier.years.includes(g.years)&&g.category!=='college'&&g.category!=='emergency');
+      return `<div style="background:#f5f2ec;border-radius:8px;padding:14px;margin-bottom:10px">
+        <div style="font-weight:700;color:#0f1f35;margin-bottom:4px">Tier ${tier.t}: ${tier.label}</div>
+        <div style="font-size:11px;color:#8a7e6e;margin-bottom:8px">${tier.desc}</div>
+        ${tierGoals.length>0?tierGoals.map(g=>`<span style="background:#fff;border:1px solid #ddd8ce;border-radius:4px;padding:3px 8px;font-size:10px;margin-right:6px">${g.name} · ${fmt(g.amount)}</span>`).join(''):'<span style="font-size:11px;color:#b8ae9e">No goals assigned</span>'}
+      </div>`;
+    }).join('')}
+    <div class="insight" style="background:#f0fdfa;border-color:#0d9488;color:#0d5e5e;margin-top:16px">
+      <strong>Important Disclosure:</strong> This plan is for informational purposes only and does not constitute investment, tax, or legal advice. All projections are estimates. Consult a qualified financial professional before making investment decisions. All data entered remains private and local to your device.
+    </div>
+    <div class="footer"><span>Start Your Finances Right · Confidential Client Report</span><span>${p.date}</span></div>
+  </div>
+  <script>window.onload=()=>window.print();<\/script></body></html>`;
+
+  const win = window.open('', '_blank');
+  if (!win) { alert('Please allow popups to generate the PDF report.'); return; }
+  win.document.write(html);
+  win.document.close();
+  showToast('📄 Report ready — use Ctrl+P / Cmd+P to save as PDF');
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+recalcAll();
+</script>
+</body>
+</html>
