@@ -6,8 +6,15 @@ A collection of free, open-source personal finance tools that run entirely in yo
 
 ## Tools
 
+| | Tool | Link |
+|---|---|---|
+| 🚨 | One Shock Away — Financial Fragility Analyzer | [Open →](https://YOUR_USERNAME.github.io/finance-tools/one-shock-away.html) |
+| 📈 | Medium-Term Wealth Builder | [Open →](https://YOUR_USERNAME.github.io/finance-tools/medium-term-wealth-builder.html) |
+| 🏦 | Retirement Planner | [Open →](https://YOUR_USERNAME.github.io/finance-tools/retirement-planner-saving.html) |
+| ⚖️ | Systematic Risk Diversifier | [Open →](https://YOUR_USERNAME.github.io/finance-tools/systematic-risk-diversifier.html) |
+
 ### 🚨 One Shock Away — Financial Fragility Analyzer
-`one-shock-away.html`
+[**▶ Open Tool**](https://YOUR_USERNAME.github.io/finance-tools/one-shock-away.html) &nbsp;·&nbsp; `one-shock-away.html`
 
 Maps your true financial fragility — how close you are to a crisis if one thing goes wrong (job loss, medical bill, unexpected expense). Input your income stability, monthly burn rate, debt obligations, and asset coverage to get a scored dashboard and a prioritized action plan.
 
@@ -24,7 +31,7 @@ Maps your true financial fragility — how close you are to a crisis if one thin
 ---
 
 ### 📈 Medium-Term Wealth Builder
-`medium-term-wealth-builder.html`
+[**▶ Open Tool**](https://YOUR_USERNAME.github.io/finance-tools/medium-term-wealth-builder.html) &nbsp;·&nbsp; `medium-term-wealth-builder.html`
 
 Bridges the gap between daily cashflow and long-term retirement planning — the 1–7 year horizon that most tools ignore. Define specific goals (house down payment, emergency fund, education), map them to accounts by liquidity tier, and get a funding analysis with monthly savings targets and an allocation architecture.
 
@@ -38,7 +45,7 @@ Bridges the gap between daily cashflow and long-term retirement planning — the
 ---
 
 ### 🏦 Retirement Planner
-`retirement-planner-saving.html`
+[**▶ Open Tool**](https://YOUR_USERNAME.github.io/finance-tools/retirement-planner-saving.html) &nbsp;·&nbsp; `retirement-planner-saving.html`
 
 Comprehensive retirement planning across all account types. Projects growth across tax buckets, models Roth conversions, calculates optimal withdrawal ordering, and produces a printable PDF report.
 
@@ -54,7 +61,7 @@ Comprehensive retirement planning across all account types. Projects growth acro
 ---
 
 ### ⚖️ Systematic Risk Diversifier
-`systematic-risk-diversifier.html`
+[**▶ Open Tool**](https://YOUR_USERNAME.github.io/finance-tools/systematic-risk-diversifier.html) &nbsp;·&nbsp; `systematic-risk-diversifier.html`
 
 Portfolio construction and backtesting tool covering 10 asset classes and 30 ETFs. Explains the difference between systematic risk (market-wide, addressed through asset class diversification) and unsystematic risk (company-specific, addressed through broad ETFs). Backtests 2014–2024 using historically calibrated return data — no live API calls.
 
