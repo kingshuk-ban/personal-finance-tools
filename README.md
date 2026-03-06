@@ -8,13 +8,13 @@ A collection of free, open-source personal finance tools that run entirely in yo
 
 | | Tool | Link |
 |---|---|---|
-| 🚨 | One Shock Away — Financial Fragility Analyzer | [Open →](https://YOUR_USERNAME.github.io/finance-tools/one-shock-away.html) |
-| 📈 | Medium-Term Wealth Builder | [Open →](https://YOUR_USERNAME.github.io/finance-tools/medium-term-wealth-builder.html) |
-| 🏦 | Retirement Planner | [Open →](https://YOUR_USERNAME.github.io/finance-tools/retirement-planner-saving.html) |
-| ⚖️ | Systematic Risk Diversifier | [Open →](https://YOUR_USERNAME.github.io/finance-tools/systematic-risk-diversifier.html) |
+| 🚨 | One Shock Away — Financial Fragility Analyzer | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/one-shock-away.html) |
+| 📈 | Medium-Term Wealth Builder | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/medium-term-wealth-builder.html) |
+| 🏦 | Retirement Planner | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/retirement-planner-saving.html) |
+| ⚖️ | Systematic Risk Diversifier | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/systematic-risk-diversifier.html) |
 
 ### 🚨 One Shock Away — Financial Fragility Analyzer
-[**▶ Open Tool**](https://YOUR_USERNAME.github.io/finance-tools/one-shock-away.html) &nbsp;·&nbsp; `one-shock-away.html`
+[**▶ Open Tool**](https://kingshuk-ban.github.io/personal-finance-tools/one-shock-away.html) &nbsp;·&nbsp; `one-shock-away.html`
 
 Maps your true financial fragility — how close you are to a crisis if one thing goes wrong (job loss, medical bill, unexpected expense). Input your income stability, monthly burn rate, debt obligations, and asset coverage to get a scored dashboard and a prioritized action plan.
 
@@ -31,7 +31,7 @@ Maps your true financial fragility — how close you are to a crisis if one thin
 ---
 
 ### 📈 Medium-Term Wealth Builder
-[**▶ Open Tool**](https://YOUR_USERNAME.github.io/finance-tools/medium-term-wealth-builder.html) &nbsp;·&nbsp; `medium-term-wealth-builder.html`
+[**▶ Open Tool**](https://kingshuk-ban.github.io/personal-finance-tools/medium-term-wealth-builder.html) &nbsp;·&nbsp; `medium-term-wealth-builder.html`
 
 Bridges the gap between daily cashflow and long-term retirement planning — the 1–7 year horizon that most tools ignore. Define specific goals (house down payment, emergency fund, education), map them to accounts by liquidity tier, and get a funding analysis with monthly savings targets and an allocation architecture.
 
@@ -45,7 +45,7 @@ Bridges the gap between daily cashflow and long-term retirement planning — the
 ---
 
 ### 🏦 Retirement Planner
-[**▶ Open Tool**](https://YOUR_USERNAME.github.io/finance-tools/retirement-planner-saving.html) &nbsp;·&nbsp; `retirement-planner-saving.html`
+[**▶ Open Tool**](https://kingshuk-ban.github.io/personal-finance-tools/retirement-planner-saving.html) &nbsp;·&nbsp; `retirement-planner-saving.html`
 
 Comprehensive retirement planning across all account types. Projects growth across tax buckets, models Roth conversions, calculates optimal withdrawal ordering, and produces a printable PDF report.
 
@@ -61,7 +61,7 @@ Comprehensive retirement planning across all account types. Projects growth acro
 ---
 
 ### ⚖️ Systematic Risk Diversifier
-[**▶ Open Tool**](https://YOUR_USERNAME.github.io/finance-tools/systematic-risk-diversifier.html) &nbsp;·&nbsp; `systematic-risk-diversifier.html`
+[**▶ Open Tool**](https://kingshuk-ban.github.io/personal-finance-tools/systematic-risk-diversifier.html) &nbsp;·&nbsp; `systematic-risk-diversifier.html`
 
 Portfolio construction and backtesting tool covering 10 asset classes and 30 ETFs. Explains the difference between systematic risk (market-wide, addressed through asset class diversification) and unsystematic risk (company-specific, addressed through broad ETFs). Backtests 2014–2024 using historically calibrated return data — no live API calls.
 
@@ -92,8 +92,8 @@ The Systematic Risk Diversifier uses embedded historical return data — it does
 Download any `.html` file and open it in a browser — no installation or build step required.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/finance-tools.git
-cd finance-tools
+git clone https://github.com/kingshuk-ban/personal-finance-tools.git
+cd personal-finance-tools
 open retirement-planner-saving.html        # macOS
 start retirement-planner-saving.html       # Windows
 xdg-open retirement-planner-saving.html    # Linux
@@ -102,7 +102,7 @@ xdg-open retirement-planner-saving.html    # Linux
 Or use the live hosted versions via GitHub Pages:
 
 ```
-https://YOUR_USERNAME.github.io/finance-tools/
+https://kingshuk-ban.github.io/personal-finance-tools/
 ```
 
 To enable GitHub Pages: **Settings → Pages → Deploy from branch → main → / (root) → Save**
