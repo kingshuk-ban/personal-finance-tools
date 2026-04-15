@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Financial Collision Map — 5-Year Stress Test</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f7f4;
+    --bg2: #ffffff;
+    --bg3: #f0f0eb;
+    --border: #e0dfd8;
+    --border-bright: #c8c7be;
+    --accent: #d4820a;
+    --accent2: #c93636;
+    --accent3: #1a9e96;
+    --text: #2a2a2a;
+    --text-dim: #7a7a70;
+    --text-bright: #0f0f0f;
+    --green: #1a8f5c;
+    --yellow: #c47b00;
+    --red: #c93636;
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Subtle texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 80px 0 60px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse at center, rgba(212,130,10,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    border: 1px solid rgba(212,130,10,0.35);
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    text-transform: uppercase;
+    background: rgba(212,130,10,0.07);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(38px, 6vw, 58px);
+    color: var(--text-bright);
+    line-height: 1.1;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+
+  h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+    text-transform: uppercase;
+  }
+
+  .hero-intro {
+    font-size: 17px;
+    color: #555550;
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+
+  .hero-intro strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
+    margin: 40px 0;
+  }
+
+  /* WARNING BOX */
+  .warning-box {
+    background: rgba(201, 54, 54, 0.05);
+    border: 1px solid rgba(201,54,54,0.2);
+    border-left: 3px solid var(--accent2);
+    padding: 20px 24px;
+    margin-bottom: 50px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .warning-box p {
+    font-size: 14px;
+    color: #8a3a3a;
+    line-height: 1.7;
+  }
+
+  .warning-box strong {
+    color: var(--accent2);
+    font-weight: 600;
+  }
+
+  /* SECTION HEADERS */
+  .section {
+    margin-bottom: 60px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(212,130,10,0.1);
+    border: 1px solid rgba(212,130,10,0.3);
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 {
+    font-family: var(--serif);
+    font-size: 26px;
+    color: var(--text-bright);
+    font-weight: 400;
+  }
+
+  /* INPUTS */
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  @media(max-width: 540px) {
+    .input-grid { grid-template-columns: 1fr; }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .field input, .field select {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 14px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .field input:focus, .field select:focus {
+    border-color: var(--accent);
+    background: #fffdf8;
+  }
+
+  .field input::placeholder { color: var(--text-dim); opacity: 0.5; }
+
+  .field select option { background: #ffffff; color: var(--text); }
+
+  .field-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    opacity: 0.7;
+  }
+
+  /* DECISION CARDS */
+  .decision-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .decision-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .decision-card.active {
+    border-color: rgba(212,130,10,0.5);
+    background: #fffcf5;
+  }
+
+  .decision-card input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .card-content {
+    flex: 1;
+  }
+
+  .card-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .card-inputs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .card-inputs input, .card-inputs select {
+    background: #f7f7f4;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    border-radius: 3px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .card-inputs input:focus, .card-inputs select:focus {
+    border-color: var(--accent);
+    background: #fffdf8;
+  }
+
+  .card-inputs input { width: 120px; }
+  .card-inputs select { width: 100px; }
+
+  .card-inputs label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    align-self: center;
+  }
+
+  /* SCENARIO CHECKBOXES */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  @media(max-width: 540px) {
+    .scenario-grid { grid-template-columns: 1fr; }
+  }
+
+  .scenario-item {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .scenario-item:hover { border-color: var(--border-bright); background: var(--bg3); }
+
+  .scenario-item.selected {
+    border-color: rgba(201,54,54,0.4);
+    background: rgba(201,54,54,0.04);
+  }
+
+  .scenario-item input[type="checkbox"] {
+    accent-color: var(--accent2);
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .scenario-label {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .scenario-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    font-family: var(--mono);
+  }
+
+  /* CALCULATE BUTTON */
+  .calc-btn {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    padding: 16px 40px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .calc-btn:hover { background: #c07500; transform: translateY(-1px); box-shadow: 0 8px 30px rgba(212,130,10,0.2); }
+  .calc-btn:active { transform: translateY(0); }
+
+  /* RESULTS */
+  #results {
+    display: none;
+    margin-top: 60px;
+  }
+
+  #results.show { display: block; }
+
+  .results-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .results-header h2 {
+    font-family: var(--serif);
+    font-size: 34px;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  /* RISK METER */
+  .risk-meter-wrap {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    padding: 28px 32px;
+    border-radius: 8px;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .risk-score-block {
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .risk-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .risk-score-display {
+    font-family: var(--serif);
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 4px;
+    transition: color 0.5s;
+  }
+
+  .risk-score-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.5s;
+  }
+
+  .risk-detail {
+    flex: 1;
+    min-width: 220px;
+  }
+
+  .risk-bar-track {
+    background: var(--bg3);
+    border-radius: 3px;
+    height: 5px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+
+  .risk-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s;
+    width: 0%;
+  }
+
+  /* ── COLLISION MATRIX ── */
+  .matrix-section {
+    margin-bottom: 36px;
+  }
+
+  .matrix-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .matrix-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .matrix-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 560px;
+  }
+
+  /* header row */
+  .matrix-table thead tr {
+    background: var(--bg3);
+  }
+
+  .matrix-table th {
+    padding: 12px 14px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .matrix-table th.metric-col {
+    text-align: left;
+    width: 155px;
+    color: var(--text-dim);
+  }
+
+  .matrix-table th.baseline-col {
+    color: var(--text);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border-bright);
+    background: #f5faf7;
+  }
+
+  .matrix-table th.combined-col {
+    color: var(--text-bright);
+    border-left: 1px solid var(--border-bright);
+    background: rgba(201,54,54,0.06);
+  }
+
+  /* body rows */
+  .matrix-table tbody tr {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  .matrix-table tbody tr:last-child { border-bottom: none; }
+  .matrix-table tbody tr:hover { background: var(--bg3); }
+
+  .matrix-table td {
+    padding: 13px 14px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    vertical-align: middle;
+  }
+
+  .matrix-table td.metric-name-cell {
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+    background: #fafaf8;
+  }
+
+  .metric-name-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-top: 2px;
+    font-family: var(--mono);
+  }
+
+  .matrix-table td.baseline-col {
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border-bright);
+    color: var(--green);
+    background: #f5faf7;
+  }
+
+  .matrix-table td.combined-col {
+    border-left: 1px solid var(--border-bright);
+    font-weight: 700;
+    font-size: 14px;
+    background: rgba(201,54,54,0.04);
+  }
+
+  /* cell status colors */
+  .cell-safe   { color: var(--green); }
+  .cell-warn   { color: var(--yellow); }
+  .cell-danger { color: var(--red); }
+  .cell-dim    { color: var(--text-dim); }
+
+  /* delta chips */
+  .delta {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-left: 4px;
+    vertical-align: middle;
+    font-weight: 600;
+  }
+  .delta-down { background: rgba(201,54,54,0.1); color: var(--red); }
+  .delta-up   { background: rgba(26,143,92,0.1); color: var(--green); }
+
+  /* FAILURE CALLOUTS */
+  .failure-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .failure-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .failure-item.danger { border-left-color: var(--red); background: rgba(201,54,54,0.03); }
+  .failure-item.warning { border-left-color: var(--yellow); background: rgba(196,123,0,0.03); }
+  .failure-item.safe { border-left-color: var(--green); background: rgba(26,143,92,0.03); }
+
+  .failure-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .failure-text { flex: 1; }
+  .failure-headline { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .failure-detail { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .failure-val { font-family: var(--mono); font-size: 13px; font-weight: 700; white-space: nowrap; align-self: center; }
+  .failure-item.danger .failure-val { color: var(--red); }
+  .failure-item.warning .failure-val { color: var(--yellow); }
+  .failure-item.safe .failure-val { color: var(--green); }
+
+  /* section label */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* TIMELINE */
+  .timeline-section {
+    margin-bottom: 28px;
+  }
+
+  .timeline-track {
+    position: relative;
+    padding: 20px 0 10px;
+  }
+
+  .timeline-axis {
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    margin: 30px 0 50px;
+  }
+
+  .timeline-events {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: default;
+  }
+
+  .tdot-circle {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+    margin-top: -5px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .tdot-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 10px;
+    white-space: nowrap;
+    text-align: center;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tdot-year {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    position: absolute;
+    top: -22px;
+    transform: translateX(-50%);
+    left: 50%;
+    white-space: nowrap;
+  }
+
+  .collision-zone {
+    position: absolute;
+    top: -8px;
+    height: 20px;
+    background: rgba(224,85,85,0.15);
+    border: 1px solid rgba(224,85,85,0.3);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .collision-zone-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--red);
+    white-space: nowrap;
+    padding: 0 4px;
+  }
+
+  /* YEAR LABELS */
+  .year-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* CTA */
+  .cta-section {
+    background: linear-gradient(135deg, rgba(212,130,10,0.07) 0%, rgba(212,130,10,0.03) 100%);
+    border: 1px solid rgba(212,130,10,0.25);
+    border-radius: 8px;
+    padding: 48px 40px;
+    text-align: center;
+    margin-top: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(212,130,10,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .cta-section h3 {
+    font-family: var(--serif);
+    font-size: 32px;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .cta-section p {
+    color: var(--text-dim);
+    font-size: 15px;
+    max-width: 460px;
+    margin: 0 auto 32px;
+    line-height: 1.8;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 16px 44px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .cta-btn:hover { background: #c07500; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(212,130,10,0.2); }
+
+  .cta-proof {
+    margin-top: 24px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    opacity: 0.8;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 40px 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    opacity: 0.6;
+  }
+
+  /* INSIGHT BOX */
+  .insight-box {
+    background: rgba(26,158,150,0.05);
+    border: 1px solid rgba(26,158,150,0.2);
+    border-left: 3px solid var(--accent3);
+    padding: 16px 20px;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 24px;
+  }
+
+  .insight-box p {
+    font-size: 13px;
+    color: #1a6a66;
+    line-height: 1.7;
+  }
+
+  .insight-box strong {
+    color: var(--accent3);
+  }
+
+  /* TIMELINE */
+  .timeline-section { margin-bottom: 28px; }
+
+  .timeline-track {
+    position: relative;
+    padding: 20px 0 10px;
+  }
+
+  .timeline-axis {
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    margin: 30px 0 50px;
+  }
+
+  .timeline-events {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: default;
+  }
+
+  .tdot-circle {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+    margin-top: -5px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .tdot-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 10px;
+    white-space: nowrap;
+    text-align: center;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tdot-year {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    position: absolute;
+    top: -22px;
+    transform: translateX(-50%);
+    left: 50%;
+    white-space: nowrap;
+  }
+
+  .collision-zone {
+    position: absolute;
+    top: -8px;
+    height: 20px;
+    background: rgba(201,54,54,0.1);
+    border: 1px solid rgba(201,54,54,0.25);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .collision-zone-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--red);
+    white-space: nowrap;
+    padding: 0 4px;
+  }
+
+  .year-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ANIMATE */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero { animation: fadeUp 0.7s ease forwards; }
+
+  /* PROGRESS STEPS */
+  .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 60px;
+    padding: 0;
+  }
+
+  .prog-step { display: flex; align-items: center; }
+
+  .prog-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+
+  .prog-step.done .prog-dot {
+    background: rgba(212,130,10,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .prog-line {
+    width: 40px; height: 1px;
+    background: var(--border);
+  }
+
+  .prog-step.done .prog-line { background: rgba(212,130,10,0.4); }
+
+  /* Slider */
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    border: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+
+  .range-display {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    text-align: right;
+    margin-top: 4px;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+
+  .selected-count {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .selected-count span { color: var(--accent2); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge">⚠ Interactive Stress Test</div>
+    <h1>The Financial<br><em>Collision Map</em></h1>
+    <p class="hero-sub">A 5-Year Risk Diagnostic for Tech Immigrants in the US</p>
+    <p class="hero-intro">
+      Most people plan each major decision <strong>in isolation</strong>. But your home purchase, visa status, college funding, and job change are not independent — they collide. This tool runs the numbers on your specific situation.
+    </p>
+    <div class="warning-box">
+      <p><strong>The risk is not one decision failing.</strong> The risk is 2–3 things going wrong in the same 18-month window — when you are most locked in and least liquid.</p>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar" id="progressBar">
+    <div class="prog-step done" data-step="1"><div class="prog-dot">1</div></div>
+    <div class="prog-line"></div>
+    <div class="prog-step" data-step="2"><div class="prog-dot">2</div></div>
+    <div class="prog-line"></div>
+    <div class="prog-step" data-step="3"><div class="prog-dot">3</div></div>
+    <div class="prog-line"></div>
+    <div class="prog-step" data-step="4"><div class="prog-dot">4</div></div>
+  </div>
+
+  <!-- STEP 1: FINANCIAL FOUNDATION -->
+  <div class="section visible" id="step1">
+    <div class="section-header">
+      <div class="step-num">01</div>
+      <h2>Your Financial Foundation</h2>
+    </div>
+    <p class="section-desc">Enter your current numbers. These feed every calculation below — be honest, not optimistic.</p>
+
+    <div class="input-grid">
+      <div class="field">
+        <label>Annual Household Income ($)</label>
+        <input type="number" id="income" placeholder="180000" value="180000">
+        <span class="field-hint">Total gross, both earners</span>
+      </div>
+      <div class="field">
+        <label>Monthly Expenses ($)</label>
+        <input type="number" id="expenses" placeholder="6500" value="6500">
+        <span class="field-hint">All fixed + variable costs</span>
+      </div>
+      <div class="field">
+        <label>Liquid Savings / Emergency Fund ($)</label>
+        <input type="number" id="savings" placeholder="85000" value="85000">
+        <span class="field-hint">Cash + easily accessible accounts</span>
+      </div>
+      <div class="field">
+        <label>Investment / Brokerage Portfolio ($)</label>
+        <input type="number" id="investments" placeholder="220000" value="220000">
+        <span class="field-hint">401k, brokerage, RSUs</span>
+      </div>
+      <div class="field">
+        <label>Monthly Mortgage / Rent ($)</label>
+        <input type="number" id="housing" placeholder="3800" value="3800">
+        <span class="field-hint">Current or planned</span>
+      </div>
+      <div class="field">
+        <label>Job Security Confidence</label>
+        <select id="jobSecurity">
+          <option value="high">High — Large stable employer</option>
+          <option value="medium" selected>Medium — Tech company, some uncertainty</option>
+          <option value="low">Low — Startup / dependent on visa</option>
+          <option value="critical">Critical — Active H-1B dependency / layoffs</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <p><strong>Quick check:</strong> Your emergency fund covers <span id="monthsCovered">—</span> months of expenses at baseline. The standard advice is 6 months — but for immigrants with visa dependency, <strong>12 months is the actual floor</strong>.</p>
+    </div>
+  </div>
+
+  <!-- STEP 2: MAP YOUR DECISIONS -->
+  <div class="section" id="step2">
+    <div class="section-header">
+      <div class="step-num">02</div>
+      <h2>Map Your Next 5 Years</h2>
+    </div>
+    <p class="section-desc">Check every major financial decision you are planning. Enter the year and approximate cost.</p>
+
+    <div class="decision-cards" id="decisionCards">
+
+      <div class="decision-card" data-key="home">
+        <input type="checkbox" id="chk_home" onchange="toggleCard(this)">
+        <div class="card-content">
+          <div class="card-label">🏠 Buy / Upgrade Home</div>
+          <div class="card-inputs">
+            <label>Year</label>
+            <select name="year" disabled>
+              <option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option>
+            </select>
+            <label>Price</label>
+            <input type="number" name="amount" placeholder="$ 900,000" disabled>
+            <label>Down</label>
+            <input type="number" name="down" placeholder="20%" disabled style="width:80px">
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card" data-key="college">
+        <input type="checkbox" id="chk_college" onchange="toggleCard(this)">
+        <div class="card-content">
+          <div class="card-label">🎓 College Funding Starts</div>
+          <div class="card-inputs">
+            <label>Year</label>
+            <select name="year" disabled>
+              <option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option>
+            </select>
+            <label>Annual Cost</label>
+            <input type="number" name="amount" placeholder="$ 45,000" disabled>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card" data-key="visa">
+        <input type="checkbox" id="chk_visa" onchange="toggleCard(this)">
+        <div class="card-content">
+          <div class="card-label">🌐 Career Move / Visa Change</div>
+          <div class="card-inputs">
+            <label>Year</label>
+            <select name="year" disabled>
+              <option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option>
+            </select>
+            <label>Income Impact</label>
+            <select name="impact" disabled>
+              <option value="0">No change</option>
+              <option value="10">–10% income</option>
+              <option value="20">–20% income</option>
+              <option value="40">–40% income (gap year)</option>
+              <option value="-15">+15% income</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card" data-key="invest">
+        <input type="checkbox" id="chk_invest" onchange="toggleCard(this)">
+        <div class="card-content">
+          <div class="card-label">📈 Major Investment / Reallocation</div>
+          <div class="card-inputs">
+            <label>Year</label>
+            <select name="year" disabled>
+              <option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option>
+            </select>
+            <label>Amount</label>
+            <input type="number" name="amount" placeholder="$ 50,000" disabled>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision-card" data-key="other">
+        <input type="checkbox" id="chk_other" onchange="toggleCard(this)">
+        <div class="card-content">
+          <div class="card-label">⚡ Other Major Expense</div>
+          <div class="card-inputs">
+            <label>Year</label>
+            <select name="year" disabled>
+              <option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option>
+            </select>
+            <label>Amount</label>
+            <input type="number" name="amount" placeholder="$ 30,000" disabled>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 3: BREAK THE PLAN -->
+  <div class="section" id="step3">
+    <div class="section-header">
+      <div class="step-num">03</div>
+      <h2>Break the Plan</h2>
+    </div>
+    <p class="section-desc">Now stress-test it. Select 2–3 scenarios that could realistically happen to you. Real risk is not one thing going wrong — it's the combination.</p>
+
+    <div class="selected-count">Selected: <span id="scenarioCount">0</span> / recommend 2–3</div>
+
+    <div class="scenario-grid">
+      <div class="scenario-item" onclick="toggleScenario(this)" data-id="jobLoss">
+        <input type="checkbox">
+        <div>
+          <div class="scenario-label">💼 Job Loss</div>
+          <div class="scenario-desc">6–12 months gap in income</div>
+        </div>
+      </div>
+      <div class="scenario-item" onclick="toggleScenario(this)" data-id="marketDown">
+        <input type="checkbox">
+        <div>
+          <div class="scenario-label">📉 Market Downturn –30%</div>
+          <div class="scenario-desc">Portfolio loses significant value</div>
+        </div>
+      </div>
+      <div class="scenario-item" onclick="toggleScenario(this)" data-id="collegeEarly">
+        <input type="checkbox">
+        <div>
+          <div class="scenario-label">📚 College Starts Early</div>
+          <div class="scenario-desc">1–2 years ahead of plan</div>
+        </div>
+      </div>
+      <div class="scenario-item" onclick="toggleScenario(this)" data-id="visaForce">
+        <input type="checkbox">
+        <div>
+          <div class="scenario-label">🌐 Forced Relocation / Visa Issue</div>
+          <div class="scenario-desc">Must sell home or break lease</div>
+        </div>
+      </div>
+      <div class="scenario-item" onclick="toggleScenario(this)" data-id="healthEmergency">
+        <input type="checkbox">
+        <div>
+          <div class="scenario-label">🏥 Health / Family Emergency</div>
+          <div class="scenario-desc">$30–80K unexpected expense</div>
+        </div>
+      </div>
+      <div class="scenario-item" onclick="toggleScenario(this)" data-id="rateRise">
+        <input type="checkbox">
+        <div>
+          <div class="scenario-label">📈 Mortgage Rates Rise</div>
+          <div class="scenario-desc">Qualifying becomes harder; costs up</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: STRESS SLIDER -->
+  <div class="section" id="step4">
+    <div class="section-header">
+      <div class="step-num">04</div>
+      <h2>Stress Intensity</h2>
+    </div>
+    <p class="section-desc">How severe is the scenario? Adjust from mild disruption to worst-case cascade.</p>
+    <div class="field">
+      <label>Stress Level</label>
+      <input type="range" id="stressLevel" min="1" max="10" value="5" oninput="updateStressDisplay(this.value)">
+      <div class="range-display" id="stressDisplay">5 / 10 — Moderate Disruption</div>
+    </div>
+
+    <button class="calc-btn" onclick="runCalculation()">
+      ⚡ Run My Collision Stress Test
+    </button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results">
+
+    <div class="results-header">
+      <div class="badge">Stress Test Results</div>
+      <h2>Where Your Plan Breaks</h2>
+    </div>
+
+    <!-- RISK SCORE BAR -->
+    <div class="risk-meter-wrap">
+      <div class="risk-score-block">
+        <div class="risk-label">Fragility Score</div>
+        <div class="risk-score-display" id="riskScore">—</div>
+        <div class="risk-score-label" id="riskLabel">—</div>
+      </div>
+      <div class="risk-detail">
+        <div class="risk-bar-track">
+          <div class="risk-bar-fill" id="riskBar"></div>
+        </div>
+        <div id="riskSummary" style="font-size:13px;color:var(--text-dim);line-height:1.6;"></div>
+      </div>
+    </div>
+
+    <!-- COLLISION MATRIX -->
+    <div class="matrix-section">
+      <div class="matrix-title">The Collision Matrix — 5 Numbers, Every Scenario</div>
+      <div class="matrix-wrap">
+        <table class="matrix-table">
+          <thead>
+            <tr id="matrixHeader">
+              <!-- filled by JS -->
+            </tr>
+          </thead>
+          <tbody id="matrixBody">
+            <!-- filled by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--text-dim);text-align:right;">
+        Each column = that event alone. Final column = all selected events together.
+      </div>
+    </div>
+
+    <!-- FAILURE CALLOUTS -->
+    <div class="section-label">Where it actually breaks</div>
+    <div class="failure-list" id="failureList"></div>
+
+    <!-- TIMELINE -->
+    <div class="timeline-section">
+      <div class="section-label">Decision timeline &amp; collision zones</div>
+      <div style="background:#ffffff;border:1px solid var(--border);border-radius:6px;padding:24px 20px 16px;box-shadow:0 1px 4px rgba(0,0,0,0.05)">
+        <div class="timeline-track">
+          <div class="timeline-axis" id="timelineAxis">
+            <div class="timeline-events" id="timelineEvents"></div>
+          </div>
+          <div class="year-labels">
+            <span>2025</span><span>2026</span><span>2027</span><span>2028</span><span>2029</span><span>2030</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSIGHT -->
+    <div class="insight-box" id="finalInsight" style="margin-top:28px;"></div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-eyebrow">📌 Your Next Step</div>
+      <h3>If this made you pause — that is the point.</h3>
+      <p>Most people discover these risks after they are already locked in. A 90-minute Financial Diagnostic maps your full collision surface, identifies hidden trade-offs, and gives you a sequenced action plan.</p>
+      <a href="https://calendly.com/startyourfinancesright/30min" target="_blank" rel="noopener" class="cta-btn">Book a 90-Minute Financial Diagnostic →</a>
+      <div class="cta-proof">No generic advice. We work through your actual numbers.</div>
+    </div>
+
+  </div>
+
+  <div class="footer">The Financial Collision Map · Built for mid-career tech immigrants navigating high-stakes decisions</div>
+</div>
+
+<script>
+// ── LIVE PREVIEW ──
+function updateMonthsCovered() {
+  const savings = +document.getElementById('savings').value || 0;
+  const expenses = +document.getElementById('expenses').value || 1;
+  const months = (savings / expenses).toFixed(1);
+  const el = document.getElementById('monthsCovered');
+  if(el) {
+    el.textContent = months + ' months';
+    el.style.color = months >= 12 ? 'var(--green)' : months >= 6 ? 'var(--yellow)' : 'var(--red)';
+  }
+}
+
+['savings','expenses'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateMonthsCovered);
+});
+updateMonthsCovered();
+
+// ── TOGGLE DECISION CARDS ──
+function toggleCard(checkbox) {
+  const card = checkbox.closest('.decision-card');
+  const inputs = card.querySelectorAll('input[type="number"], select');
+  inputs.forEach(el => el.disabled = !checkbox.checked);
+  card.classList.toggle('active', checkbox.checked);
+}
+
+// ── TOGGLE SCENARIOS ──
+let selectedScenarios = new Set();
+
+function toggleScenario(el) {
+  const cb = el.querySelector('input[type="checkbox"]');
+  const id = el.dataset.id;
+  cb.checked = !cb.checked;
+  el.classList.toggle('selected', cb.checked);
+  if(cb.checked) selectedScenarios.add(id);
+  else selectedScenarios.delete(id);
+  document.getElementById('scenarioCount').textContent = selectedScenarios.size;
+}
+
+// ── STRESS DISPLAY ──
+const stressLabels = {
+  1:'1 / 10 — Minor Inconvenience', 2:'2 / 10 — Noticeable Friction',
+  3:'3 / 10 — Manageable Stress', 4:'4 / 10 — Significant Pressure',
+  5:'5 / 10 — Moderate Disruption', 6:'6 / 10 — Serious Challenge',
+  7:'7 / 10 — High Stress', 8:'8 / 10 — Severe Impact',
+  9:'9 / 10 — Near-Crisis', 10:'10 / 10 — Worst-Case Cascade'
+};
+function updateStressDisplay(v) {
+  document.getElementById('stressDisplay').textContent = stressLabels[v];
+}
+
+// ── INTERSECTION OBSERVER ──
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      const stepNum = e.target.id.replace('step','');
+      if(stepNum) updateProgress(+stepNum);
+    }
+  });
+}, { threshold: 0.1 });
+sections.forEach(s => observer.observe(s));
+
+function updateProgress(step) {
+  document.querySelectorAll('.prog-step').forEach((el, i) => {
+    el.classList.toggle('done', (i+1) <= step);
+  });
+}
+
+// ── FORMAT CURRENCY ──
+function fmt(n) {
+  if(Math.abs(n) >= 1000) return (n < 0 ? '–$' : '$') + Math.abs(Math.round(n)).toLocaleString();
+  return (n < 0 ? '–$' : '$') + Math.abs(Math.round(n));
+}
+function fmtMo(n) {
+  if(n === null || n === undefined) return '—';
+  return (n < 0 ? '–$' : '$') + Math.abs(Math.round(n)).toLocaleString() + '/mo';
+}
+function fmtMths(n) {
+  if(n === null || n === undefined) return '—';
+  return (n < 0 ? '–' : '') + Math.abs(n).toFixed(1) + ' mo';
+}
+function fmtX(n) {
+  if(n === null || n === undefined) return '—';
+  return n.toFixed(2) + 'x';
+}
+
+// Color class for a metric value
+function metricClass(metric, val) {
+  if(metric === 'cashFlow') return val > 1500 ? 'cell-safe' : val > 0 ? 'cell-warn' : 'cell-danger';
+  if(metric === 'runway')   return val >= 12 ? 'cell-safe' : val >= 6 ? 'cell-warn' : 'cell-danger';
+  if(metric === 'liquidity')return val > 0 ? (val > 30000 ? 'cell-safe' : 'cell-warn') : 'cell-danger';
+  if(metric === 'portfolio')return val > 0 ? 'cell-safe' : 'cell-danger'; // relative shown separately
+  if(metric === 'dscr')     return val >= 2.5 ? 'cell-safe' : val >= 1.5 ? 'cell-warn' : 'cell-danger';
+  return 'cell-dim';
+}
+
+function deltaChip(base, current, lowerIsBetter) {
+  const diff = current - base;
+  if(Math.abs(diff) < 0.5) return '';
+  const pct = base !== 0 ? Math.round(Math.abs(diff / base) * 100) : 0;
+  const isWorse = lowerIsBetter ? diff > 0 : diff < 0;
+  const cls = isWorse ? 'delta-down' : 'delta-up';
+  const sign = diff > 0 ? '+' : '–';
+  return `<span class="delta ${cls}">${sign}${pct}%</span>`;
+}
+
+// ── COMPUTE STATE for a given set of shocks ──
+// shocks: { incomeReducPct, liquidityOneTime, portfolioLossPct, monthlyExpenseAdd }
+function computeState(base, shocks) {
+  const { monthlyIncome, expenses, savings, investments, housing } = base;
+  const incomeMult = 1 - (shocks.incomeReducPct || 0) / 100;
+  const mi = monthlyIncome * incomeMult;
+  const mo_exp = expenses + (shocks.monthlyExpenseAdd || 0);
+  const cashFlow = mi - mo_exp;
+  const liq = savings - (shocks.liquidityOneTime || 0);
+  const runway = liq / mo_exp;
+  const port = investments * (1 - (shocks.portfolioLossPct || 0) / 100);
+  const dscr = housing > 0 ? mi / housing : 99;
+  return { cashFlow, runway, liquidity: liq, portfolio: port, dscr };
+}
+
+// ── SCENARIO SHOCK DEFINITIONS ──
+function getScenarioShocks(id, base, decisions, s) {
+  const { monthlyIncome, investments, housing } = base;
+  switch(id) {
+    case 'jobLoss': {
+      const gapMonths = Math.round(3 + s * 9);
+      return {
+        label: '💼 Job Loss',
+        incomeReducPct: 60 * s,
+        liquidityOneTime: monthlyIncome * gapMonths * s * 0.4,
+        portfolioLossPct: 0,
+        monthlyExpenseAdd: 0,
+        note: `~${gapMonths}-month income disruption`
+      };
+    }
+    case 'marketDown': {
+      const pct = Math.round((15 + s * 20));
+      return {
+        label: '📉 Market –' + pct + '%',
+        incomeReducPct: 0,
+        liquidityOneTime: 0,
+        portfolioLossPct: pct,
+        monthlyExpenseAdd: 0,
+        note: `Portfolio loses ${fmt(investments * pct / 100)}`
+      };
+    }
+    case 'collegeEarly': {
+      const collegeDec = decisions.find(d => d.key === 'college');
+      const annualCost = (collegeDec && collegeDec.amount) ? collegeDec.amount : 45000;
+      return {
+        label: '📚 College Early',
+        incomeReducPct: 0,
+        liquidityOneTime: annualCost * (1 + s * 0.2),
+        portfolioLossPct: 0,
+        monthlyExpenseAdd: Math.round(annualCost / 12 * 0.5),
+        note: `+${fmt(annualCost)}/yr ahead of plan`
+      };
+    }
+    case 'visaForce': {
+      const reloCost = Math.round(25000 + s * 40000);
+      return {
+        label: '🌐 Visa/Relo',
+        incomeReducPct: 15 * s,
+        liquidityOneTime: reloCost,
+        portfolioLossPct: 0,
+        monthlyExpenseAdd: 0,
+        note: `${fmt(reloCost)} relocation + income gap`
+      };
+    }
+    case 'healthEmergency': {
+      const cost = Math.round(30000 + s * 50000);
+      return {
+        label: '🏥 Health Emerg.',
+        incomeReducPct: 0,
+        liquidityOneTime: cost,
+        portfolioLossPct: 0,
+        monthlyExpenseAdd: 0,
+        note: `${fmt(cost)} out-of-pocket`
+      };
+    }
+    case 'rateRise': {
+      const add = Math.round(housing * (0.08 + s * 0.12));
+      return {
+        label: '📈 Rate Rise',
+        incomeReducPct: 0,
+        liquidityOneTime: 0,
+        portfolioLossPct: 0,
+        monthlyExpenseAdd: add,
+        note: `+${fmt(add)}/mo mortgage cost`
+      };
+    }
+    default: return null;
+  }
+}
+
+// ── DECISIONS SHOCK (home purchase + college + invest as capital events) ──
+function getDecisionShocks(decisions, base) {
+  let liquidityOneTime = 0;
+  let monthlyExpenseAdd = 0;
+  let hasHome = false;
+  decisions.forEach(d => {
+    if(d.key === 'home') {
+      const downAmt = d.amount * (d.down || 0.2);
+      liquidityOneTime += downAmt;
+      // New mortgage vs old housing — if amount provided, estimate new mortgage payment
+      if(d.amount > 0) {
+        const mortgagePmt = Math.round(d.amount * 0.8 / 360 * (1 + 0.065/12) * 12); // rough 6.5% 30yr
+        monthlyExpenseAdd += Math.max(0, mortgagePmt - base.housing);
+      }
+      hasHome = true;
+    } else if(d.key === 'college' && d.amount > 0) {
+      monthlyExpenseAdd += Math.round(d.amount / 12);
+    } else if(d.key === 'invest' && d.amount > 0) {
+      liquidityOneTime += d.amount;
+    } else if(d.amount > 0) {
+      liquidityOneTime += d.amount;
+    }
+  });
+  return { liquidityOneTime, monthlyExpenseAdd };
+}
+
+// ── MAIN CALCULATION ──
+function runCalculation() {
+  const income = +document.getElementById('income').value || 180000;
+  const expenses = +document.getElementById('expenses').value || 6500;
+  const savings = +document.getElementById('savings').value || 85000;
+  const investments = +document.getElementById('investments').value || 220000;
+  const housing = +document.getElementById('housing').value || 3800;
+  const jobSecurity = document.getElementById('jobSecurity').value;
+  const stressLevel = +document.getElementById('stressLevel').value;
+  const s = stressLevel / 10;
+
+  const monthlyIncome = income / 12;
+  const base = { monthlyIncome, expenses, savings, investments, housing };
+
+  // Gather decisions
+  const decisions = [];
+  document.querySelectorAll('.decision-card').forEach(card => {
+    const cb = card.querySelector('input[type="checkbox"]');
+    if(!cb.checked) return;
+    const key = card.dataset.key;
+    const yearEl = card.querySelector('select[name="year"]');
+    const amtEl = card.querySelector('input[name="amount"]');
+    const downEl = card.querySelector('input[name="down"]');
+    const impactEl = card.querySelector('select[name="impact"]');
+    decisions.push({
+      key,
+      year: yearEl ? +yearEl.value : 2026,
+      amount: amtEl ? (+amtEl.value || 0) : 0,
+      down: downEl ? (+downEl.value || 20)/100 : 0.2,
+      impact: impactEl ? +impactEl.value : 0
+    });
+  });
+
+  const scenarioIds = Array.from(selectedScenarios);
+
+  // ── BASELINE STATE ──
+  const baseline = computeState(base, {});
+
+  // ── DECISIONS-ONLY STATE (home/college/invest committed, no stress events) ──
+  const decShocks = getDecisionShocks(decisions, base);
+
+  // ── PER-SCENARIO STATES ──
+  const scenarioShocks = scenarioIds.map(id => getScenarioShocks(id, base, decisions, s)).filter(Boolean);
+
+  // Individual columns: decisions committed + one stress event
+  const individualStates = scenarioShocks.map(sh => ({
+    label: sh.label,
+    note: sh.note,
+    state: computeState(base, {
+      incomeReducPct: sh.incomeReducPct,
+      liquidityOneTime: decShocks.liquidityOneTime + sh.liquidityOneTime,
+      portfolioLossPct: sh.portfolioLossPct,
+      monthlyExpenseAdd: decShocks.monthlyExpenseAdd + sh.monthlyExpenseAdd
+    })
+  }));
+
+  // ── COMBINED STATE ── (all shocks together, decisions committed)
+  const combinedShocks = scenarioShocks.reduce((acc, sh) => ({
+    incomeReducPct: acc.incomeReducPct + (sh.incomeReducPct || 0),
+    liquidityOneTime: acc.liquidityOneTime + (sh.liquidityOneTime || 0),
+    portfolioLossPct: Math.min(90, acc.portfolioLossPct + (sh.portfolioLossPct || 0)),
+    monthlyExpenseAdd: acc.monthlyExpenseAdd + (sh.monthlyExpenseAdd || 0)
+  }), { incomeReducPct: 0, liquidityOneTime: 0, portfolioLossPct: 0, monthlyExpenseAdd: 0 });
+
+  combinedShocks.liquidityOneTime += decShocks.liquidityOneTime;
+  combinedShocks.monthlyExpenseAdd += decShocks.monthlyExpenseAdd;
+  combinedShocks.incomeReducPct = Math.min(95, combinedShocks.incomeReducPct);
+
+  const combinedState = computeState(base, combinedShocks);
+
+  // ── RISK SCORE ──
+  const secMult = { high: 0.7, medium: 1.0, low: 1.3, critical: 1.6 }[jobSecurity] || 1.0;
+  let riskScore = 15;
+  if(combinedState.cashFlow < 0) riskScore += 28;
+  else if(combinedState.cashFlow < 1000) riskScore += 18;
+  else if(combinedState.cashFlow < 2000) riskScore += 8;
+  if(combinedState.runway < 3) riskScore += 24;
+  else if(combinedState.runway < 6) riskScore += 15;
+  else if(combinedState.runway < 12) riskScore += 7;
+  riskScore += scenarioIds.length * 4;
+  const yearMap = {};
+  decisions.forEach(d => { yearMap[d.year] = (yearMap[d.year]||0)+1; });
+  const maxStack = Math.max(0, ...Object.values(yearMap));
+  if(maxStack >= 3) riskScore += 14;
+  else if(maxStack >= 2) riskScore += 7;
+  riskScore *= secMult;
+  riskScore = Math.min(99, Math.max(5, Math.round(riskScore)));
+
+  // ── RENDER ──
+  const resultsEl = document.getElementById('results');
+  resultsEl.classList.add('show');
+  resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Risk score
+  let riskColor, riskLabelText, riskSummaryText;
+  if(riskScore >= 68) {
+    riskColor = 'var(--red)'; riskLabelText = 'HIGH FRAGILITY';
+    riskSummaryText = 'Multiple failure points activate simultaneously. Your system breaks before you can recover. This requires sequencing changes now — not after you are locked in.';
+  } else if(riskScore >= 42) {
+    riskColor = 'var(--yellow)'; riskLabelText = 'MODERATE FRAGILITY';
+    riskSummaryText = 'Your plan survives individual shocks but shows stress when events combine. There are timing gaps and hidden dependencies that need explicit management.';
+  } else {
+    riskColor = 'var(--green)'; riskLabelText = 'LOW FRAGILITY';
+    riskSummaryText = 'Your plan holds under the selected scenarios. Confirm your sequencing is intentional, not accidental — every resilient plan is the result of explicit trade-offs.';
+  }
+
+  document.getElementById('riskScore').textContent = riskScore;
+  document.getElementById('riskScore').style.color = riskColor;
+  document.getElementById('riskLabel').textContent = riskLabelText;
+  document.getElementById('riskLabel').style.color = riskColor;
+  document.getElementById('riskSummary').textContent = riskSummaryText;
+  document.getElementById('riskBar').style.width = riskScore + '%';
+  document.getElementById('riskBar').style.background = riskColor;
+
+  // ── BUILD COLLISION MATRIX ──
+  const metrics = [
+    { id: 'cashFlow', label: 'Monthly Cash Flow', sub: 'Income minus all expenses', fmt: fmtMo, lower: false },
+    { id: 'runway',   label: 'Emergency Runway',  sub: 'Liquid savings ÷ expenses', fmt: fmtMths, lower: false },
+    { id: 'liquidity',label: 'Liquid Savings',    sub: 'Cash available after events', fmt: fmt, lower: false },
+    { id: 'portfolio',label: 'Portfolio Value',   sub: 'Investments after market hit', fmt: fmt, lower: false },
+    { id: 'dscr',     label: 'Debt Coverage',     sub: 'Income ÷ housing payment', fmt: fmtX, lower: false },
+  ];
+
+  // Build columns: Baseline, then each individual, then Combined
+  const cols = [
+    { label: 'BASELINE', sublabel: 'Today', state: baseline, isBaseline: true, isCombined: false },
+    ...individualStates.map(is => ({ label: is.label, sublabel: is.note, state: is.state, isBaseline: false, isCombined: false })),
+    { label: '⚡ COMBINED', sublabel: scenarioIds.length > 0 ? 'All events together' : 'No events selected', state: combinedState, isBaseline: false, isCombined: true }
+  ];
+
+  // Header
+  const header = document.getElementById('matrixHeader');
+  header.innerHTML = `<th class="metric-col">Metric</th>` +
+    cols.map(c => `<th class="${c.isBaseline ? 'baseline-col' : c.isCombined ? 'combined-col' : ''}">${c.label}<br><span style="font-weight:400;opacity:0.6;font-size:9px;letter-spacing:0">${c.sublabel || ''}</span></th>`).join('');
+
+  // Body
+  const body = document.getElementById('matrixBody');
+  body.innerHTML = metrics.map(m => {
+    const baseVal = baseline[m.id];
+    const cells = cols.map(c => {
+      const val = c.state[m.id];
+      const cls = metricClass(m.id, val);
+      const chip = c.isBaseline ? '' : deltaChip(baseVal, val, m.lower);
+      const colCls = c.isBaseline ? 'baseline-col' : c.isCombined ? 'combined-col' : '';
+      return `<td class="${colCls}"><span class="${cls}">${m.fmt(val)}</span>${chip}</td>`;
+    }).join('');
+    return `<tr>
+      <td class="metric-name-cell">${m.label}<div class="metric-name-sub">${m.sub}</div></td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  // ── FAILURE CALLOUTS ──
+  const fl = document.getElementById('failureList');
+  fl.innerHTML = '';
+  const failures = [];
+
+  if(combinedState.cashFlow < 0) {
+    failures.push({ sev: 'danger', icon: '🔴', headline: 'Cash flow turns negative',
+      detail: `You are spending ${fmt(Math.abs(combinedState.cashFlow))}/mo more than you earn. Every month draws down savings.`,
+      val: fmtMo(combinedState.cashFlow) });
+  } else if(combinedState.cashFlow < 1500) {
+    failures.push({ sev: 'warning', icon: '🟡', headline: 'Cash flow becomes dangerously thin',
+      detail: 'Less than $1,500/mo buffer means one unexpected bill tips you negative.',
+      val: fmtMo(combinedState.cashFlow) });
+  } else {
+    failures.push({ sev: 'safe', icon: '🟢', headline: 'Cash flow holds under stress',
+      detail: 'You maintain positive cash flow even with all selected events active.',
+      val: fmtMo(combinedState.cashFlow) });
+  }
+
+  if(combinedState.runway < 6) {
+    failures.push({ sev: 'danger', icon: '🔴', headline: 'Emergency fund falls below 6 months',
+      detail: `For immigrants with visa dependency, this is the critical floor. You have ${fmtMths(combinedState.runway)} under this scenario.`,
+      val: fmtMths(combinedState.runway) });
+  } else if(combinedState.runway < 12) {
+    failures.push({ sev: 'warning', icon: '🟡', headline: 'Runway below 12-month immigrant threshold',
+      detail: 'Standard advice says 6 months. Immigrants with H-1B or similar need 12 — a visa disruption adds months to job search.',
+      val: fmtMths(combinedState.runway) });
+  }
+
+  if(scenarioIds.includes('jobLoss') && scenarioIds.includes('marketDown')) {
+    failures.push({ sev: 'danger', icon: '🔴', headline: 'Forced to sell investments while they are down',
+      detail: 'Job loss depletes cash → you must liquidate investments at a loss to cover expenses. Double hit.',
+      val: 'Forced liquidation' });
+  }
+
+  if(maxStack >= 2) {
+    const collisionYears = Object.entries(yearMap).filter(([,v]) => v >= 2).map(([y]) => y);
+    failures.push({ sev: maxStack >= 3 ? 'danger' : 'warning', icon: maxStack >= 3 ? '🔴' : '🟡',
+      headline: `${maxStack} major decisions committed in the same year (${collisionYears.join(', ')})`,
+      detail: 'Stacked decisions mean capital is locked simultaneously — no buffer between commitments.',
+      val: maxStack + ' decisions' });
+  }
+
+  if(combinedState.dscr < 1.5) {
+    failures.push({ sev: 'danger', icon: '🔴', headline: 'Housing payment exceeds safe income ratio',
+      detail: `Debt service coverage drops to ${fmtX(combinedState.dscr)}. Standard underwriting minimum is 1.5x.`,
+      val: fmtX(combinedState.dscr) + ' DSCR' });
+  }
+
+  if(failures.length === 0) {
+    failures.push({ sev: 'safe', icon: '🟢', headline: 'No critical failure points detected',
+      detail: 'Your plan holds under the selected scenarios and stress level. Add more scenarios or increase stress intensity to find your real floor.',
+      val: 'Resilient' });
+  }
+
+  failures.forEach(f => {
+    fl.innerHTML += `
+      <div class="failure-item ${f.sev}">
+        <div class="failure-icon">${f.icon}</div>
+        <div class="failure-text">
+          <div class="failure-headline">${f.headline}</div>
+          <div class="failure-detail">${f.detail}</div>
+        </div>
+        <div class="failure-val">${f.val}</div>
+      </div>`;
+  });
+
+  // ── TIMELINE ──
+  const axis = document.getElementById('timelineEvents');
+  axis.innerHTML = '';
+  const currentYear = 2025;
+  const rangeYears = 5;
+  const colors = { home: 'var(--accent)', college: 'var(--accent3)', visa: 'var(--accent2)', invest: 'var(--green)', other: '#a78bfa' };
+  const labels = { home: 'Home', college: 'College', visa: 'Career/Visa', invest: 'Invest', other: 'Other' };
+
+  if(decisions.length > 0) {
+    decisions.forEach(d => {
+      const pct = Math.min(((d.year - currentYear) / rangeYears) * 100, 95);
+      const col = colors[d.key] || 'var(--accent)';
+      axis.innerHTML += `<div class="timeline-dot" style="left:${pct}%">
+        <div class="tdot-year">${d.year}</div>
+        <div class="tdot-circle" style="border-color:${col};background:${col}22"></div>
+        <div class="tdot-label" style="color:${col}">${labels[d.key]||d.key}</div>
+      </div>`;
+    });
+    Object.entries(yearMap).forEach(([yr, cnt]) => {
+      if(cnt >= 2) {
+        const pct = Math.min(((+yr - currentYear) / rangeYears) * 100, 90);
+        axis.innerHTML += `<div class="collision-zone" style="left:${Math.max(0,pct-6)}%;width:12%">
+          <div class="collision-zone-label">⚡ COLLISION</div>
+        </div>`;
+      }
+    });
+  }
+
+  // ── FINAL INSIGHT ──
+  const dangerCount = failures.filter(f => f.sev === 'danger').length;
+  const fi = document.getElementById('finalInsight');
+  if(dangerCount >= 2) {
+    fi.innerHTML = `<p><strong>⚠ Critical finding:</strong> ${dangerCount} failure points activate at the same time under this scenario. This is a structural sequencing problem, not a savings problem. The matrix above shows you exactly which events cascade into failure — and more importantly, which event triggers the chain.</p>`;
+  } else if(dangerCount === 1) {
+    fi.innerHTML = `<p><strong>⚠ One critical gap:</strong> There is a single high-severity break. It is addressable — but only before you are locked in. The right sequence of decisions removes this entirely.</p>`;
+  } else {
+    fi.innerHTML = `<p><strong>✓ Your baseline is solid</strong> — but every resilient plan was stress-tested before committing. The column above shows your combined floor. Make sure your sequencing is deliberate, not accidental.</p>`;
+  }
+
+  updateProgress(4);
+}
+</script>
+
+</body>
+</html>
