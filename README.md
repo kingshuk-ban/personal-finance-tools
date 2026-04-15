@@ -8,10 +8,31 @@ A collection of free, open-source personal finance tools that run entirely in yo
 
 | | Tool | Link |
 |---|---|---|
+| 💥 | Financial Collision Map — 5-Year Stress Test | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/financial-collision-map.html) |
 | 🚨 | One Shock Away — Financial Fragility Analyzer | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/one-shock-away.html) |
 | 📈 | Medium-Term Wealth Builder | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/medium-term-wealth-builder.html) |
 | 🏦 | Retirement Planner | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/retirement-planner-saving.html) |
 | ⚖️ | Systematic Risk Diversifier | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/systematic-risk-diversifier.html) |
+
+---
+
+### 💥 Financial Collision Map — 5-Year Stress Test
+[**▶ Open Tool**](https://kingshuk-ban.github.io/personal-finance-tools/financial-collision-map.html) &nbsp;·&nbsp; `financial-collision-map.html`
+
+Built for mid-career tech immigrants navigating high-stakes financial decisions — home purchase, college funding, career/visa changes — that don't happen in isolation. This tool stress-tests what happens when 2–3 things go wrong at the same time.
+
+Enter your financial foundation, map your planned decisions over 5 years, select realistic stress scenarios, and run the collision test. Results show a full matrix of 5 key financial metrics across every individual scenario and their combined impact — so you can see exactly where your plan holds and where it breaks.
+
+| Step | What it covers |
+|------|----------------|
+| 🏦 Financial Foundation | Income, expenses, savings, investments, housing cost, job security |
+| 🗓 Decision Map | Home purchase, college funding, career/visa change, investments — with year and amount |
+| 💥 Stress Scenarios | Job loss, market downturn, early college start, forced relocation, health emergency, rate rise |
+| ⚡ Collision Matrix | 5 metrics × every scenario individually + combined — baseline vs. stressed, with % delta |
+
+**The 5 metrics tracked:** Monthly Cash Flow · Emergency Runway · Liquid Savings · Portfolio Value · Debt Coverage Ratio
+
+---
 
 ### 🚨 One Shock Away — Financial Fragility Analyzer
 [**▶ Open Tool**](https://kingshuk-ban.github.io/personal-finance-tools/one-shock-away.html) &nbsp;·&nbsp; `one-shock-away.html`
@@ -94,9 +115,9 @@ Download any `.html` file and open it in a browser — no installation or build 
 ```bash
 git clone https://github.com/kingshuk-ban/personal-finance-tools.git
 cd personal-finance-tools
-open retirement-planner-saving.html        # macOS
-start retirement-planner-saving.html       # Windows
-xdg-open retirement-planner-saving.html    # Linux
+open financial-collision-map.html          # macOS
+start financial-collision-map.html         # Windows
+xdg-open financial-collision-map.html      # Linux
 ```
 
 Or use the live hosted versions via GitHub Pages:
@@ -113,9 +134,9 @@ To enable GitHub Pages: **Settings → Pages → Deploy from branch → main →
 
 Pure HTML, CSS, and JavaScript. No framework. No build step. No dependencies to install.
 
-- **Fonts:** Libre Baskerville (headings) · Outfit (body) · JetBrains Mono (numbers)
+- **Fonts:** DM Serif Display · IBM Plex Mono · DM Sans (Financial Collision Map) · Libre Baskerville · Outfit · JetBrains Mono (other tools)
 - **Charts:** Chart.js (allocation donut only — all other output is tables)
-- **Design system:** Navy / Gold / warm off-white palette, consistent across all tools
+- **Design system:** Warm off-white / deep amber / structured mono palette (Collision Map) · Navy / Gold (other tools)
 
 ---
 
