@@ -1152,8 +1152,8 @@
             </select>
             <label>Price</label>
             <input type="number" name="amount" placeholder="$ 900,000" disabled>
-            <label>Down</label>
-            <input type="number" name="down" placeholder="20%" disabled style="width:80px">
+            <label>Down %</label>
+            <input type="number" name="down" placeholder="20" disabled style="width:80px">
           </div>
         </div>
       </div>
@@ -1450,106 +1450,194 @@ function updateProgress(step) {
   });
 }
 
-// ── FORMAT CURRENCY ──
+// ── FORMAT HELPERS ──
 function fmt(n) {
+  if(n === null || n === undefined || isNaN(n)) return '—';
   if(Math.abs(n) >= 1000) return (n < 0 ? '–$' : '$') + Math.abs(Math.round(n)).toLocaleString();
   return (n < 0 ? '–$' : '$') + Math.abs(Math.round(n));
 }
 function fmtMo(n) {
-  if(n === null || n === undefined) return '—';
+  if(n === null || n === undefined || isNaN(n)) return '—';
   return (n < 0 ? '–$' : '$') + Math.abs(Math.round(n)).toLocaleString() + '/mo';
 }
 function fmtMths(n) {
-  if(n === null || n === undefined) return '—';
-  return (n < 0 ? '–' : '') + Math.abs(n).toFixed(1) + ' mo';
+  if(n === null || n === undefined || isNaN(n)) return '—';
+  if(n <= 0) return 'depleted';
+  return n.toFixed(1) + ' mo';
 }
 function fmtX(n) {
-  if(n === null || n === undefined) return '—';
+  if(n === null || n === undefined || isNaN(n)) return '—';
+  if(n >= 99) return 'N/A';
   return n.toFixed(2) + 'x';
 }
 
-// Color class for a metric value
+// ── MORTGAGE PAYMENT (standard amortization) ──
+// Returns monthly payment for a fully-amortizing 30-yr mortgage at 6.5%
+function calcMortgagePmt(principal, annualRate) {
+  const r = annualRate / 12;
+  const n = 360;
+  if(principal <= 0) return 0;
+  return principal * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+}
+
+// ── COLOR CLASS for a metric value ──
 function metricClass(metric, val) {
   if(metric === 'cashFlow') return val > 1500 ? 'cell-safe' : val > 0 ? 'cell-warn' : 'cell-danger';
   if(metric === 'runway')   return val >= 12 ? 'cell-safe' : val >= 6 ? 'cell-warn' : 'cell-danger';
-  if(metric === 'liquidity')return val > 0 ? (val > 30000 ? 'cell-safe' : 'cell-warn') : 'cell-danger';
-  if(metric === 'portfolio')return val > 0 ? 'cell-safe' : 'cell-danger'; // relative shown separately
+  if(metric === 'liquidity')return val > 50000 ? 'cell-safe' : val > 0 ? 'cell-warn' : 'cell-danger';
+  if(metric === 'portfolio')return val > 0 ? 'cell-safe' : 'cell-danger';
   if(metric === 'dscr')     return val >= 2.5 ? 'cell-safe' : val >= 1.5 ? 'cell-warn' : 'cell-danger';
   return 'cell-dim';
 }
 
-function deltaChip(base, current, lowerIsBetter) {
-  const diff = current - base;
-  if(Math.abs(diff) < 0.5) return '';
-  const pct = base !== 0 ? Math.round(Math.abs(diff / base) * 100) : 0;
-  const isWorse = lowerIsBetter ? diff > 0 : diff < 0;
+// ── DELTA CHIP — uses relative threshold (>=5% change) ──
+function deltaChip(baseVal, currentVal) {
+  if(baseVal === 0 || isNaN(baseVal) || isNaN(currentVal)) return '';
+  const diff = currentVal - baseVal;
+  const pct = Math.abs(diff / baseVal) * 100;
+  if(pct < 5) return ''; // ignore tiny changes
+  const isWorse = diff < 0; // lower is always worse for our 5 metrics
   const cls = isWorse ? 'delta-down' : 'delta-up';
   const sign = diff > 0 ? '+' : '–';
-  return `<span class="delta ${cls}">${sign}${pct}%</span>`;
+  return `<span class="delta ${cls}">${sign}${Math.round(pct)}%</span>`;
 }
 
-// ── COMPUTE STATE for a given set of shocks ──
-// shocks: { incomeReducPct, liquidityOneTime, portfolioLossPct, monthlyExpenseAdd }
+// ── COMPUTE STATE ──
+// shocks: {
+//   incomeReducPct  — % income reduction (0–100)
+//   liquidityOneTime — one-time cash drain from savings
+//   portfolioLossPct — % portfolio loss (0–100)
+//   housingAdd       — added monthly housing cost (affects DSCR + cash flow)
+//   otherExpenseAdd  — added monthly non-housing costs (affects cash flow only)
+// }
 function computeState(base, shocks) {
   const { monthlyIncome, expenses, savings, investments, housing } = base;
-  const incomeMult = 1 - (shocks.incomeReducPct || 0) / 100;
-  const mi = monthlyIncome * incomeMult;
-  const mo_exp = expenses + (shocks.monthlyExpenseAdd || 0);
-  const cashFlow = mi - mo_exp;
+  const reducPct = Math.min(100, Math.max(0, shocks.incomeReducPct || 0));
+  const mi = monthlyIncome * (1 - reducPct / 100);
+  const totalHousing = housing + (shocks.housingAdd || 0);
+  const totalExp = expenses + (shocks.housingAdd || 0) + (shocks.otherExpenseAdd || 0);
+  const cashFlow = mi - totalExp;
   const liq = savings - (shocks.liquidityOneTime || 0);
-  const runway = liq / mo_exp;
-  const port = investments * (1 - (shocks.portfolioLossPct || 0) / 100);
-  const dscr = housing > 0 ? mi / housing : 99;
+  const runway = totalExp > 0 ? liq / totalExp : 99;
+  const port = investments * (1 - Math.min(100, shocks.portfolioLossPct || 0) / 100);
+  const dscr = totalHousing > 0 ? mi / totalHousing : 99;
   return { cashFlow, runway, liquidity: liq, portfolio: port, dscr };
 }
 
+// ── MERGE SHOCKS (add two shock objects together) ──
+function mergeShocks(a, b) {
+  return {
+    incomeReducPct:  Math.min(95, (a.incomeReducPct  || 0) + (b.incomeReducPct  || 0)),
+    liquidityOneTime:(a.liquidityOneTime || 0) + (b.liquidityOneTime || 0),
+    portfolioLossPct:Math.min(90, (a.portfolioLossPct|| 0) + (b.portfolioLossPct|| 0)),
+    housingAdd:      (a.housingAdd       || 0) + (b.housingAdd       || 0),
+    otherExpenseAdd: (a.otherExpenseAdd  || 0) + (b.otherExpenseAdd  || 0),
+  };
+}
+
+// ── DECISION SHOCKS ──
+// Maps planned decisions (Step 2) into financial shocks.
+// Home purchase: down payment drains liquidity; new mortgage vs current housing → housingAdd
+// College: annual cost / 12 → otherExpenseAdd (ongoing monthly burden)
+// Career/visa: income reduction % → incomeReducPct
+// Investment: capital deployed → liquidityOneTime
+function getDecisionShocks(decisions, base) {
+  const sh = { incomeReducPct: 0, liquidityOneTime: 0, portfolioLossPct: 0, housingAdd: 0, otherExpenseAdd: 0 };
+  decisions.forEach(d => {
+    if(d.key === 'home' && d.amount > 0) {
+      const downPct = d.down || 0.2;
+      const downAmt = d.amount * downPct;
+      const loanAmt = d.amount * (1 - downPct);
+      // Use 6.5% 30-yr fixed as reference rate
+      const newMortgage = calcMortgagePmt(loanAmt, 0.065);
+      sh.liquidityOneTime += downAmt;
+      // housingAdd = increase over current rent/mortgage (can be 0 if buying replaces rent at same cost)
+      sh.housingAdd += Math.max(0, newMortgage - base.housing);
+    } else if(d.key === 'college' && d.amount > 0) {
+      sh.otherExpenseAdd += Math.round(d.amount / 12);
+    } else if(d.key === 'visa') {
+      // d.impact: positive = % income reduction, negative = % income increase
+      sh.incomeReducPct += (d.impact || 0);
+    } else if(d.key === 'invest' && d.amount > 0) {
+      sh.liquidityOneTime += d.amount;
+    } else if(d.key === 'other' && d.amount > 0) {
+      sh.liquidityOneTime += d.amount;
+    }
+  });
+  return sh;
+}
+
 // ── SCENARIO SHOCK DEFINITIONS ──
+// Each scenario returns a pure shock object (independent of decisions).
+// Job loss: modeled as savings drain during gap (income resumes after rehire).
+//   liquidityOneTime = gap_months × monthly_expenses (what you spend with no income)
+// Market down: portfolio loss only.
+// College early: lump-sum drain (unplanned early tuition pull from savings).
+//   Does NOT add a monthly add — the ongoing monthly is already in decisions.
+//   If college not in decisions, adds monthly cost too.
+// Visa/force relo: relocation cost + temporary income gap.
+// Health emergency: one-time liquidity hit.
+// Rate rise: higher housing cost every month → housingAdd (affects DSCR).
 function getScenarioShocks(id, base, decisions, s) {
-  const { monthlyIncome, investments, housing } = base;
+  const { monthlyIncome, investments, housing, expenses } = base;
   switch(id) {
     case 'jobLoss': {
+      // Gap: 3 months (s=0.1) to 12 months (s=1.0)
       const gapMonths = Math.round(3 + s * 9);
+      // During the gap you spend savings at your normal expense rate
+      const liquidityDrain = Math.round(gapMonths * expenses);
       return {
         label: '💼 Job Loss',
-        incomeReducPct: 60 * s,
-        liquidityOneTime: monthlyIncome * gapMonths * s * 0.4,
+        incomeReducPct: 0,
+        liquidityOneTime: liquidityDrain,
         portfolioLossPct: 0,
-        monthlyExpenseAdd: 0,
-        note: `~${gapMonths}-month income disruption`
+        housingAdd: 0,
+        otherExpenseAdd: 0,
+        note: `${gapMonths}-mo gap → savings drain ${fmt(liquidityDrain)}`
       };
     }
     case 'marketDown': {
-      const pct = Math.round((15 + s * 20));
+      const pct = Math.round(15 + s * 20); // 16.5%–35% loss
       return {
-        label: '📉 Market –' + pct + '%',
+        label: `📉 Market –${pct}%`,
         incomeReducPct: 0,
         liquidityOneTime: 0,
         portfolioLossPct: pct,
-        monthlyExpenseAdd: 0,
+        housingAdd: 0,
+        otherExpenseAdd: 0,
         note: `Portfolio loses ${fmt(investments * pct / 100)}`
       };
     }
     case 'collegeEarly': {
       const collegeDec = decisions.find(d => d.key === 'college');
-      const annualCost = (collegeDec && collegeDec.amount) ? collegeDec.amount : 45000;
+      const annualCost = (collegeDec && collegeDec.amount > 0) ? collegeDec.amount : 45000;
+      const collegeAlreadyInDecisions = !!collegeDec;
+      // Lump-sum: one year of tuition pulled early from savings (unplanned acceleration)
+      const lumpSum = Math.round(annualCost * (1 + s * 0.15));
       return {
         label: '📚 College Early',
         incomeReducPct: 0,
-        liquidityOneTime: annualCost * (1 + s * 0.2),
+        liquidityOneTime: lumpSum,
         portfolioLossPct: 0,
-        monthlyExpenseAdd: Math.round(annualCost / 12 * 0.5),
-        note: `+${fmt(annualCost)}/yr ahead of plan`
+        housingAdd: 0,
+        // Only add monthly if college not already in decisions (otherwise it's already counted)
+        otherExpenseAdd: collegeAlreadyInDecisions ? 0 : Math.round(annualCost / 12),
+        note: `${fmt(lumpSum)} early pull from savings`
       };
     }
     case 'visaForce': {
-      const reloCost = Math.round(25000 + s * 40000);
+      // Relocation cost (legal fees, moving, gap) + 2–4 month income disruption
+      const reloCost = Math.round(20000 + s * 35000);
+      const gapMonths = Math.round(1 + s * 3);
+      const gapDrain = Math.round(gapMonths * expenses);
       return {
         label: '🌐 Visa/Relo',
-        incomeReducPct: 15 * s,
-        liquidityOneTime: reloCost,
+        incomeReducPct: 0,
+        liquidityOneTime: reloCost + gapDrain,
         portfolioLossPct: 0,
-        monthlyExpenseAdd: 0,
-        note: `${fmt(reloCost)} relocation + income gap`
+        housingAdd: 0,
+        otherExpenseAdd: 0,
+        note: `${fmt(reloCost)} relo + ${gapMonths}-mo gap`
       };
     }
     case 'healthEmergency': {
@@ -1559,58 +1647,36 @@ function getScenarioShocks(id, base, decisions, s) {
         incomeReducPct: 0,
         liquidityOneTime: cost,
         portfolioLossPct: 0,
-        monthlyExpenseAdd: 0,
+        housingAdd: 0,
+        otherExpenseAdd: 0,
         note: `${fmt(cost)} out-of-pocket`
       };
     }
     case 'rateRise': {
+      // Higher mortgage rate → higher monthly housing cost → affects DSCR
       const add = Math.round(housing * (0.08 + s * 0.12));
       return {
         label: '📈 Rate Rise',
         incomeReducPct: 0,
         liquidityOneTime: 0,
         portfolioLossPct: 0,
-        monthlyExpenseAdd: add,
-        note: `+${fmt(add)}/mo mortgage cost`
+        housingAdd: add,
+        otherExpenseAdd: 0,
+        note: `+${fmt(add)}/mo housing cost`
       };
     }
     default: return null;
   }
 }
 
-// ── DECISIONS SHOCK (home purchase + college + invest as capital events) ──
-function getDecisionShocks(decisions, base) {
-  let liquidityOneTime = 0;
-  let monthlyExpenseAdd = 0;
-  let hasHome = false;
-  decisions.forEach(d => {
-    if(d.key === 'home') {
-      const downAmt = d.amount * (d.down || 0.2);
-      liquidityOneTime += downAmt;
-      // New mortgage vs old housing — if amount provided, estimate new mortgage payment
-      if(d.amount > 0) {
-        const mortgagePmt = Math.round(d.amount * 0.8 / 360 * (1 + 0.065/12) * 12); // rough 6.5% 30yr
-        monthlyExpenseAdd += Math.max(0, mortgagePmt - base.housing);
-      }
-      hasHome = true;
-    } else if(d.key === 'college' && d.amount > 0) {
-      monthlyExpenseAdd += Math.round(d.amount / 12);
-    } else if(d.key === 'invest' && d.amount > 0) {
-      liquidityOneTime += d.amount;
-    } else if(d.amount > 0) {
-      liquidityOneTime += d.amount;
-    }
-  });
-  return { liquidityOneTime, monthlyExpenseAdd };
-}
-
 // ── MAIN CALCULATION ──
 function runCalculation() {
-  const income = +document.getElementById('income').value || 180000;
-  const expenses = +document.getElementById('expenses').value || 6500;
-  const savings = +document.getElementById('savings').value || 85000;
-  const investments = +document.getElementById('investments').value || 220000;
-  const housing = +document.getElementById('housing').value || 3800;
+  // ── GATHER INPUTS ──
+  const income      = Math.max(0, +document.getElementById('income').value      || 180000);
+  const expenses    = Math.max(0, +document.getElementById('expenses').value    || 6500);
+  const savings     = Math.max(0, +document.getElementById('savings').value     || 85000);
+  const investments = Math.max(0, +document.getElementById('investments').value || 220000);
+  const housing     = Math.max(0, +document.getElementById('housing').value     || 3800);
   const jobSecurity = document.getElementById('jobSecurity').value;
   const stressLevel = +document.getElementById('stressLevel').value;
   const s = stressLevel / 10;
@@ -1618,61 +1684,62 @@ function runCalculation() {
   const monthlyIncome = income / 12;
   const base = { monthlyIncome, expenses, savings, investments, housing };
 
-  // Gather decisions
+  // ── GATHER DECISIONS (Step 2) ──
   const decisions = [];
   document.querySelectorAll('.decision-card').forEach(card => {
     const cb = card.querySelector('input[type="checkbox"]');
     if(!cb.checked) return;
     const key = card.dataset.key;
-    const yearEl = card.querySelector('select[name="year"]');
-    const amtEl = card.querySelector('input[name="amount"]');
-    const downEl = card.querySelector('input[name="down"]');
+    const yearEl   = card.querySelector('select[name="year"]');
+    const amtEl    = card.querySelector('input[name="amount"]');
+    const downEl   = card.querySelector('input[name="down"]');
     const impactEl = card.querySelector('select[name="impact"]');
+    // down: user enters percentage like "20" meaning 20% → divide by 100
+    let downVal = downEl ? +downEl.value : 20;
+    if(isNaN(downVal) || downVal <= 0) downVal = 20;
+    // if user accidentally entered 0.20 instead of 20, normalise
+    if(downVal < 1) downVal = downVal * 100;
     decisions.push({
       key,
-      year: yearEl ? +yearEl.value : 2026,
-      amount: amtEl ? (+amtEl.value || 0) : 0,
-      down: downEl ? (+downEl.value || 20)/100 : 0.2,
-      impact: impactEl ? +impactEl.value : 0
+      year:   yearEl   ? +yearEl.value        : 2026,
+      amount: amtEl    ? (+amtEl.value  || 0) : 0,
+      down:   downVal / 100,
+      impact: impactEl ? +impactEl.value       : 0
     });
   });
 
+  // ── YEAR MAP for collision detection ──
+  const yearMap = {};
+  decisions.forEach(d => { yearMap[d.year] = (yearMap[d.year] || 0) + 1; });
+  const maxStack = decisions.length > 0 ? Math.max(...Object.values(yearMap)) : 0;
+
   const scenarioIds = Array.from(selectedScenarios);
 
-  // ── BASELINE STATE ──
+  // ── COMPUTE SHOCK OBJECTS ──
+  const decShocks = getDecisionShocks(decisions, base);
+  const scenarioShocks = scenarioIds
+    .map(id => getScenarioShocks(id, base, decisions, s))
+    .filter(Boolean);
+
+  // Baseline: no decisions, no scenarios
   const baseline = computeState(base, {});
 
-  // ── DECISIONS-ONLY STATE (home/college/invest committed, no stress events) ──
-  const decShocks = getDecisionShocks(decisions, base);
+  // Decisions-committed baseline: your planned decisions, no stress events
+  const decisionsOnlyState = computeState(base, decShocks);
 
-  // ── PER-SCENARIO STATES ──
-  const scenarioShocks = scenarioIds.map(id => getScenarioShocks(id, base, decisions, s)).filter(Boolean);
-
-  // Individual columns: decisions committed + one stress event
+  // Individual columns: decisions + one scenario each
   const individualStates = scenarioShocks.map(sh => ({
     label: sh.label,
     note: sh.note,
-    state: computeState(base, {
-      incomeReducPct: sh.incomeReducPct,
-      liquidityOneTime: decShocks.liquidityOneTime + sh.liquidityOneTime,
-      portfolioLossPct: sh.portfolioLossPct,
-      monthlyExpenseAdd: decShocks.monthlyExpenseAdd + sh.monthlyExpenseAdd
-    })
+    state: computeState(base, mergeShocks(decShocks, sh))
   }));
 
-  // ── COMBINED STATE ── (all shocks together, decisions committed)
-  const combinedShocks = scenarioShocks.reduce((acc, sh) => ({
-    incomeReducPct: acc.incomeReducPct + (sh.incomeReducPct || 0),
-    liquidityOneTime: acc.liquidityOneTime + (sh.liquidityOneTime || 0),
-    portfolioLossPct: Math.min(90, acc.portfolioLossPct + (sh.portfolioLossPct || 0)),
-    monthlyExpenseAdd: acc.monthlyExpenseAdd + (sh.monthlyExpenseAdd || 0)
-  }), { incomeReducPct: 0, liquidityOneTime: 0, portfolioLossPct: 0, monthlyExpenseAdd: 0 });
-
-  combinedShocks.liquidityOneTime += decShocks.liquidityOneTime;
-  combinedShocks.monthlyExpenseAdd += decShocks.monthlyExpenseAdd;
-  combinedShocks.incomeReducPct = Math.min(95, combinedShocks.incomeReducPct);
-
-  const combinedState = computeState(base, combinedShocks);
+  // Combined: decisions + all scenarios together
+  const allScenariosShock = scenarioShocks.reduce(
+    (acc, sh) => mergeShocks(acc, sh),
+    { incomeReducPct: 0, liquidityOneTime: 0, portfolioLossPct: 0, housingAdd: 0, otherExpenseAdd: 0 }
+  );
+  const combinedState = computeState(base, mergeShocks(decShocks, allScenariosShock));
 
   // ── RISK SCORE ──
   const secMult = { high: 0.7, medium: 1.0, low: 1.3, critical: 1.6 }[jobSecurity] || 1.0;
@@ -1680,15 +1747,15 @@ function runCalculation() {
   if(combinedState.cashFlow < 0) riskScore += 28;
   else if(combinedState.cashFlow < 1000) riskScore += 18;
   else if(combinedState.cashFlow < 2000) riskScore += 8;
-  if(combinedState.runway < 3) riskScore += 24;
+  if(combinedState.runway <= 0) riskScore += 30;
+  else if(combinedState.runway < 3) riskScore += 24;
   else if(combinedState.runway < 6) riskScore += 15;
   else if(combinedState.runway < 12) riskScore += 7;
+  if(combinedState.dscr < 1.5 && combinedState.dscr < 99) riskScore += 10;
   riskScore += scenarioIds.length * 4;
-  const yearMap = {};
-  decisions.forEach(d => { yearMap[d.year] = (yearMap[d.year]||0)+1; });
-  const maxStack = Math.max(0, ...Object.values(yearMap));
   if(maxStack >= 3) riskScore += 14;
   else if(maxStack >= 2) riskScore += 7;
+  if(decShocks.incomeReducPct > 0) riskScore += Math.round(decShocks.incomeReducPct * 0.3);
   riskScore *= secMult;
   riskScore = Math.min(99, Math.max(5, Math.round(riskScore)));
 
@@ -1727,9 +1794,9 @@ function runCalculation() {
     { id: 'dscr',     label: 'Debt Coverage',     sub: 'Income ÷ housing payment', fmt: fmtX, lower: false },
   ];
 
-  // Build columns: Baseline, then each individual, then Combined
+  // Build columns: Decisions-committed baseline, then each individual, then Combined
   const cols = [
-    { label: 'BASELINE', sublabel: 'Today', state: baseline, isBaseline: true, isCombined: false },
+    { label: 'BASELINE', sublabel: decisions.length > 0 ? 'With your decisions' : 'Today', state: decisions.length > 0 ? decisionsOnlyState : baseline, isBaseline: true, isCombined: false },
     ...individualStates.map(is => ({ label: is.label, sublabel: is.note, state: is.state, isBaseline: false, isCombined: false })),
     { label: '⚡ COMBINED', sublabel: scenarioIds.length > 0 ? 'All events together' : 'No events selected', state: combinedState, isBaseline: false, isCombined: true }
   ];
@@ -1739,14 +1806,16 @@ function runCalculation() {
   header.innerHTML = `<th class="metric-col">Metric</th>` +
     cols.map(c => `<th class="${c.isBaseline ? 'baseline-col' : c.isCombined ? 'combined-col' : ''}">${c.label}<br><span style="font-weight:400;opacity:0.6;font-size:9px;letter-spacing:0">${c.sublabel || ''}</span></th>`).join('');
 
+  const deltaRef = decisions.length > 0 ? decisionsOnlyState : baseline;
+
   // Body
   const body = document.getElementById('matrixBody');
   body.innerHTML = metrics.map(m => {
-    const baseVal = baseline[m.id];
+    const baseVal = deltaRef[m.id];
     const cells = cols.map(c => {
       const val = c.state[m.id];
       const cls = metricClass(m.id, val);
-      const chip = c.isBaseline ? '' : deltaChip(baseVal, val, m.lower);
+      const chip = c.isBaseline ? '' : deltaChip(baseVal, val);
       const colCls = c.isBaseline ? 'baseline-col' : c.isCombined ? 'combined-col' : '';
       return `<td class="${colCls}"><span class="${cls}">${m.fmt(val)}</span>${chip}</td>`;
     }).join('');
