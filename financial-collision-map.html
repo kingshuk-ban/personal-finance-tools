@@ -768,6 +768,80 @@
     margin-top: 4px;
   }
 
+  /* EMAIL CAPTURE */
+  .email-capture-section {
+    margin-top: 36px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent3);
+    border-radius: 0 0 8px 8px;
+    padding: 32px 36px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .email-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .email-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .email-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+
+  .kit-form-wrap {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* Override Kit.com form styles to match our theme */
+  .kit-form-wrap .formkit-form {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .kit-form-wrap .formkit-input {
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+    font-family: var(--mono) !important;
+    font-size: 13px !important;
+    background: var(--bg3) !important;
+    color: var(--text) !important;
+  }
+
+  .kit-form-wrap .formkit-submit {
+    background: var(--accent3) !important;
+    border-radius: 4px !important;
+    font-family: var(--mono) !important;
+    font-size: 12px !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  .kit-form-wrap .formkit-submit:hover {
+    background: var(--accent) !important;
+  }
+
   /* CTA */
   .cta-section {
     background: linear-gradient(135deg, rgba(212,130,10,0.07) 0%, rgba(212,130,10,0.03) 100%);
@@ -1370,9 +1444,21 @@
     <div class="cta-section">
       <div class="cta-eyebrow">📌 Your Next Step</div>
       <h3>If this made you pause — that is the point.</h3>
-      <p>Most people discover these risks after they are already locked in. Book a free 30-minute call — we look at your actual situation, identify the hidden conflicts, and you leave knowing exactly what to do next.</p>
+      <p>In 30 minutes we look at your specific decisions, map where they collide, and you leave with 2–3 concrete actions to take before committing to anything. No pitch. Just clarity.</p>
       <a href="https://calendly.com/startyourfinancesright/30min" target="_blank" rel="noopener" class="cta-btn">Book a Free 30-Min Strategy Call →</a>
-      <div class="cta-proof">No pitch. No obligation. Just clarity on your situation.</div>
+      <div class="cta-proof">No obligation. No pitch. Just clarity on your situation.</div>
+    </div>
+
+    <!-- EMAIL CAPTURE -->
+    <div class="email-capture-section">
+      <div class="email-capture-inner">
+        <div class="email-eyebrow">📩 Prefer to start with some reading?</div>
+        <h3 class="email-title">Get the Decision Collision Checklist</h3>
+        <p class="email-desc">7 questions to ask before committing to any major financial move — free, straight to your inbox.</p>
+        <div class="kit-form-wrap" id="kitFormWrap">
+          <script async data-uid="ad07534b53" src="https://start-your-finances-right.kit.com/ad07534b53/index.js"></script>
+        </div>
+      </div>
     </div>
 
   </div>
