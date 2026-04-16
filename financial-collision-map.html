@@ -1370,9 +1370,9 @@
     <div class="cta-section">
       <div class="cta-eyebrow">📌 Your Next Step</div>
       <h3>If this made you pause — that is the point.</h3>
-      <p>Most people discover these risks after they are already locked in. A 90-minute Financial Diagnostic maps your full collision surface, identifies hidden trade-offs, and gives you a sequenced action plan.</p>
-      <a href="https://calendly.com/startyourfinancesright/money-strategy-session" target="_blank" rel="noopener" class="cta-btn">Book a 90-Minute Financial Diagnostic →</a>
-      <div class="cta-proof">No generic advice. We work through your actual numbers.</div>
+      <p>Most people discover these risks after they are already locked in. Book a free 30-minute call — we look at your actual situation, identify the hidden conflicts, and you leave knowing exactly what to do next.</p>
+      <a href="https://calendly.com/startyourfinancesright/30min" target="_blank" rel="noopener" class="cta-btn">Book a Free 30-Min Strategy Call →</a>
+      <div class="cta-proof">No pitch. No obligation. Just clarity on your situation.</div>
     </div>
 
   </div>
@@ -1383,9 +1383,11 @@
 <script>
 // ── LIVE PREVIEW ──
 function updateMonthsCovered() {
-  const savings = +document.getElementById('savings').value || 0;
+  const savings  = +document.getElementById('savings').value  || 0;
   const expenses = +document.getElementById('expenses').value || 1;
-  const months = (savings / expenses).toFixed(1);
+  const housing  = +document.getElementById('housing').value  || 0;
+  const totalBurn = expenses + housing;
+  const months = totalBurn > 0 ? (savings / totalBurn).toFixed(1) : '—';
   const el = document.getElementById('monthsCovered');
   if(el) {
     el.textContent = months + ' months';
@@ -1393,7 +1395,7 @@ function updateMonthsCovered() {
   }
 }
 
-['savings','expenses'].forEach(id => {
+['savings','expenses','housing'].forEach(id => {
   document.getElementById(id).addEventListener('input', updateMonthsCovered);
 });
 updateMonthsCovered();
@@ -1515,7 +1517,8 @@ function computeState(base, shocks) {
   const reducPct = Math.min(100, Math.max(0, shocks.incomeReducPct || 0));
   const mi = monthlyIncome * (1 - reducPct / 100);
   const totalHousing = housing + (shocks.housingAdd || 0);
-  const totalExp = expenses + (shocks.housingAdd || 0) + (shocks.otherExpenseAdd || 0);
+  // Total monthly burn = non-housing expenses + housing + any new housing delta + other adds
+  const totalExp = expenses + totalHousing + (shocks.otherExpenseAdd || 0);
   const cashFlow = mi - totalExp;
   const liq = savings - (shocks.liquidityOneTime || 0);
   const runway = totalExp > 0 ? liq / totalExp : 99;
