@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Financial Collision Map — 5-Year Stress Test</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-dw5H0dQoDqJgVGWxyrj4R.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
 <style>
   :root {
     --bg: #f7f7f4;
@@ -1727,7 +1734,7 @@
       <h2>Run the Collision Test</h2>
     </div>
     <p class="section-desc">Your inputs are set. Your decisions are mapped. Your scenarios have specific values. Run it.</p>
-    <button class="calc-btn" onclick="runCalculation()">
+    <button class="calc-btn" onclick="runCalculation(); plausible('Stress Test Run')">
       ⚡ Run My Collision Stress Test
     </button>
   </div>
@@ -1814,7 +1821,7 @@
       <div class="cta-eyebrow">📌 Your Next Step</div>
       <h3>If this made you pause — that is the point.</h3>
       <p>In 30 minutes we look at your specific decisions, map where they collide, and you leave with 2–3 concrete actions to take before committing to anything. This is financial coaching — we work through your thinking, not your portfolio.</p>
-      <a href="https://calendly.com/startyourfinancesright/30min" target="_blank" rel="noopener" class="cta-btn">Book a Free 30-Min Strategy Call →</a>
+      <a href="https://calendly.com/startyourfinancesright/30min" target="_blank" rel="noopener" class="cta-btn" onclick="plausible('Book Strategy Call')">Book a Free 30-Min Strategy Call →</a>
       <div class="cta-proof">No obligation. No pitch. Just clarity on your situation.</div>
     </div>
 
@@ -1853,7 +1860,27 @@
 </div>
 
 <script>
-// ── LIVE PREVIEW ──
+// ── ANALYTICS — track key interactions ──
+// Track when email capture section becomes visible (scroll intent)
+const emailSection = document.getElementById('kitFormWrap');
+if(emailSection) {
+  const emailObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        plausible('Checklist Section Viewed');
+        emailObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.5 });
+  emailObserver.observe(emailSection);
+}
+
+// Track Kit.com form submissions via message event
+window.addEventListener('message', function(e) {
+  if(e.data && e.data.type === 'broadcast' && e.data.sequenceForm) {
+    plausible('Checklist Email Captured');
+  }
+});
 function updateMonthsCovered() {
   const savings  = +document.getElementById('savings').value  || 0;
   const expenses = +document.getElementById('expenses').value || 1;
