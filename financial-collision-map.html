@@ -320,40 +320,96 @@
   }
 
   /* SCENARIO CHECKBOXES */
-  .scenario-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+  .scenario-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin-bottom: 24px;
-  }
-
-  @media(max-width: 540px) {
-    .scenario-grid { grid-template-columns: 1fr; }
   }
 
   .scenario-item {
     background: #ffffff;
     border: 1px solid var(--border);
-    padding: 14px 16px;
     border-radius: 6px;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s;
+    overflow: hidden;
   }
 
   .scenario-item:hover { border-color: var(--border-bright); background: var(--bg3); }
 
   .scenario-item.selected {
     border-color: rgba(201,54,54,0.4);
-    background: rgba(201,54,54,0.04);
+    background: rgba(201,54,54,0.02);
+    cursor: default;
   }
 
   .scenario-item input[type="checkbox"] {
-    accent-color: var(--accent2);
-    margin-top: 2px;
-    flex-shrink: 0;
+    display: none; /* managed via JS, shown via .selected style */
+  }
+
+  .scenario-main {
+    display: flex;
+    flex-direction: column;
+    padding: 13px 16px;
+    gap: 2px;
+  }
+
+  /* show a checkmark indicator when selected */
+  .scenario-item.selected .scenario-label::before {
+    content: '✓ ';
+    color: var(--accent2);
+    font-weight: 700;
+  }
+
+  .severity-panel {
+    display: none;
+    padding: 0 16px 14px;
+    border-top: 1px solid rgba(201,54,54,0.12);
+    background: rgba(201,54,54,0.02);
+  }
+
+  .scenario-item.selected .severity-panel { display: block; }
+
+  .severity-q {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 10px 0 8px;
+  }
+
+  .sev-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .sev-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: #ffffff;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  .sev-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(212,130,10,0.05);
+  }
+
+  .sev-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #ffffff;
   }
 
   .scenario-label {
@@ -1527,67 +1583,118 @@
     </div>
     <p class="section-desc">Now stress-test it. Select 2–3 scenarios that could realistically happen to you. Real risk is not one thing going wrong — it's the combination.</p>
 
-    <div class="selected-count">Selected: <span id="scenarioCount">0</span> / recommend 2–3</div>
+    <div class="selected-count">Selected: <span id="scenarioCount">0</span> — choose your own severity for each</div>
 
-    <div class="scenario-grid">
-      <div class="scenario-item" onclick="toggleScenario(this)" data-id="jobLoss">
-        <input type="checkbox">
-        <div>
+    <div class="scenario-list">
+
+      <div class="scenario-item" data-id="jobLoss" onclick="handleScenarioClick(event,this)">
+        <input type="checkbox" onclick="event.preventDefault()">
+        <div class="scenario-main">
           <div class="scenario-label">💼 Job Loss</div>
-          <div class="scenario-desc">6–12 months gap in income</div>
+          <div class="scenario-desc">Savings drain during income gap — income resumes after rehire</div>
+        </div>
+        <div class="severity-panel">
+          <div class="severity-q">Months without income before rehire?</div>
+          <div class="sev-pills">
+            <button class="sev-btn" data-val="3" onclick="setSeverity(event,this)">3 mo</button>
+            <button class="sev-btn active" data-val="6" onclick="setSeverity(event,this)">6 mo</button>
+            <button class="sev-btn" data-val="9" onclick="setSeverity(event,this)">9 mo</button>
+            <button class="sev-btn" data-val="12" onclick="setSeverity(event,this)">12 mo</button>
+          </div>
         </div>
       </div>
-      <div class="scenario-item" onclick="toggleScenario(this)" data-id="marketDown">
-        <input type="checkbox">
-        <div>
-          <div class="scenario-label">📉 Market Downturn –30%</div>
-          <div class="scenario-desc">Portfolio loses significant value</div>
+
+      <div class="scenario-item" data-id="marketDown" onclick="handleScenarioClick(event,this)">
+        <input type="checkbox" onclick="event.preventDefault()">
+        <div class="scenario-main">
+          <div class="scenario-label">📉 Market Downturn</div>
+          <div class="scenario-desc">Portfolio loses value — cash flow unaffected unless forced to sell</div>
+        </div>
+        <div class="severity-panel">
+          <div class="severity-q">How much does your portfolio drop?</div>
+          <div class="sev-pills">
+            <button class="sev-btn" data-val="15" onclick="setSeverity(event,this)">–15%</button>
+            <button class="sev-btn active" data-val="25" onclick="setSeverity(event,this)">–25%</button>
+            <button class="sev-btn" data-val="35" onclick="setSeverity(event,this)">–35%</button>
+            <button class="sev-btn" data-val="50" onclick="setSeverity(event,this)">–50%</button>
+          </div>
         </div>
       </div>
-      <div class="scenario-item" onclick="toggleScenario(this)" data-id="collegeEarly">
-        <input type="checkbox">
-        <div>
+
+      <div class="scenario-item" data-id="collegeEarly" onclick="handleScenarioClick(event,this)">
+        <input type="checkbox" onclick="event.preventDefault()">
+        <div class="scenario-main">
           <div class="scenario-label">📚 College Starts Early</div>
-          <div class="scenario-desc">1–2 years ahead of plan</div>
+          <div class="scenario-desc">Tuition pulled from savings ahead of your planned timeline</div>
+        </div>
+        <div class="severity-panel">
+          <div class="severity-q">How many years ahead of plan?</div>
+          <div class="sev-pills">
+            <button class="sev-btn active" data-val="1" onclick="setSeverity(event,this)">1 year</button>
+            <button class="sev-btn" data-val="2" onclick="setSeverity(event,this)">2 years</button>
+          </div>
         </div>
       </div>
-      <div class="scenario-item" onclick="toggleScenario(this)" data-id="visaForce">
-        <input type="checkbox">
-        <div>
+
+      <div class="scenario-item" data-id="visaForce" onclick="handleScenarioClick(event,this)">
+        <input type="checkbox" onclick="event.preventDefault()">
+        <div class="scenario-main">
           <div class="scenario-label">🌐 Forced Relocation / Visa Issue</div>
-          <div class="scenario-desc">Must sell home or break lease</div>
+          <div class="scenario-desc">Legal fees, moving costs, and transition gap drained from savings</div>
+        </div>
+        <div class="severity-panel">
+          <div class="severity-q">Total relocation + legal cost estimate?</div>
+          <div class="sev-pills">
+            <button class="sev-btn" data-val="25000" onclick="setSeverity(event,this)">$25K</button>
+            <button class="sev-btn active" data-val="45000" onclick="setSeverity(event,this)">$45K</button>
+            <button class="sev-btn" data-val="65000" onclick="setSeverity(event,this)">$65K</button>
+          </div>
         </div>
       </div>
-      <div class="scenario-item" onclick="toggleScenario(this)" data-id="healthEmergency">
-        <input type="checkbox">
-        <div>
+
+      <div class="scenario-item" data-id="healthEmergency" onclick="handleScenarioClick(event,this)">
+        <input type="checkbox" onclick="event.preventDefault()">
+        <div class="scenario-main">
           <div class="scenario-label">🏥 Health / Family Emergency</div>
-          <div class="scenario-desc">$30–80K unexpected expense</div>
+          <div class="scenario-desc">One-time savings hit from medical or family crisis</div>
+        </div>
+        <div class="severity-panel">
+          <div class="severity-q">Estimated out-of-pocket cost?</div>
+          <div class="sev-pills">
+            <button class="sev-btn" data-val="30000" onclick="setSeverity(event,this)">$30K</button>
+            <button class="sev-btn active" data-val="50000" onclick="setSeverity(event,this)">$50K</button>
+            <button class="sev-btn" data-val="80000" onclick="setSeverity(event,this)">$80K</button>
+          </div>
         </div>
       </div>
-      <div class="scenario-item" onclick="toggleScenario(this)" data-id="rateRise">
-        <input type="checkbox">
-        <div>
-          <div class="scenario-label">📈 Mortgage Rates Rise</div>
-          <div class="scenario-desc">Qualifying becomes harder; costs up</div>
+
+      <div class="scenario-item" data-id="rateRise" onclick="handleScenarioClick(event,this)">
+        <input type="checkbox" onclick="event.preventDefault()">
+        <div class="scenario-main">
+          <div class="scenario-label">📈 Mortgage / Rent Cost Rise</div>
+          <div class="scenario-desc">Higher monthly housing cost — hits cash flow and debt coverage</div>
+        </div>
+        <div class="severity-panel">
+          <div class="severity-q">Additional monthly housing cost?</div>
+          <div class="sev-pills">
+            <button class="sev-btn" data-val="300" onclick="setSeverity(event,this)">+$300/mo</button>
+            <button class="sev-btn active" data-val="600" onclick="setSeverity(event,this)">+$600/mo</button>
+            <button class="sev-btn" data-val="1000" onclick="setSeverity(event,this)">+$1,000/mo</button>
+            <button class="sev-btn" data-val="1500" onclick="setSeverity(event,this)">+$1,500/mo</button>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 
-  <!-- STEP 4: STRESS SLIDER -->
+  <!-- STEP 4: RUN -->
   <div class="section" id="step4">
     <div class="section-header">
       <div class="step-num">04</div>
-      <h2>Stress Intensity</h2>
+      <h2>Run the Collision Test</h2>
     </div>
-    <p class="section-desc">How severe is the scenario? Adjust from mild disruption to worst-case cascade.</p>
-    <div class="field">
-      <label>Stress Level</label>
-      <input type="range" id="stressLevel" min="1" max="10" value="5" oninput="updateStressDisplay(this.value)">
-      <div class="range-display" id="stressDisplay">5 / 10 — Moderate Disruption</div>
-    </div>
-
+    <p class="section-desc">Your inputs are set. Your decisions are mapped. Your scenarios have specific values. Run it.</p>
     <button class="calc-btn" onclick="runCalculation()">
       ⚡ Run My Collision Stress Test
     </button>
@@ -1727,6 +1834,11 @@ function toggleCard(checkbox) {
 // ── TOGGLE SCENARIOS ──
 let selectedScenarios = new Set();
 
+function handleScenarioClick(event, el) {
+  if(event.target.closest('.severity-panel')) return;
+  toggleScenario(el);
+}
+
 function toggleScenario(el) {
   const cb = el.querySelector('input[type="checkbox"]');
   const id = el.dataset.id;
@@ -1737,16 +1849,16 @@ function toggleScenario(el) {
   document.getElementById('scenarioCount').textContent = selectedScenarios.size;
 }
 
-// ── STRESS DISPLAY ──
-const stressLabels = {
-  1:'1 / 10 — Minor Inconvenience', 2:'2 / 10 — Noticeable Friction',
-  3:'3 / 10 — Manageable Stress', 4:'4 / 10 — Significant Pressure',
-  5:'5 / 10 — Moderate Disruption', 6:'6 / 10 — Serious Challenge',
-  7:'7 / 10 — High Stress', 8:'8 / 10 — Severe Impact',
-  9:'9 / 10 — Near-Crisis', 10:'10 / 10 — Worst-Case Cascade'
-};
-function updateStressDisplay(v) {
-  document.getElementById('stressDisplay').textContent = stressLabels[v];
+function setSeverity(event, btn) {
+  event.stopPropagation();
+  btn.closest('.sev-pills').querySelectorAll('.sev-btn')
+    .forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function getScenarioSeverity(id) {
+  const active = document.querySelector(`.scenario-item[data-id="${id}"] .sev-btn.active`);
+  return active ? +active.dataset.val : null;
 }
 
 // ── INTERSECTION OBSERVER ──
@@ -1820,27 +1932,62 @@ function deltaChip(baseVal, currentVal) {
   return `<span class="delta ${cls}">${sign}${Math.round(pct)}%</span>`;
 }
 
-// ── COMPUTE STATE ──
-// shocks: {
-//   incomeReducPct  — % income reduction (0–100)
-//   liquidityOneTime — one-time cash drain from savings
-//   portfolioLossPct — % portfolio loss (0–100)
-//   housingAdd       — added monthly housing cost (affects DSCR + cash flow)
-//   otherExpenseAdd  — added monthly non-housing costs (affects cash flow only)
-// }
+// ── COMPUTE STATE — waterfall liquidity model ──
+// Order of depletion:
+//   1. Monthly obligations reduce cash flow (college, mortgage delta, rate rise)
+//   2. One-time events drain liquid savings directly (down payment, health, job gap)
+//   3. If liquid savings < 0 after one-time events → forced investment liquidation
+//   4. If ongoing cash flow < 0 → savings deplete over time
+//      runway = savings ÷ abs(cashFlow), not savings ÷ totalBurn
+//   5. If savings = 0 and cashFlow < 0 → investments liquidated monthly
 function computeState(base, shocks) {
   const { monthlyIncome, expenses, savings, investments, housing } = base;
-  const reducPct = Math.min(100, Math.max(0, shocks.incomeReducPct || 0));
-  const mi = monthlyIncome * (1 - reducPct / 100);
+
+  // ── Income ──
+  const mi = monthlyIncome * (1 - Math.min(100, Math.max(0, shocks.incomeReducPct || 0)) / 100);
+
+  // ── Monthly burn ──
   const totalHousing = housing + (shocks.housingAdd || 0);
-  // Total monthly burn = non-housing expenses + housing + any new housing delta + other adds
-  const totalExp = expenses + totalHousing + (shocks.otherExpenseAdd || 0);
-  const cashFlow = mi - totalExp;
-  const liq = savings - (shocks.liquidityOneTime || 0);
-  const runway = totalExp > 0 ? liq / totalExp : 99;
-  const port = investments * (1 - Math.min(100, shocks.portfolioLossPct || 0) / 100);
+  const totalMonthly = expenses + totalHousing + (shocks.otherExpenseAdd || 0);
+
+  // ── Cash flow ──
+  const cashFlow = mi - totalMonthly;
+
+  // ── Step 1: Apply one-time drain to liquid savings ──
+  const liqAfterOneTime = savings - (shocks.liquidityOneTime || 0);
+
+  // ── Portfolio after market loss ──
+  const portfolioAfterLoss = investments * (1 - Math.min(100, shocks.portfolioLossPct || 0) / 100);
+
+  // ── Step 2: Waterfall — if savings overdrawn, draw from investments ──
+  let finalLiquidity, finalPortfolio, forcedLiquidation = false, investmentDraw = 0;
+  if(liqAfterOneTime < 0) {
+    investmentDraw = Math.abs(liqAfterOneTime);
+    finalPortfolio = Math.max(0, portfolioAfterLoss - investmentDraw);
+    finalLiquidity = 0;
+    forcedLiquidation = investmentDraw > 0;
+  } else {
+    finalLiquidity = liqAfterOneTime;
+    finalPortfolio = portfolioAfterLoss;
+  }
+
+  // ── Step 3: Runway ──
+  // If cashFlow < 0: savings drain monthly → runway = savings ÷ abs(cashFlow)
+  // If cashFlow ≥ 0: static emergency measure → runway = savings ÷ totalBurn
+  let runway;
+  if(finalLiquidity <= 0) {
+    runway = 0; // already depleted
+  } else if(cashFlow < 0) {
+    runway = finalLiquidity / Math.abs(cashFlow); // months until deficit drains savings
+  } else {
+    runway = totalMonthly > 0 ? finalLiquidity / totalMonthly : 99;
+  }
+
+  // ── DSCR ──
   const dscr = totalHousing > 0 ? mi / totalHousing : 99;
-  return { cashFlow, runway, liquidity: liq, portfolio: port, dscr };
+
+  return { cashFlow, runway, liquidity: finalLiquidity, portfolio: finalPortfolio,
+           dscr, forcedLiquidation, investmentDraw };
 }
 
 // ── MERGE SHOCKS (add two shock objects together) ──
@@ -1887,24 +2034,22 @@ function getDecisionShocks(decisions, base) {
 }
 
 // ── SCENARIO SHOCK DEFINITIONS ──
-// Each scenario returns a pure shock object (independent of decisions).
-// Job loss: modeled as savings drain during gap (income resumes after rehire).
-//   liquidityOneTime = gap_months × monthly_expenses (what you spend with no income)
-// Market down: portfolio loss only.
-// College early: lump-sum drain (unplanned early tuition pull from savings).
-//   Does NOT add a monthly add — the ongoing monthly is already in decisions.
-//   If college not in decisions, adds monthly cost too.
-// Visa/force relo: relocation cost + temporary income gap.
-// Health emergency: one-time liquidity hit.
-// Rate rise: higher housing cost every month → housingAdd (affects DSCR).
-function getScenarioShocks(id, base, decisions, s) {
-  const { monthlyIncome, investments, housing, expenses } = base;
+// Each scenario takes a specific user-chosen severity value — no global slider.
+// Job loss: liquidityDrain = gapMonths × (expenses + housing) — full burn rate, income resumes after.
+// Market down: portfolio loss only, cash flow unaffected.
+// College early: lump-sum pull from savings (1 or 2 years of tuition early).
+// Visa/relo: specific total cost chosen by user.
+// Health emergency: specific out-of-pocket cost chosen by user.
+// Rate rise: specific monthly housing add chosen by user.
+function getScenarioShocks(id, base, decisions, severityVal) {
+  const { investments, housing, expenses } = base;
+  const totalBurn = expenses + housing;
+
   switch(id) {
     case 'jobLoss': {
-      // Gap: 3 months (s=0.1) to 12 months (s=1.0)
-      const gapMonths = Math.round(3 + s * 9);
-      // During the gap you spend savings at your normal expense rate
-      const liquidityDrain = Math.round(gapMonths * expenses);
+      const gapMonths = severityVal || 6;
+      // Full burn rate during gap: you still pay rent/mortgage while unemployed
+      const liquidityDrain = Math.round(gapMonths * totalBurn);
       return {
         label: '💼 Job Loss',
         incomeReducPct: 0,
@@ -1912,11 +2057,12 @@ function getScenarioShocks(id, base, decisions, s) {
         portfolioLossPct: 0,
         housingAdd: 0,
         otherExpenseAdd: 0,
-        note: `${gapMonths}-mo gap → savings drain ${fmt(liquidityDrain)}`
+        note: `${gapMonths}-mo gap · ${fmt(totalBurn)}/mo burn · drain ${fmt(liquidityDrain)}`,
+        severityLabel: `${gapMonths} months gap`
       };
     }
     case 'marketDown': {
-      const pct = Math.round(15 + s * 20); // 16.5%–35% loss
+      const pct = severityVal || 25;
       return {
         label: `📉 Market –${pct}%`,
         incomeReducPct: 0,
@@ -1924,43 +2070,41 @@ function getScenarioShocks(id, base, decisions, s) {
         portfolioLossPct: pct,
         housingAdd: 0,
         otherExpenseAdd: 0,
-        note: `Portfolio loses ${fmt(investments * pct / 100)}`
+        note: `Portfolio loses ${fmt(Math.round(investments * pct / 100))}`,
+        severityLabel: `${pct}% portfolio decline`
       };
     }
     case 'collegeEarly': {
+      const yearsEarly = severityVal || 1;
       const collegeDec = decisions.find(d => d.key === 'college');
       const annualCost = (collegeDec && collegeDec.amount > 0) ? collegeDec.amount : 45000;
-      const collegeAlreadyInDecisions = !!collegeDec;
-      // Lump-sum: one year of tuition pulled early from savings (unplanned acceleration)
-      const lumpSum = Math.round(annualCost * (1 + s * 0.15));
+      const lumpSum = Math.round(annualCost * yearsEarly);
       return {
         label: '📚 College Early',
         incomeReducPct: 0,
         liquidityOneTime: lumpSum,
         portfolioLossPct: 0,
         housingAdd: 0,
-        // Only add monthly if college not already in decisions (otherwise it's already counted)
-        otherExpenseAdd: collegeAlreadyInDecisions ? 0 : Math.round(annualCost / 12),
-        note: `${fmt(lumpSum)} early pull from savings`
+        otherExpenseAdd: collegeDec ? 0 : Math.round(annualCost / 12),
+        note: `${fmt(lumpSum)} early pull (${yearsEarly} yr${yearsEarly > 1 ? 's' : ''} ahead)`,
+        severityLabel: `${yearsEarly} year${yearsEarly > 1 ? 's' : ''} ahead of plan`
       };
     }
     case 'visaForce': {
-      // Relocation cost (legal fees, moving, gap) + 2–4 month income disruption
-      const reloCost = Math.round(20000 + s * 35000);
-      const gapMonths = Math.round(1 + s * 3);
-      const gapDrain = Math.round(gapMonths * expenses);
+      const cost = severityVal || 45000;
       return {
         label: '🌐 Visa/Relo',
         incomeReducPct: 0,
-        liquidityOneTime: reloCost + gapDrain,
+        liquidityOneTime: cost,
         portfolioLossPct: 0,
         housingAdd: 0,
         otherExpenseAdd: 0,
-        note: `${fmt(reloCost)} relo + ${gapMonths}-mo gap`
+        note: `${fmt(cost)} relocation + legal costs`,
+        severityLabel: `${fmt(cost)} total cost`
       };
     }
     case 'healthEmergency': {
-      const cost = Math.round(30000 + s * 50000);
+      const cost = severityVal || 50000;
       return {
         label: '🏥 Health Emerg.',
         incomeReducPct: 0,
@@ -1968,12 +2112,12 @@ function getScenarioShocks(id, base, decisions, s) {
         portfolioLossPct: 0,
         housingAdd: 0,
         otherExpenseAdd: 0,
-        note: `${fmt(cost)} out-of-pocket`
+        note: `${fmt(cost)} out-of-pocket`,
+        severityLabel: `${fmt(cost)} out-of-pocket`
       };
     }
     case 'rateRise': {
-      // Higher mortgage rate → higher monthly housing cost → affects DSCR
-      const add = Math.round(housing * (0.08 + s * 0.12));
+      const add = severityVal || 600;
       return {
         label: '📈 Rate Rise',
         incomeReducPct: 0,
@@ -1981,7 +2125,8 @@ function getScenarioShocks(id, base, decisions, s) {
         portfolioLossPct: 0,
         housingAdd: add,
         otherExpenseAdd: 0,
-        note: `+${fmt(add)}/mo housing cost`
+        note: `+${fmt(add)}/mo housing cost`,
+        severityLabel: `+${fmt(add)}/mo additional`
       };
     }
     default: return null;
@@ -1997,8 +2142,6 @@ function runCalculation() {
   const investments = Math.max(0, +document.getElementById('investments').value || 220000);
   const housing     = Math.max(0, +document.getElementById('housing').value     || 3800);
   const jobSecurity = document.getElementById('jobSecurity').value;
-  const stressLevel = +document.getElementById('stressLevel').value;
-  const s = stressLevel / 10;
   const base = { monthlyIncome, expenses, savings, investments, housing };
 
   // ── GATHER DECISIONS (Step 2) ──
@@ -2032,31 +2175,57 @@ function runCalculation() {
 
   const scenarioIds = Array.from(selectedScenarios);
 
+  // ── PLANNING HORIZON ──
+  const CURRENT_YEAR = 2026;
+  const INVESTMENT_RETURN = 0.07;  // 7% annual for portfolio
+  const SAVINGS_RATE = 0.03;       // 3% risk-free for liquid savings accumulation
+  const horizonYear = decisions.length > 0
+    ? Math.min(...decisions.map(d => d.year))
+    : CURRENT_YEAR;
+  const yearsAhead = Math.max(0, horizonYear - CURRENT_YEAR);
+  const monthsAhead = yearsAhead * 12;
+
+  // Monthly surplus today (before decisions)
+  const baselineSurplus = Math.max(0, monthlyIncome - expenses - housing);
+
+  // Projected savings at horizon using proper FV formula:
+  //   FV = PV*(1+r)^n + PMT*((1+r)^n - 1)/r   (where r = monthly rate, n = months)
+  // This accounts for both existing savings growing at 3% AND monthly surplus contributions
+  const r_mo = SAVINGS_RATE / 12;
+  const fvFactor = Math.pow(1 + r_mo, monthsAhead);
+  const projSavings = monthsAhead > 0
+    ? savings * fvFactor + (baselineSurplus > 0 ? baselineSurplus * (fvFactor - 1) / r_mo : 0)
+    : savings;
+  const projInvestments = investments * Math.pow(1 + INVESTMENT_RETURN, yearsAhead);
+  const projBase = { monthlyIncome, expenses, housing, savings: projSavings, investments: projInvestments };
+
   // ── COMPUTE SHOCK OBJECTS ──
+  // Decision shocks use today's housing for mortgage delta — that's correct.
   const decShocks = getDecisionShocks(decisions, base);
   const scenarioShocks = scenarioIds
-    .map(id => getScenarioShocks(id, base, decisions, s))
+    .map(id => getScenarioShocks(id, base, decisions, getScenarioSeverity(id)))
     .filter(Boolean);
 
-  // Baseline: no decisions, no scenarios
-  const baseline = computeState(base, {});
+  // ── STATE CALCULATIONS — all use projBase (projected to horizon year) ──
+  // Baseline: projected forward, no decisions, no scenarios
+  const baseline = computeState(projBase, {});
 
-  // Decisions-committed baseline: your planned decisions, no stress events
-  const decisionsOnlyState = computeState(base, decShocks);
+  // Decisions-committed baseline: projected + decisions committed, no stress events
+  const decisionsOnlyState = computeState(projBase, decShocks);
 
-  // Individual columns: decisions + one scenario each
+  // Individual columns: projected + decisions + one scenario each
   const individualStates = scenarioShocks.map(sh => ({
     label: sh.label,
     note: sh.note,
-    state: computeState(base, mergeShocks(decShocks, sh))
+    state: computeState(projBase, mergeShocks(decShocks, sh))
   }));
 
-  // Combined: decisions + all scenarios together
+  // Combined: projected + decisions + all scenarios together
   const allScenariosShock = scenarioShocks.reduce(
     (acc, sh) => mergeShocks(acc, sh),
     { incomeReducPct: 0, liquidityOneTime: 0, portfolioLossPct: 0, housingAdd: 0, otherExpenseAdd: 0 }
   );
-  const combinedState = computeState(base, mergeShocks(decShocks, allScenariosShock));
+  const combinedState = computeState(projBase, mergeShocks(decShocks, allScenariosShock));
 
   // ── RISK SCORE ──
   const secMult = { high: 0.7, medium: 1.0, low: 1.3, critical: 1.6 }[jobSecurity] || 1.0;
@@ -2068,6 +2237,8 @@ function runCalculation() {
   else if(combinedState.runway < 3) riskScore += 24;
   else if(combinedState.runway < 6) riskScore += 15;
   else if(combinedState.runway < 12) riskScore += 7;
+  // Forced liquidation is a major fragility signal
+  if(combinedState.forcedLiquidation) riskScore += 20;
   if(combinedState.dscr < 1.5 && combinedState.dscr < 99) riskScore += 10;
   riskScore += scenarioIds.length * 4;
   if(maxStack >= 3) riskScore += 14;
@@ -2111,9 +2282,16 @@ function runCalculation() {
     { id: 'dscr',     label: 'Debt Coverage',     sub: 'Income ÷ housing payment', fmt: fmtX, lower: false },
   ];
 
-  // Build columns: Decisions-committed baseline, then each individual, then Combined
+  // Build columns — baseline label shows the horizon year so it's explicit
+  const baselineLabel = yearsAhead > 0
+    ? `PROJECTED ${horizonYear}`
+    : 'BASELINE';
+  const baselineSublabel = yearsAhead > 0
+    ? `${yearsAhead}yr projection · with your decisions`
+    : decisions.length > 0 ? 'With your decisions' : 'Today';
+
   const cols = [
-    { label: 'BASELINE', sublabel: decisions.length > 0 ? 'With your decisions' : 'Today', state: decisions.length > 0 ? decisionsOnlyState : baseline, isBaseline: true, isCombined: false },
+    { label: baselineLabel, sublabel: baselineSublabel, state: decisions.length > 0 ? decisionsOnlyState : baseline, isBaseline: true, isCombined: false },
     ...individualStates.map(is => ({ label: is.label, sublabel: is.note, state: is.state, isBaseline: false, isCombined: false })),
     { label: '⚡ COMBINED', sublabel: scenarioIds.length > 0 ? 'All events together' : 'No events selected', state: combinedState, isBaseline: false, isCombined: true }
   ];
@@ -2148,26 +2326,44 @@ function runCalculation() {
   const failures = [];
 
   if(combinedState.cashFlow < 0) {
-    failures.push({ sev: 'danger', icon: '🔴', headline: 'Cash flow turns negative',
-      detail: `You are spending ${fmt(Math.abs(combinedState.cashFlow))}/mo more than you earn. Every month draws down savings.`,
+    failures.push({ sev: 'danger', icon: '🔴', headline: 'Monthly cash flow turns negative',
+      detail: `You spend ${fmtMo(Math.abs(combinedState.cashFlow))} more than you earn each month. Liquid savings absorb this deficit until depleted.`,
       val: fmtMo(combinedState.cashFlow) });
   } else if(combinedState.cashFlow < 1500) {
     failures.push({ sev: 'warning', icon: '🟡', headline: 'Cash flow becomes dangerously thin',
-      detail: 'Less than $1,500/mo buffer means one unexpected bill tips you negative.',
+      detail: 'Less than $1,500/mo buffer — one unexpected bill turns it negative.',
       val: fmtMo(combinedState.cashFlow) });
   } else {
     failures.push({ sev: 'safe', icon: '🟢', headline: 'Cash flow holds under stress',
-      detail: 'You maintain positive cash flow even with all selected events active.',
+      detail: 'Monthly income covers all obligations even under combined scenarios.',
       val: fmtMo(combinedState.cashFlow) });
   }
 
-  if(combinedState.runway < 6) {
+  // Forced liquidation — highest severity
+  if(combinedState.forcedLiquidation) {
+    failures.push({ sev: 'danger', icon: '🔴', headline: 'Investments must be liquidated to cover shortfall',
+      detail: `One-time capital events exceed your liquid savings. ${fmt(combinedState.investmentDraw)} drawn from your investment portfolio — triggering early withdrawal penalties and tax consequences.`,
+      val: `–${fmt(combinedState.investmentDraw)} from portfolio` });
+  }
+
+  if(combinedState.runway <= 0) {
+    failures.push({ sev: 'danger', icon: '🔴', headline: 'Liquid savings fully depleted',
+      detail: combinedState.cashFlow < 0
+        ? 'Savings are gone. Ongoing negative cash flow now draws directly from your investment portfolio monthly.'
+        : 'All liquid savings consumed by capital events. No emergency buffer remains.',
+      val: 'depleted' });
+  } else if(combinedState.runway < 6) {
+    const runwayNote = combinedState.cashFlow < 0
+      ? `Negative cash flow (${fmtMo(combinedState.cashFlow)}) depletes savings in ${fmtMths(combinedState.runway)}`
+      : `Only ${fmtMths(combinedState.runway)} of expenses covered`;
     failures.push({ sev: 'danger', icon: '🔴', headline: 'Emergency fund falls below 6 months',
-      detail: `For immigrants with visa dependency, this is the critical floor. You have ${fmtMths(combinedState.runway)} under this scenario.`,
+      detail: runwayNote + '. For immigrants with visa dependency, 12 months is the minimum.',
       val: fmtMths(combinedState.runway) });
   } else if(combinedState.runway < 12) {
     failures.push({ sev: 'warning', icon: '🟡', headline: 'Runway below 12-month immigrant threshold',
-      detail: 'Standard advice says 6 months. Immigrants with H-1B or similar need 12 — a visa disruption adds months to job search.',
+      detail: combinedState.cashFlow < 0
+        ? `Negative cash flow drains savings at ${fmtMo(Math.abs(combinedState.cashFlow))}/mo. Depleted in ${fmtMths(combinedState.runway)}.`
+        : 'Standard advice is 6 months. H-1B holders need 12 — a visa disruption adds months to any job search.',
       val: fmtMths(combinedState.runway) });
   }
 
@@ -2251,8 +2447,9 @@ function runCalculation() {
   // ── BUILD AUDIT TRAIL ──
   buildAuditTrail({
     monthlyIncome, expenses, savings, investments, housing,
+    projSavings, projInvestments, horizonYear, yearsAhead, monthsAhead, baselineSurplus,
     decisions, scenarioShocks, decShocks, allScenariosShock,
-    baseline, decisionsOnlyState, combinedState, s
+    baseline, decisionsOnlyState, combinedState
   });
 
   updateProgress(4);
@@ -2262,8 +2459,9 @@ function runCalculation() {
 function buildAuditTrail(p) {
   const {
     monthlyIncome, expenses, savings, investments, housing,
+    projSavings, projInvestments, horizonYear, yearsAhead, monthsAhead, baselineSurplus,
     decisions, scenarioShocks, decShocks, allScenariosShock,
-    baseline, decisionsOnlyState, combinedState, s
+    baseline, decisionsOnlyState, combinedState
   } = p;
 
   const totalBurn = expenses + housing;
@@ -2271,20 +2469,45 @@ function buildAuditTrail(p) {
 
   // ── BLOCK 1: YOUR INPUTS ──
   html += `<div class="audit-block">
-    <div class="audit-block-title">Your Inputs</div>
+    <div class="audit-block-title">Your Inputs — Today</div>
     <div class="audit-inputs-grid">
       <div class="audit-input-cell"><div class="audit-input-key">Monthly Take-Home</div><div class="audit-input-val">${fmt(monthlyIncome)}</div></div>
       <div class="audit-input-cell"><div class="audit-input-key">Monthly Expenses</div><div class="audit-input-val">${fmt(expenses)}</div></div>
       <div class="audit-input-cell"><div class="audit-input-key">Housing / Mortgage</div><div class="audit-input-val">${fmt(housing)}/mo</div></div>
-      <div class="audit-input-cell"><div class="audit-input-key">Total Monthly Burn</div><div class="audit-input-val">${fmt(totalBurn)}/mo</div></div>
+      <div class="audit-input-cell"><div class="audit-input-key">Monthly Surplus</div><div class="audit-input-val" style="color:var(--green)">${fmt(baselineSurplus)}/mo</div></div>
       <div class="audit-input-cell"><div class="audit-input-key">Liquid Savings</div><div class="audit-input-val">${fmt(savings)}</div></div>
       <div class="audit-input-cell"><div class="audit-input-key">Investments / Portfolio</div><div class="audit-input-val">${fmt(investments)}</div></div>
     </div>
   </div>`;
 
-  // ── BLOCK 2: BASELINE FORMULAS ──
+  // ── BLOCK 2: FORWARD PROJECTION (only if horizon is in the future) ──
+  if(yearsAhead > 0) {
+    html += `<div class="audit-block">
+      <div class="audit-block-title">Forward Projection to ${horizonYear} — ${yearsAhead} Year${yearsAhead>1?'s':''} From Now</div>
+      <div style="margin-bottom:10px;font-size:12px;color:var(--text-dim);line-height:1.6;">
+        All calculations use your <strong style="color:var(--text)">projected position at ${horizonYear}</strong> — when decisions commit capital and stress scenarios would hurt most.
+      </div>
+      <div class="audit-formula-grid">
+        <div class="audit-formula-row">
+          <div class="audit-formula-metric">Projected Savings</div>
+          <div class="audit-formula-eq">${fmt(savings)} × (1+3%/12)^${monthsAhead} + ${fmt(baselineSurplus)}/mo × FV annuity factor · 3% risk-free rate</div>
+          <div class="audit-formula-result pos">${fmt(Math.round(projSavings))}</div>
+        </div>
+        <div class="audit-formula-row">
+          <div class="audit-formula-metric">Projected Portfolio</div>
+          <div class="audit-formula-eq">${fmt(investments)} × (1 + 7%)^${yearsAhead} · 7% annual return assumed</div>
+          <div class="audit-formula-result pos">${fmt(Math.round(projInvestments))}</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-family:var(--mono);font-size:10px;color:var(--text-dim);">
+        Assumptions: monthly surplus → liquid savings at 3%/yr risk-free · portfolio grows at 7%/yr · income and expenses unchanged
+      </div>
+    </div>`;
+  }
+
+  // ── BLOCK 3: BASELINE FORMULAS ──
   html += `<div class="audit-block">
-    <div class="audit-block-title">Baseline — No Decisions, No Stress Events</div>
+    <div class="audit-block-title">Baseline at ${horizonYear}${yearsAhead > 0 ? ' — After Projection' : ''} · No Stress Events</div>
     <div class="audit-formula-grid">
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Monthly Cash Flow</div>
@@ -2293,12 +2516,12 @@ function buildAuditTrail(p) {
       </div>
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Emergency Runway</div>
-        <div class="audit-formula-eq">${fmt(savings)} savings ÷ ${fmt(totalBurn)} monthly burn</div>
+        <div class="audit-formula-eq">${fmt(Math.round(projSavings))} projected savings ÷ ${fmt(totalBurn)} monthly burn</div>
         <div class="audit-formula-result">${fmtMths(baseline.runway)}</div>
       </div>
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Debt Coverage</div>
-        <div class="audit-formula-eq">${fmt(monthlyIncome)} take-home ÷ ${fmt(housing)} housing payment</div>
+        <div class="audit-formula-eq">${fmt(monthlyIncome)} take-home ÷ ${fmt(housing)} housing</div>
         <div class="audit-formula-result">${fmtX(baseline.dscr)}</div>
       </div>
     </div>
@@ -2362,41 +2585,38 @@ function buildAuditTrail(p) {
 
     scenarioShocks.forEach(sh => {
       html += `<div class="audit-event">
-        <div class="audit-event-title">${sh.label} <span class="audit-event-tag scenario">SCENARIO · Stress ${Math.round(s*10)}/10</span></div>
+        <div class="audit-event-title">${sh.label} <span class="audit-event-tag scenario">SCENARIO · ${sh.severityLabel || ''}</span></div>
         <div class="audit-lines">`;
 
       if(sh.label.includes('Job Loss')) {
-        const gapMonths = Math.round(3 + s*9);
+        const gapMonths = +((sh.severityLabel||'6 months').match(/\d+/)||[6])[0];
         html += `
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Gap duration at stress ${Math.round(s*10)}/10: 3 + (${Math.round(s*10)} × 0.9) = ${gapMonths} months</span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Savings drain = ${gapMonths} months × ${fmt(totalBurn)} monthly burn (expenses + housing)</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Income during gap: <em>modelled as zero — savings cover all expenses</em></span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Monthly cash flow: unchanged — income resumes after rehire</span></div>`;
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Gap duration you selected</span><span class="audit-line-val neutral">${gapMonths} months</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Savings drain = ${gapMonths} months × ${fmt(totalBurn)}/mo full burn rate (expenses + housing)</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Income: modelled as zero during gap — savings absorb all expenses</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Monthly cash flow: unchanged after rehire — this is a savings event, not a permanent income cut</span></div>`;
       } else if(sh.label.includes('Market')) {
-        const pct = Math.round(15 + s*20);
+        const pct = sh.portfolioLossPct || 25;
         html += `
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Market loss % at stress ${Math.round(s*10)}/10: 15 + (${Math.round(s*10)} × 2) = ${pct}%</span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Portfolio loss = ${fmt(investments)} × ${pct}%</span><span class="audit-line-val neg">–${fmt(sh.portfolioLossPct ? Math.round(investments*sh.portfolioLossPct/100) : 0)}</span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Cash flow and runway: <em>unchanged unless you sell to cover expenses</em></span></div>`;
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Portfolio decline you selected</span><span class="audit-line-val neutral">${pct}%</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Portfolio loss = ${fmt(investments)} × ${pct}%</span><span class="audit-line-val neg">–${fmt(Math.round(investments*pct/100))}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Cash flow and runway: unchanged — market drop does not reduce income</span></div>`;
       } else if(sh.label.includes('College')) {
         html += `
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Lump-sum early tuition pulled from savings ahead of plan</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Early tuition pull from savings (${sh.severityLabel})</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
           <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">${sh.otherExpenseAdd > 0 ? 'College not in Step 2 — monthly expense added: +' + fmt(sh.otherExpenseAdd) + '/mo' : 'College already in Step 2 — no monthly double-count'}</span></div>`;
       } else if(sh.label.includes('Visa') || sh.label.includes('Relo')) {
-        const gapMonths = Math.round(1 + s*3);
-        const reloCost = Math.round(20000 + s*35000);
         html += `
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Relocation + legal costs at stress ${Math.round(s*10)}/10</span><span class="audit-line-val neg">–${fmt(reloCost)}</span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Income gap during transition: ${gapMonths} months × ${fmt(totalBurn)} monthly burn</span><span class="audit-line-val neg">–${fmt(Math.round(gapMonths*totalBurn))}</span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Total one-time savings drain</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>`;
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Total relocation + legal cost you selected</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">One-time savings drain — income unchanged (you keep your job, just relocate)</span></div>`;
       } else if(sh.label.includes('Health')) {
         html += `
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Out-of-pocket medical cost at stress ${Math.round(s*10)}/10: $30,000 + (${Math.round(s*10)} × $5,000)</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Cash flow: unchanged. This is a one-time savings hit, not an income event.</span></div>`;
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Out-of-pocket medical cost you selected</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">One-time savings hit — cash flow unchanged (income continues)</span></div>`;
       } else if(sh.label.includes('Rate')) {
         html += `
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Additional monthly housing cost at stress ${Math.round(s*10)}/10: ${fmt(housing)} × (8% + ${Math.round(s*10)}% × 1.2%)</span><span class="audit-line-val neg">+${fmt(sh.housingAdd)}/mo</span></div>
-          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Affects both cash flow and debt coverage ratio</span></div>`;
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Additional monthly housing cost you selected</span><span class="audit-line-val neg">+${fmt(sh.housingAdd)}/mo</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Flows into monthly burn rate and debt coverage ratio</span></div>`;
       }
       html += `</div></div>`;
     });
@@ -2407,38 +2627,61 @@ function buildAuditTrail(p) {
   const combinedBurn = expenses + housing + (decShocks.housingAdd||0) + (allScenariosShock.housingAdd||0) + (decShocks.otherExpenseAdd||0) + (allScenariosShock.otherExpenseAdd||0);
   const combinedIncome = monthlyIncome * (1 - Math.min(95, (decShocks.incomeReducPct||0) + (allScenariosShock.incomeReducPct||0))/100);
   const combinedLiqDrain = (decShocks.liquidityOneTime||0) + (allScenariosShock.liquidityOneTime||0);
+  const liqAfterOneTime = projSavings - combinedLiqDrain;
 
   html += `<div class="audit-block">
-    <div class="audit-block-title">Combined State — The Full Collision Calculation</div>
+    <div class="audit-block-title">Combined State — Waterfall Calculation</div>
+    <div style="margin-bottom:10px;font-size:12px;color:var(--text-dim);line-height:1.6;">
+      Order: (1) monthly obligations reduce cash flow → (2) one-time events drain liquid savings → (3) if savings overdrawn, investments liquidated
+    </div>
     <div class="audit-formula-grid">
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Monthly Income</div>
-        <div class="audit-formula-eq">${fmt(monthlyIncome)} take-home${decShocks.incomeReducPct > 0 ? ` − ${decShocks.incomeReducPct}% career reduction` : ''}${(allScenariosShock.incomeReducPct||0) > 0 ? ` − ${Math.round(allScenariosShock.incomeReducPct||0)}% scenario reduction` : ''}</div>
+        <div class="audit-formula-eq">${fmt(monthlyIncome)}${decShocks.incomeReducPct > 0 ? ` − ${decShocks.incomeReducPct}% career change` : ''}${(allScenariosShock.incomeReducPct||0) > 0 ? ` − ${Math.round(allScenariosShock.incomeReducPct||0)}% scenario` : ''}</div>
         <div class="audit-formula-result ${combinedIncome < monthlyIncome ? 'neg' : 'neutral'}">${fmt(Math.round(combinedIncome))}/mo</div>
       </div>
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Monthly Burn</div>
-        <div class="audit-formula-eq">${fmt(expenses)} expenses + ${fmt(housing)} housing${decShocks.housingAdd > 0 ? ` + ${fmt(Math.round(decShocks.housingAdd))} new mortgage delta` : ''}${(allScenariosShock.housingAdd||0) > 0 ? ` + ${fmt(Math.round(allScenariosShock.housingAdd||0))} rate rise` : ''}${decShocks.otherExpenseAdd > 0 ? ` + ${fmt(decShocks.otherExpenseAdd)} college/other` : ''}</div>
+        <div class="audit-formula-eq">${fmt(expenses)} + ${fmt(housing)} housing${decShocks.housingAdd > 0 ? ` + ${fmt(Math.round(decShocks.housingAdd))} mortgage delta` : ''}${(allScenariosShock.housingAdd||0) > 0 ? ` + ${fmt(Math.round(allScenariosShock.housingAdd||0))} rate rise` : ''}${decShocks.otherExpenseAdd > 0 ? ` + ${fmt(decShocks.otherExpenseAdd)}/mo college` : ''}</div>
         <div class="audit-formula-result neg">${fmt(Math.round(combinedBurn))}/mo</div>
       </div>
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Cash Flow</div>
-        <div class="audit-formula-eq">${fmt(Math.round(combinedIncome))} income − ${fmt(Math.round(combinedBurn))} total burn</div>
+        <div class="audit-formula-eq">${fmt(Math.round(combinedIncome))} − ${fmt(Math.round(combinedBurn))}</div>
         <div class="audit-formula-result ${combinedState.cashFlow >= 0 ? 'pos' : 'neg'}">${fmtMo(combinedState.cashFlow)}</div>
       </div>
       <div class="audit-formula-row">
+        <div class="audit-formula-metric">Savings after<br>one-time events</div>
+        <div class="audit-formula-eq">${fmt(Math.round(projSavings))} projected${combinedLiqDrain > 0 ? ` − ${fmt(combinedLiqDrain)} capital events` : ' (no capital events)'}</div>
+        <div class="audit-formula-result ${liqAfterOneTime >= 0 ? 'neutral' : 'neg'}">${fmt(Math.round(liqAfterOneTime))}</div>
+      </div>
+      ${combinedState.forcedLiquidation ? `
+      <div class="audit-formula-row" style="background:rgba(201,54,54,0.05);border-color:rgba(201,54,54,0.3)">
+        <div class="audit-formula-metric" style="color:var(--red)">⚠ Investment Draw</div>
+        <div class="audit-formula-eq" style="color:var(--red)">Savings overdrawn — ${fmt(combinedState.investmentDraw)} must be liquidated from portfolio to cover shortfall</div>
+        <div class="audit-formula-result neg">–${fmt(combinedState.investmentDraw)}</div>
+      </div>` : ''}
+      <div class="audit-formula-row">
         <div class="audit-formula-metric">Liquid Savings</div>
-        <div class="audit-formula-eq">${fmt(savings)} starting${combinedLiqDrain > 0 ? ` − ${fmt(combinedLiqDrain)} drained by events` : ' (no capital events)'}</div>
-        <div class="audit-formula-result ${combinedState.liquidity > 0 ? 'neutral' : 'neg'}">${fmt(combinedState.liquidity)}</div>
+        <div class="audit-formula-eq">${combinedState.forcedLiquidation ? 'Depleted — shortfall covered by investment liquidation' : fmt(combinedState.liquidity) + ' remaining'}</div>
+        <div class="audit-formula-result ${combinedState.liquidity > 0 ? 'neutral' : 'neg'}">${combinedState.liquidity > 0 ? fmt(combinedState.liquidity) : 'depleted'}</div>
       </div>
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Emergency Runway</div>
-        <div class="audit-formula-eq">${fmt(combinedState.liquidity)} savings ÷ ${fmt(Math.round(combinedBurn))} monthly burn</div>
+        <div class="audit-formula-eq">${combinedState.cashFlow < 0
+          ? `${fmt(combinedState.liquidity)} savings ÷ ${fmt(Math.abs(Math.round(combinedState.cashFlow)))}/mo deficit (savings absorbing negative cash flow)`
+          : `${fmt(combinedState.liquidity)} savings ÷ ${fmt(Math.round(combinedBurn))}/mo burn`
+        }</div>
         <div class="audit-formula-result ${combinedState.runway >= 6 ? 'pos' : 'neg'}">${fmtMths(combinedState.runway)}</div>
       </div>
       <div class="audit-formula-row">
+        <div class="audit-formula-metric">Portfolio Value</div>
+        <div class="audit-formula-eq">${fmt(Math.round(projInvestments))} projected${combinedState.forcedLiquidation ? ` − ${fmt(combinedState.investmentDraw)} forced draw` : ''}${(allScenariosShock.portfolioLossPct||0) > 0 ? ` − ${allScenariosShock.portfolioLossPct}% market loss` : ''}</div>
+        <div class="audit-formula-result ${combinedState.portfolio > 0 ? 'neutral' : 'neg'}">${fmt(combinedState.portfolio)}</div>
+      </div>
+      <div class="audit-formula-row">
         <div class="audit-formula-metric">Debt Coverage</div>
-        <div class="audit-formula-eq">${fmt(Math.round(combinedIncome))} income ÷ ${fmt(Math.round(housing + (decShocks.housingAdd||0) + (allScenariosShock.housingAdd||0)))} total housing cost</div>
+        <div class="audit-formula-eq">${fmt(Math.round(combinedIncome))} ÷ ${fmt(Math.round(housing + (decShocks.housingAdd||0) + (allScenariosShock.housingAdd||0)))} housing</div>
         <div class="audit-formula-result ${combinedState.dscr >= 1.5 ? 'pos' : 'neg'}">${fmtX(combinedState.dscr)}</div>
       </div>
     </div>
