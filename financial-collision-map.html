@@ -620,6 +620,224 @@
   .delta-down { background: rgba(201,54,54,0.1); color: var(--red); }
   .delta-up   { background: rgba(26,143,92,0.1); color: var(--green); }
 
+  /* ── AUDIT TRAIL ── */
+  .audit-wrap {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .audit-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    cursor: pointer;
+    list-style: none;
+    background: var(--bg3);
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .audit-toggle::-webkit-details-marker { display: none; }
+  .audit-wrap[open] .audit-toggle { border-bottom-color: var(--border); background: var(--bg3); }
+  .audit-toggle:hover { background: #ebebE5; }
+
+  .audit-toggle-icon {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    transition: transform 0.2s;
+    display: inline-block;
+    width: 12px;
+  }
+
+  .audit-wrap[open] .audit-toggle-icon { transform: rotate(90deg); }
+
+  .audit-toggle > span:nth-child(2) {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .audit-toggle-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim) !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    font-weight: 400 !important;
+  }
+
+  .audit-body {
+    padding: 20px 20px 24px;
+  }
+
+  .audit-block {
+    margin-bottom: 22px;
+  }
+
+  .audit-block:last-child { margin-bottom: 0; }
+
+  .audit-block-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .audit-inputs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  @media(max-width:540px) { .audit-inputs-grid { grid-template-columns: 1fr 1fr; } }
+
+  .audit-input-cell {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+
+  .audit-input-key {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+  }
+
+  .audit-input-val {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .audit-event {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+
+  .audit-event:last-child { margin-bottom: 0; }
+
+  .audit-event-title {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .audit-event-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  .audit-event-tag.decision { background: rgba(212,130,10,0.12); color: var(--accent); }
+  .audit-event-tag.scenario { background: rgba(201,54,54,0.1); color: var(--accent2); }
+
+  .audit-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .audit-line {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .audit-line-arrow {
+    font-family: var(--mono);
+    color: var(--text-dim);
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+
+  .audit-line-text { color: var(--text-dim); flex: 1; }
+
+  .audit-line-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .audit-line-val.neg { color: var(--red); }
+  .audit-line-val.pos { color: var(--green); }
+  .audit-line-val.neutral { color: var(--text); }
+
+  .audit-formula-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .audit-formula-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  .audit-formula-metric {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    width: 140px;
+    flex-shrink: 0;
+  }
+
+  .audit-formula-eq {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    flex: 1;
+    line-height: 1.6;
+  }
+
+  .audit-formula-result {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    align-self: center;
+  }
+
   /* FAILURE CALLOUTS */
   .failure-list {
     display: flex;
@@ -1165,9 +1383,9 @@
 
     <div class="input-grid">
       <div class="field">
-        <label>Annual Household Income ($)</label>
-        <input type="number" id="income" placeholder="180000" value="180000">
-        <span class="field-hint">Total gross, both earners</span>
+        <label>Monthly Take-Home Pay ($)</label>
+        <input type="number" id="income" placeholder="11000" value="11000">
+        <span class="field-hint">After tax, 401k, and benefits — what hits your bank account</span>
       </div>
       <div class="field">
         <label>Monthly Expenses ($)</label>
@@ -1417,6 +1635,18 @@
         Each column = that event alone. Final column = all selected events together.
       </div>
     </div>
+
+    <!-- SHOW YOUR WORK -->
+    <details class="audit-wrap" id="auditSection">
+      <summary class="audit-toggle">
+        <span class="audit-toggle-icon">▶</span>
+        <span>How these numbers were calculated</span>
+        <span class="audit-toggle-sub">Click to see the exact math behind every cell</span>
+      </summary>
+      <div class="audit-body" id="auditBody">
+        <!-- filled by JS -->
+      </div>
+    </details>
 
     <!-- FAILURE CALLOUTS -->
     <div class="section-label">Where it actually breaks</div>
@@ -1761,7 +1991,7 @@ function getScenarioShocks(id, base, decisions, s) {
 // ── MAIN CALCULATION ──
 function runCalculation() {
   // ── GATHER INPUTS ──
-  const income      = Math.max(0, +document.getElementById('income').value      || 180000);
+  const monthlyIncome = Math.max(0, +document.getElementById('income').value || 11000);
   const expenses    = Math.max(0, +document.getElementById('expenses').value    || 6500);
   const savings     = Math.max(0, +document.getElementById('savings').value     || 85000);
   const investments = Math.max(0, +document.getElementById('investments').value || 220000);
@@ -1769,8 +1999,6 @@ function runCalculation() {
   const jobSecurity = document.getElementById('jobSecurity').value;
   const stressLevel = +document.getElementById('stressLevel').value;
   const s = stressLevel / 10;
-
-  const monthlyIncome = income / 12;
   const base = { monthlyIncome, expenses, savings, investments, housing };
 
   // ── GATHER DECISIONS (Step 2) ──
@@ -2020,7 +2248,203 @@ function runCalculation() {
     fi.innerHTML = `<p><strong>✓ Your baseline is solid</strong> — but every resilient plan was stress-tested before committing. The column above shows your combined floor. Make sure your sequencing is deliberate, not accidental.</p>`;
   }
 
+  // ── BUILD AUDIT TRAIL ──
+  buildAuditTrail({
+    monthlyIncome, expenses, savings, investments, housing,
+    decisions, scenarioShocks, decShocks, allScenariosShock,
+    baseline, decisionsOnlyState, combinedState, s
+  });
+
   updateProgress(4);
+}
+
+// ── AUDIT TRAIL BUILDER ──
+function buildAuditTrail(p) {
+  const {
+    monthlyIncome, expenses, savings, investments, housing,
+    decisions, scenarioShocks, decShocks, allScenariosShock,
+    baseline, decisionsOnlyState, combinedState, s
+  } = p;
+
+  const totalBurn = expenses + housing;
+  let html = '';
+
+  // ── BLOCK 1: YOUR INPUTS ──
+  html += `<div class="audit-block">
+    <div class="audit-block-title">Your Inputs</div>
+    <div class="audit-inputs-grid">
+      <div class="audit-input-cell"><div class="audit-input-key">Monthly Take-Home</div><div class="audit-input-val">${fmt(monthlyIncome)}</div></div>
+      <div class="audit-input-cell"><div class="audit-input-key">Monthly Expenses</div><div class="audit-input-val">${fmt(expenses)}</div></div>
+      <div class="audit-input-cell"><div class="audit-input-key">Housing / Mortgage</div><div class="audit-input-val">${fmt(housing)}/mo</div></div>
+      <div class="audit-input-cell"><div class="audit-input-key">Total Monthly Burn</div><div class="audit-input-val">${fmt(totalBurn)}/mo</div></div>
+      <div class="audit-input-cell"><div class="audit-input-key">Liquid Savings</div><div class="audit-input-val">${fmt(savings)}</div></div>
+      <div class="audit-input-cell"><div class="audit-input-key">Investments / Portfolio</div><div class="audit-input-val">${fmt(investments)}</div></div>
+    </div>
+  </div>`;
+
+  // ── BLOCK 2: BASELINE FORMULAS ──
+  html += `<div class="audit-block">
+    <div class="audit-block-title">Baseline — No Decisions, No Stress Events</div>
+    <div class="audit-formula-grid">
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Monthly Cash Flow</div>
+        <div class="audit-formula-eq">${fmt(monthlyIncome)} take-home − ${fmt(expenses)} expenses − ${fmt(housing)} housing</div>
+        <div class="audit-formula-result ${baseline.cashFlow >= 0 ? 'pos' : 'neg'}">${fmtMo(baseline.cashFlow)}</div>
+      </div>
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Emergency Runway</div>
+        <div class="audit-formula-eq">${fmt(savings)} savings ÷ ${fmt(totalBurn)} monthly burn</div>
+        <div class="audit-formula-result">${fmtMths(baseline.runway)}</div>
+      </div>
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Debt Coverage</div>
+        <div class="audit-formula-eq">${fmt(monthlyIncome)} take-home ÷ ${fmt(housing)} housing payment</div>
+        <div class="audit-formula-result">${fmtX(baseline.dscr)}</div>
+      </div>
+    </div>
+  </div>`;
+
+  // ── BLOCK 3: DECISIONS ──
+  if(decisions.length > 0) {
+    html += `<div class="audit-block">
+      <div class="audit-block-title">Your Planned Decisions — How Each Creates a Shock</div>`;
+
+    decisions.forEach(d => {
+      const labels = { home: '🏠 Home Purchase', college: '🎓 College Funding', visa: '🌐 Career / Visa Change', invest: '📈 Investment', other: '⚡ Other Expense' };
+      html += `<div class="audit-event">
+        <div class="audit-event-title">${labels[d.key] || d.key} <span class="audit-event-tag decision">DECISION · ${d.year}</span></div>
+        <div class="audit-lines">`;
+
+      if(d.key === 'home' && d.amount > 0) {
+        const downAmt = d.amount * (d.down || 0.2);
+        const loanAmt = d.amount * (1 - (d.down || 0.2));
+        const r = 0.065/12, n = 360;
+        const newMortgage = loanAmt * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
+        const housingDelta = Math.max(0, newMortgage - housing);
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Purchase price</span><span class="audit-line-val neutral">${fmt(d.amount)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Down payment (${Math.round((d.down||0.2)*100)}%) withdrawn from liquid savings</span><span class="audit-line-val neg">–${fmt(downAmt)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Loan amount (${100 - Math.round((d.down||0.2)*100)}% of purchase)</span><span class="audit-line-val neutral">${fmt(loanAmt)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">New mortgage payment (6.5% fixed, 30-yr amortization)</span><span class="audit-line-val neg">${fmt(Math.round(newMortgage))}/mo</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Net monthly housing increase vs current ${fmt(housing)}/mo</span><span class="audit-line-val ${housingDelta > 0 ? 'neg' : 'pos'}">+${fmt(Math.round(housingDelta))}/mo</span></div>`;
+      } else if(d.key === 'college' && d.amount > 0) {
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Annual college cost entered</span><span class="audit-line-val neutral">${fmt(d.amount)}/yr</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Monthly expense increase (annual ÷ 12)</span><span class="audit-line-val neg">+${fmt(Math.round(d.amount/12))}/mo</span></div>`;
+      } else if(d.key === 'visa') {
+        const impact = d.impact || 0;
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Income change selected: ${impact > 0 ? '–' + impact + '% reduction' : impact < 0 ? '+' + Math.abs(impact) + '% increase' : 'no change'}</span><span class="audit-line-val ${impact > 0 ? 'neg' : impact < 0 ? 'pos' : 'neutral'}">${impact !== 0 ? fmt(Math.round(monthlyIncome * (1 - impact/100))) + '/mo new take-home' : 'unchanged'}</span></div>
+          ${impact > 0 ? `<div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Monthly cash flow impact</span><span class="audit-line-val neg">–${fmt(Math.round(monthlyIncome * impact/100))}/mo</span></div>` : ''}`;
+      } else if(d.amount > 0) {
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Capital deployed / withdrawn from liquid savings</span><span class="audit-line-val neg">–${fmt(d.amount)}</span></div>`;
+      }
+      html += `</div></div>`;
+    });
+
+    // Summary of decision shocks
+    html += `<div style="margin-top:10px;padding:10px 14px;background:rgba(212,130,10,0.06);border:1px solid rgba(212,130,10,0.2);border-radius:4px;font-family:var(--mono);font-size:11px;line-height:1.8;color:var(--text-dim);">
+      <strong style="color:var(--accent)">Net effect of your decisions on the baseline:</strong><br>
+      ${decShocks.liquidityOneTime > 0 ? `Liquid savings reduced by <strong style="color:var(--red)">${fmt(decShocks.liquidityOneTime)}</strong> (capital committed)<br>` : ''}
+      ${decShocks.housingAdd > 0 ? `Monthly housing cost increased by <strong style="color:var(--red)">+${fmt(Math.round(decShocks.housingAdd))}/mo</strong><br>` : ''}
+      ${decShocks.otherExpenseAdd > 0 ? `Other monthly expenses increased by <strong style="color:var(--red)">+${fmt(decShocks.otherExpenseAdd)}/mo</strong><br>` : ''}
+      ${decShocks.incomeReducPct > 0 ? `Monthly income reduced by <strong style="color:var(--red)">${decShocks.incomeReducPct}% (–${fmt(Math.round(monthlyIncome * decShocks.incomeReducPct/100))}/mo)</strong><br>` : ''}
+      ${(decShocks.liquidityOneTime === 0 && decShocks.housingAdd === 0 && decShocks.otherExpenseAdd === 0 && decShocks.incomeReducPct === 0) ? 'No financial shocks from decisions (no amounts entered).' : ''}
+    </div>
+    </div>`;
+  }
+
+  // ── BLOCK 4: SCENARIOS ──
+  if(scenarioShocks.length > 0) {
+    html += `<div class="audit-block">
+      <div class="audit-block-title">Stress Scenarios — How Each Is Modelled</div>`;
+
+    scenarioShocks.forEach(sh => {
+      html += `<div class="audit-event">
+        <div class="audit-event-title">${sh.label} <span class="audit-event-tag scenario">SCENARIO · Stress ${Math.round(s*10)}/10</span></div>
+        <div class="audit-lines">`;
+
+      if(sh.label.includes('Job Loss')) {
+        const gapMonths = Math.round(3 + s*9);
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Gap duration at stress ${Math.round(s*10)}/10: 3 + (${Math.round(s*10)} × 0.9) = ${gapMonths} months</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Savings drain = ${gapMonths} months × ${fmt(totalBurn)} monthly burn (expenses + housing)</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Income during gap: <em>modelled as zero — savings cover all expenses</em></span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Monthly cash flow: unchanged — income resumes after rehire</span></div>`;
+      } else if(sh.label.includes('Market')) {
+        const pct = Math.round(15 + s*20);
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Market loss % at stress ${Math.round(s*10)}/10: 15 + (${Math.round(s*10)} × 2) = ${pct}%</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Portfolio loss = ${fmt(investments)} × ${pct}%</span><span class="audit-line-val neg">–${fmt(sh.portfolioLossPct ? Math.round(investments*sh.portfolioLossPct/100) : 0)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Cash flow and runway: <em>unchanged unless you sell to cover expenses</em></span></div>`;
+      } else if(sh.label.includes('College')) {
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Lump-sum early tuition pulled from savings ahead of plan</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">${sh.otherExpenseAdd > 0 ? 'College not in Step 2 — monthly expense added: +' + fmt(sh.otherExpenseAdd) + '/mo' : 'College already in Step 2 — no monthly double-count'}</span></div>`;
+      } else if(sh.label.includes('Visa') || sh.label.includes('Relo')) {
+        const gapMonths = Math.round(1 + s*3);
+        const reloCost = Math.round(20000 + s*35000);
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Relocation + legal costs at stress ${Math.round(s*10)}/10</span><span class="audit-line-val neg">–${fmt(reloCost)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Income gap during transition: ${gapMonths} months × ${fmt(totalBurn)} monthly burn</span><span class="audit-line-val neg">–${fmt(Math.round(gapMonths*totalBurn))}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Total one-time savings drain</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>`;
+      } else if(sh.label.includes('Health')) {
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Out-of-pocket medical cost at stress ${Math.round(s*10)}/10: $30,000 + (${Math.round(s*10)} × $5,000)</span><span class="audit-line-val neg">–${fmt(sh.liquidityOneTime)}</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Cash flow: unchanged. This is a one-time savings hit, not an income event.</span></div>`;
+      } else if(sh.label.includes('Rate')) {
+        html += `
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Additional monthly housing cost at stress ${Math.round(s*10)}/10: ${fmt(housing)} × (8% + ${Math.round(s*10)}% × 1.2%)</span><span class="audit-line-val neg">+${fmt(sh.housingAdd)}/mo</span></div>
+          <div class="audit-line"><span class="audit-line-arrow">→</span><span class="audit-line-text">Affects both cash flow and debt coverage ratio</span></div>`;
+      }
+      html += `</div></div>`;
+    });
+    html += `</div>`;
+  }
+
+  // ── BLOCK 5: COMBINED FORMULAS ──
+  const combinedBurn = expenses + housing + (decShocks.housingAdd||0) + (allScenariosShock.housingAdd||0) + (decShocks.otherExpenseAdd||0) + (allScenariosShock.otherExpenseAdd||0);
+  const combinedIncome = monthlyIncome * (1 - Math.min(95, (decShocks.incomeReducPct||0) + (allScenariosShock.incomeReducPct||0))/100);
+  const combinedLiqDrain = (decShocks.liquidityOneTime||0) + (allScenariosShock.liquidityOneTime||0);
+
+  html += `<div class="audit-block">
+    <div class="audit-block-title">Combined State — The Full Collision Calculation</div>
+    <div class="audit-formula-grid">
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Monthly Income</div>
+        <div class="audit-formula-eq">${fmt(monthlyIncome)} take-home${decShocks.incomeReducPct > 0 ? ` − ${decShocks.incomeReducPct}% career reduction` : ''}${(allScenariosShock.incomeReducPct||0) > 0 ? ` − ${Math.round(allScenariosShock.incomeReducPct||0)}% scenario reduction` : ''}</div>
+        <div class="audit-formula-result ${combinedIncome < monthlyIncome ? 'neg' : 'neutral'}">${fmt(Math.round(combinedIncome))}/mo</div>
+      </div>
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Monthly Burn</div>
+        <div class="audit-formula-eq">${fmt(expenses)} expenses + ${fmt(housing)} housing${decShocks.housingAdd > 0 ? ` + ${fmt(Math.round(decShocks.housingAdd))} new mortgage delta` : ''}${(allScenariosShock.housingAdd||0) > 0 ? ` + ${fmt(Math.round(allScenariosShock.housingAdd||0))} rate rise` : ''}${decShocks.otherExpenseAdd > 0 ? ` + ${fmt(decShocks.otherExpenseAdd)} college/other` : ''}</div>
+        <div class="audit-formula-result neg">${fmt(Math.round(combinedBurn))}/mo</div>
+      </div>
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Cash Flow</div>
+        <div class="audit-formula-eq">${fmt(Math.round(combinedIncome))} income − ${fmt(Math.round(combinedBurn))} total burn</div>
+        <div class="audit-formula-result ${combinedState.cashFlow >= 0 ? 'pos' : 'neg'}">${fmtMo(combinedState.cashFlow)}</div>
+      </div>
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Liquid Savings</div>
+        <div class="audit-formula-eq">${fmt(savings)} starting${combinedLiqDrain > 0 ? ` − ${fmt(combinedLiqDrain)} drained by events` : ' (no capital events)'}</div>
+        <div class="audit-formula-result ${combinedState.liquidity > 0 ? 'neutral' : 'neg'}">${fmt(combinedState.liquidity)}</div>
+      </div>
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Emergency Runway</div>
+        <div class="audit-formula-eq">${fmt(combinedState.liquidity)} savings ÷ ${fmt(Math.round(combinedBurn))} monthly burn</div>
+        <div class="audit-formula-result ${combinedState.runway >= 6 ? 'pos' : 'neg'}">${fmtMths(combinedState.runway)}</div>
+      </div>
+      <div class="audit-formula-row">
+        <div class="audit-formula-metric">Debt Coverage</div>
+        <div class="audit-formula-eq">${fmt(Math.round(combinedIncome))} income ÷ ${fmt(Math.round(housing + (decShocks.housingAdd||0) + (allScenariosShock.housingAdd||0)))} total housing cost</div>
+        <div class="audit-formula-result ${combinedState.dscr >= 1.5 ? 'pos' : 'neg'}">${fmtX(combinedState.dscr)}</div>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('auditBody').innerHTML = html;
 }
 </script>
 
