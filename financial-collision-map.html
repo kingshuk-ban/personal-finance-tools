@@ -1960,34 +1960,36 @@ function computeState(base, shocks) {
   const portfolioAfterLoss = investments * (1 - Math.min(100, shocks.portfolioLossPct || 0) / 100);
 
   // ── Step 2: Waterfall — if savings overdrawn, draw from investments ──
-  let finalLiquidity, finalPortfolio, forcedLiquidation = false, investmentDraw = 0;
+  let finalLiquidity, finalPortfolio, forcedLiquidation = false, investmentDraw = 0, unmetShortfall = 0;
   if(liqAfterOneTime < 0) {
-    investmentDraw = Math.abs(liqAfterOneTime);
-    finalPortfolio = Math.max(0, portfolioAfterLoss - investmentDraw);
+    const needed = Math.abs(liqAfterOneTime);
+    if(portfolioAfterLoss >= needed) {
+      // Portfolio covers the full shortfall
+      investmentDraw = needed;
+      finalPortfolio = portfolioAfterLoss - needed;
+    } else {
+      // Portfolio can't cover everything — partial draw, gap remains
+      investmentDraw = portfolioAfterLoss;
+      unmetShortfall = needed - portfolioAfterLoss;
+      finalPortfolio = 0;
+    }
     finalLiquidity = 0;
-    forcedLiquidation = investmentDraw > 0;
+    forcedLiquidation = true;
   } else {
     finalLiquidity = liqAfterOneTime;
     finalPortfolio = portfolioAfterLoss;
   }
 
-  // ── Step 3: Runway ──
-  // If cashFlow < 0: savings drain monthly → runway = savings ÷ abs(cashFlow)
-  // If cashFlow ≥ 0: static emergency measure → runway = savings ÷ totalBurn
-  let runway;
-  if(finalLiquidity <= 0) {
-    runway = 0; // already depleted
-  } else if(cashFlow < 0) {
-    runway = finalLiquidity / Math.abs(cashFlow); // months until deficit drains savings
-  } else {
-    runway = totalMonthly > 0 ? finalLiquidity / totalMonthly : 99;
-  }
+  // ── Step 3: Runway — always savings ÷ monthly burn rate ──
+  // Answers: "how many months of full expenses does my savings buffer cover?"
+  // Cash flow being negative is shown separately — runway is the total buffer question.
+  const runway = (finalLiquidity <= 0 || totalMonthly <= 0) ? 0 : finalLiquidity / totalMonthly;
 
   // ── DSCR ──
   const dscr = totalHousing > 0 ? mi / totalHousing : 99;
 
   return { cashFlow, runway, liquidity: finalLiquidity, portfolio: finalPortfolio,
-           dscr, forcedLiquidation, investmentDraw };
+           dscr, forcedLiquidation, investmentDraw, unmetShortfall };
 }
 
 // ── MERGE SHOCKS (add two shock objects together) ──
@@ -2239,6 +2241,8 @@ function runCalculation() {
   else if(combinedState.runway < 12) riskScore += 7;
   // Forced liquidation is a major fragility signal
   if(combinedState.forcedLiquidation) riskScore += 20;
+  // Unmet shortfall = total financial failure — near max score
+  if(combinedState.unmetShortfall > 0) riskScore += 30;
   if(combinedState.dscr < 1.5 && combinedState.dscr < 99) riskScore += 10;
   riskScore += scenarioIds.length * 4;
   if(maxStack >= 3) riskScore += 14;
@@ -2342,8 +2346,15 @@ function runCalculation() {
   // Forced liquidation — highest severity
   if(combinedState.forcedLiquidation) {
     failures.push({ sev: 'danger', icon: '🔴', headline: 'Investments must be liquidated to cover shortfall',
-      detail: `One-time capital events exceed your liquid savings. ${fmt(combinedState.investmentDraw)} drawn from your investment portfolio — triggering early withdrawal penalties and tax consequences.`,
+      detail: `One-time capital events exceed liquid savings. ${fmt(combinedState.investmentDraw)} drawn from your investment portfolio — at potentially the worst time.`,
       val: `–${fmt(combinedState.investmentDraw)} from portfolio` });
+  }
+
+  // Unmet shortfall — most severe possible state
+  if(combinedState.unmetShortfall > 0) {
+    failures.push({ sev: 'danger', icon: '🔴', headline: 'Full portfolio liquidation cannot cover the gap',
+      detail: `Even liquidating your entire investment portfolio leaves a ${fmt(combinedState.unmetShortfall)} uncovered shortfall. This scenario requires borrowing, delaying decisions, or both.`,
+      val: `${fmt(combinedState.unmetShortfall)} gap` });
   }
 
   if(combinedState.runway <= 0) {
@@ -2353,17 +2364,12 @@ function runCalculation() {
         : 'All liquid savings consumed by capital events. No emergency buffer remains.',
       val: 'depleted' });
   } else if(combinedState.runway < 6) {
-    const runwayNote = combinedState.cashFlow < 0
-      ? `Negative cash flow (${fmtMo(combinedState.cashFlow)}) depletes savings in ${fmtMths(combinedState.runway)}`
-      : `Only ${fmtMths(combinedState.runway)} of expenses covered`;
     failures.push({ sev: 'danger', icon: '🔴', headline: 'Emergency fund falls below 6 months',
-      detail: runwayNote + '. For immigrants with visa dependency, 12 months is the minimum.',
+      detail: `Only ${fmtMths(combinedState.runway)} of full monthly expenses covered by savings. For immigrants with visa dependency, 12 months is the minimum.`,
       val: fmtMths(combinedState.runway) });
   } else if(combinedState.runway < 12) {
     failures.push({ sev: 'warning', icon: '🟡', headline: 'Runway below 12-month immigrant threshold',
-      detail: combinedState.cashFlow < 0
-        ? `Negative cash flow drains savings at ${fmtMo(Math.abs(combinedState.cashFlow))}/mo. Depleted in ${fmtMths(combinedState.runway)}.`
-        : 'Standard advice is 6 months. H-1B holders need 12 — a visa disruption adds months to any job search.',
+      detail: `Savings cover ${fmtMths(combinedState.runway)} of full monthly expenses. H-1B holders need 12 — a visa disruption adds months to any job search.`,
       val: fmtMths(combinedState.runway) });
   }
 
@@ -2516,7 +2522,7 @@ function buildAuditTrail(p) {
       </div>
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Emergency Runway</div>
-        <div class="audit-formula-eq">${fmt(Math.round(projSavings))} projected savings ÷ ${fmt(totalBurn)} monthly burn</div>
+        <div class="audit-formula-eq">${fmt(Math.round(projSavings))} projected savings ÷ ${fmt(totalBurn)}/mo burn rate</div>
         <div class="audit-formula-result">${fmtMths(baseline.runway)}</div>
       </div>
       <div class="audit-formula-row">
@@ -2661,6 +2667,12 @@ function buildAuditTrail(p) {
         <div class="audit-formula-eq" style="color:var(--red)">Savings overdrawn — ${fmt(combinedState.investmentDraw)} must be liquidated from portfolio to cover shortfall</div>
         <div class="audit-formula-result neg">–${fmt(combinedState.investmentDraw)}</div>
       </div>` : ''}
+      ${combinedState.unmetShortfall > 0 ? `
+      <div class="audit-formula-row" style="background:rgba(201,54,54,0.1);border-color:rgba(201,54,54,0.5)">
+        <div class="audit-formula-metric" style="color:var(--red)">🔴 Unmet Gap</div>
+        <div class="audit-formula-eq" style="color:var(--red)">Portfolio fully depleted — ${fmt(combinedState.unmetShortfall)} shortfall remains uncovered. Borrowing or decision delay required.</div>
+        <div class="audit-formula-result neg">${fmt(combinedState.unmetShortfall)} gap</div>
+      </div>` : ''}
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Liquid Savings</div>
         <div class="audit-formula-eq">${combinedState.forcedLiquidation ? 'Depleted — shortfall covered by investment liquidation' : fmt(combinedState.liquidity) + ' remaining'}</div>
@@ -2668,10 +2680,7 @@ function buildAuditTrail(p) {
       </div>
       <div class="audit-formula-row">
         <div class="audit-formula-metric">Emergency Runway</div>
-        <div class="audit-formula-eq">${combinedState.cashFlow < 0
-          ? `${fmt(combinedState.liquidity)} savings ÷ ${fmt(Math.abs(Math.round(combinedState.cashFlow)))}/mo deficit (savings absorbing negative cash flow)`
-          : `${fmt(combinedState.liquidity)} savings ÷ ${fmt(Math.round(combinedBurn))}/mo burn`
-        }</div>
+        <div class="audit-formula-eq">${fmt(combinedState.liquidity)} savings ÷ ${fmt(Math.round(combinedBurn))}/mo burn rate — months of full expenses covered</div>
         <div class="audit-formula-result ${combinedState.runway >= 6 ? 'pos' : 'neg'}">${fmtMths(combinedState.runway)}</div>
       </div>
       <div class="audit-formula-row">
