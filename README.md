@@ -13,6 +13,8 @@ A collection of free, open-source personal finance tools that run entirely in yo
 | 📈 | Medium-Term Wealth Builder | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/medium-term-wealth-builder.html) |
 | 🏦 | Retirement Planner | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/retirement-planner-saving.html) |
 | ⚖️ | Systematic Risk Diversifier | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/systematic-risk-diversifier.html) |
+| 🚑 | 60-Day H-1B Layoff Survival Guide | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/The_60Day_Survival_Guide.html) |
+| 💼 | Job Change Financial Calculator | [Open →](https://kingshuk-ban.github.io/personal-finance-tools/The_Job_Change_Calculator.html) |
 
 ---
 
@@ -99,6 +101,40 @@ Portfolio construction and backtesting tool covering 10 asset classes and 30 ETF
 **Preset portfolios:** Bogleheads 3-Fund · Total World 2-Fund · 60/40 Classic · All-Weather (Bridgewater) · Aggressive Growth · Global Diversified · Permanent Portfolio
 
 ---
+
+---
+
+### 🚑 60-Day H-1B Layoff Survival Guide
+[**▶ Open Tool**](https://kingshuk-ban.github.io/personal-finance-tools/The_60Day_Survival_Guide.html) &nbsp;·&nbsp; `The_60Day_Survival_Guide.html`
+
+Built for H-1B and green card holders who have just been laid off. The 60-day grace period starts the day employment ends — this interactive checklist walks through every financial and immigration decision in priority order, from COBRA election to the 401(k) question to severance negotiation timing.
+
+**This is financial planning guidance only. For immigration advice, consult a qualified immigration attorney.**
+
+| Phase | What it covers |
+|-------|----------------|
+| 🔴 Day 1 | Immediate actions — what to do and what not to do in the first 24 hours |
+| 🟡 Days 1–7 | Financial stabilization — COBRA, emergency fund, mortgage, spouse work auth |
+| 🔵 Days 1–30 | Immigration options — H-1B transfer, H-4, B-2 extension, O-1 |
+| 🟢 The 5 Decisions | 401(k), RSU shares, severance, PERM restart, emergency planning |
+
+**Progress tracker:** Check off each item as you complete it. Tracks completion percentage across all phases.
+
+---
+
+### 💼 Job Change Financial Calculator
+[**▶ Open Tool**](https://kingshuk-ban.github.io/personal-finance-tools/The_Job_Change_Calculator.html) &nbsp;·&nbsp; `The_Job_Change_Calculator.html`
+
+Models the full financial impact of a job change for H-1B and green card holders — the RSU cliff forfeiture, sign-on bonus after-tax value, base salary difference, AC-21 immigration status, and PERM restart cost — all in one calculation. Produces a Year 1 net outcome, 5-year cumulative gain, break-even point, and a Go / Wait / No verdict.
+
+**This is financial planning guidance only. For immigration mechanics, consult a qualified immigration attorney.**
+
+| Input | What it captures |
+|-------|-----------------|
+| 🏢 Current situation | Unvested RSUs, current total comp, years to green card, AC-21 and I-140 status |
+| 💼 New offer | New base salary, annual RSU vest, sign-on bonus, PERM restart delay months |
+| 📊 Output | Year 1 net outcome · 5-year cumulative · Immigration cost · Break-even point · Verdict |
+
 
 ## Privacy
 

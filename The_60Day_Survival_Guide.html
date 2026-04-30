@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 60-Day H-1B Layoff Survival Guide — Start Your Finances Right</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#f5f4f0;color:#1a1a1a;line-height:1.6}
+  .hero{background:#042C53;color:#fff;padding:56px 24px 48px;text-align:center}
+  .hero-badge{display:inline-block;background:#185FA5;color:#B5D4F4;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:20px}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,46px);line-height:1.15;margin-bottom:16px;color:#fff}
+  .hero h1 span{color:#378ADD}
+  .hero p{font-size:16px;color:#85B7EB;max-width:560px;margin:0 auto 28px}
+  .timer-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(231,75,74,.15);border:1px solid rgba(231,75,74,.4);border-radius:8px;padding:10px 20px}
+  .timer-badge .num{font-size:32px;font-weight:700;color:#F09595;font-variant-numeric:tabular-nums}
+  .timer-badge .lbl{font-size:12px;color:#F09595;text-align:left}
+  .progress-bar{background:#0C447C;height:6px;transition:width .4s}
+
+  .container{max-width:740px;margin:0 auto;padding:0 20px}
+  .phase{margin:32px 0}
+  .phase-header{background:#fff;border:1px solid #d4d2c9;border-radius:12px 12px 0 0;padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer}
+  .phase-header:hover{background:#f7f6f2}
+  .phase-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+  .ph-immediate .phase-num{background:#FCEBEB;color:#A32D2D}
+  .ph-week1 .phase-num{background:#FAEEDA;color:#854F0B}
+  .ph-week2 .phase-num{background:#E6F1FB;color:#185FA5}
+  .ph-30day .phase-num{background:#EAF3DE;color:#3B6D11}
+  .phase-title{flex:1}
+  .phase-title h3{font-size:15px;font-weight:600;color:#1a1a1a}
+  .phase-title p{font-size:12px;color:#6b6b68;margin-top:2px}
+  .phase-toggle{font-size:18px;color:#6b6b68;transition:transform .3s}
+  .phase-toggle.open{transform:rotate(180deg)}
+  .phase-body{background:#fff;border:1px solid #d4d2c9;border-top:none;border-radius:0 0 12px 12px;padding:0 20px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+  .phase-body.open{max-height:2000px;padding:16px 20px 20px}
+
+  .checklist{list-style:none}
+  .checklist li{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #eceae4;font-size:14px;color:#3d3d3a;cursor:pointer;user-select:none}
+  .checklist li:last-child{border-bottom:none}
+  .checklist li.done .check-box{background:#3B6D11;border-color:#3B6D11}
+  .checklist li.done .check-box::after{content:'✓';font-size:10px;color:#fff}
+  .checklist li.done .item-text{text-decoration:line-through;color:#9c9a92}
+  .check-box{width:20px;height:20px;border-radius:4px;border:1.5px solid #d4d2c9;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .item-text strong{font-weight:600;color:#1a1a1a}
+  .checklist li.done .item-text strong{color:#9c9a92}
+  .alert-box{border-radius:8px;padding:12px 14px;margin:12px 0;font-size:13px;line-height:1.5}
+  .alert-danger{background:#FCEBEB;border-left:3px solid #E24B4A;color:#791F1F}
+  .alert-info{background:#E6F1FB;border-left:3px solid #378ADD;color:#0C447C}
+  .alert-success{background:#EAF3DE;border-left:3px solid #639922;color:#27500A}
+  .alert-warn{background:#FAEEDA;border-left:3px solid #BA7517;color:#633806}
+
+  .progress-section{background:#fff;border:1px solid #d4d2c9;border-radius:12px;padding:20px;margin:24px 0}
+  .prog-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+  .prog-label span:first-child{font-weight:600;color:#1a1a1a}
+  .prog-label span:last-child{color:#185FA5;font-weight:600}
+  .prog-track{background:#f0ede5;border-radius:4px;height:8px;overflow:hidden}
+
+  .financial-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+  .fin-card{background:#f7f6f2;border-radius:8px;padding:14px}
+  .fin-card .label{font-size:11px;color:#6b6b68;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+  .fin-card .value{font-size:20px;font-weight:700;color:#1a1a1a}
+  .fin-card .sub{font-size:11px;color:#9c9a92;margin-top:2px}
+  @media(max-width:500px){.financial-grid{grid-template-columns:1fr}}
+
+  .cta-section{background:#042C53;color:#fff;padding:48px 24px;text-align:center;margin-top:40px}
+  .cta-section h2{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,32px);margin-bottom:12px}
+  .cta-section p{color:#85B7EB;font-size:15px;max-width:480px;margin:0 auto 28px}
+  .cta-btn{display:inline-block;background:#378ADD;color:#fff;font-size:15px;font-weight:600;padding:14px 32px;border-radius:8px;text-decoration:none;letter-spacing:.01em;transition:background .2s}
+  .cta-btn:hover{background:#185FA5}
+  .cta-sub{font-size:12px;color:#85B7EB;margin-top:12px}
+
+  .sticky-counter{position:fixed;bottom:20px;right:20px;background:#042C53;color:#fff;border-radius:12px;padding:12px 16px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.3);z-index:100;min-width:80px}
+  .sticky-counter .big{font-size:28px;font-weight:700;color:#F09595;display:block;font-variant-numeric:tabular-nums}
+  .sticky-counter .sm{font-size:10px;color:#85B7EB}
+
+  footer{background:#1a1a1a;color:#6b6b68;text-align:center;padding:20px;font-size:12px}
+  footer a{color:#378ADD;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">H-1B Emergency Resource</div>
+  <h1>The <span>60-Day</span> Survival Guide<br>for H-1B Holders After a Layoff</h1>
+  <p>Every hour counts. This checklist tells you exactly what to do — and what NOT to do — to protect your immigration status, your finances, and your family.</p>
+  <div class="timer-badge">
+    <div>
+      <div class="num" id="days-left">60</div>
+    </div>
+    <div class="lbl">Days in your<br>grace period</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="progress-section">
+    <div class="prog-label">
+      <span>Your progress</span>
+      <span id="pct-label">0% complete</span>
+    </div>
+    <div class="prog-track"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+    <p style="font-size:12px;color:#9c9a92;margin-top:8px">Check off each item as you complete it. This saves your progress in this session.</p>
+  </div>
+
+  <!-- PHASE 1: Day 1 -->
+  <div class="phase ph-immediate">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num">1</div>
+      <div class="phase-title">
+        <h3>Day 1 — Immediate (within 24 hours)</h3>
+        <p>The clock starts the moment your employment ends</p>
+      </div>
+      <div class="phase-toggle">▾</div>
+    </div>
+    <div class="phase-body open">
+      <div class="alert-danger"><strong>You have exactly 60 calendar days.</strong> Not business days. Calendar days. The grace period begins the day your employment terminates, not when you find out.</div>
+      <ul class="checklist">
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Call your immigration attorney immediately.</strong> If you don't have one, get one today. Murthy Law, Fragomen, and Berry Appleman all handle urgent H-1B matters. Cost: $300–$500/hour. Worth every dollar.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Confirm your exact grace period end date.</strong> Write it on paper and put it on your wall. If laid off February 1, the grace period ends April 1.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Do NOT cash out your 401(k).</strong> Early withdrawal = income tax + 10% penalty + 30% non-resident withholding if you leave the US. On $200K: you could lose $100K+. Leave it. Always.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Review your vested RSU shares.</strong> Vested RSUs are ordinary shares deposited in your brokerage account — they belong to you outright and there is no deadline to sell them. You can hold them indefinitely. The decision to sell or hold is purely financial, not a deadline. Note: stock options (ISOs/NSOs) are different — those have post-termination exercise windows. Confirm which type you hold.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Review your severance agreement before signing.</strong> Specifically: does it affect COBRA eligibility timing? Does it include a non-compete that limits your job search? Do not sign under time pressure without reviewing.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Assess your AC-21 status.</strong> Has your I-485 been pending for more than 180 days? If yes, you have job portability — this is a fundamentally different situation. If no, you are in a time-critical scenario.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 2: Days 1-7 -->
+  <div class="phase ph-week1">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num">2</div>
+      <div class="phase-title">
+        <h3>Days 1–7 — Financial Stabilization</h3>
+        <p>Protect your family's financial security while the job search runs</p>
+      </div>
+      <div class="phase-toggle">▾</div>
+    </div>
+    <div class="phase-body">
+      <ul class="checklist">
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Elect COBRA health insurance.</strong> You have 60 days from loss of coverage to elect. Cost: $600–$1,800/month for a family. Expensive, but non-negotiable. Medical emergency without coverage is catastrophic.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Calculate your runway.</strong> Monthly expenses (mortgage/rent + utilities + food + insurance + kids' activities). Divide savings by monthly burn. That number is how many months you have before a financial crisis. Know it precisely.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Do NOT stop mortgage payments.</strong> If struggling, call your lender immediately for a forbearance — they have hardship programs. But do not miss a payment silently; it damages credit and triggers a cascade.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Pause all non-essential automatic withdrawals.</strong> Subscriptions, memberships, investment auto-contributions. Preserve cash. You can restart everything once you have an offer.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Check your spouse's H-4 EAD status.</strong> If your spouse has an approved H-4 EAD, they can work immediately. If not yet approved, apply now — though processing takes 3–6 months.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Notify your bank of your situation.</strong> If you have a mortgage, many banks have hardship programs. Understanding your options before you need them is always better than discovering them under pressure.</span></li>
+      </ul>
+      <div class="financial-grid">
+        <div class="fin-card">
+          <div class="label">Minimum runway needed</div>
+          <div class="value">6 months</div>
+          <div class="sub">Before any crisis decisions</div>
+        </div>
+        <div class="fin-card">
+          <div class="label">COBRA election window</div>
+          <div class="value">60 days</div>
+          <div class="sub">From loss of coverage</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3: Days 1-30 Immigration Options -->
+  <div class="phase ph-week2">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num">3</div>
+      <div class="phase-title">
+        <h3>Days 1–30 — Immigration Options (pursue all simultaneously)</h3>
+        <p>The immigration decision tree — know your options before the clock runs out</p>
+      </div>
+      <div class="phase-toggle">▾</div>
+    </div>
+    <div class="phase-body">
+      <div class="alert-info"><strong>The goal is to secure a new H-1B sponsor before Day 60.</strong> Pursue all options simultaneously, not sequentially.</div>
+      <ul class="checklist">
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Option A: H-1B transfer to new employer (BEST OUTCOME).</strong> The new employer files an H-1B transfer petition. Premium processing ($2,805) guarantees a decision in 15 business days. This is priority #1. Contact 3–5 recruiters on Day 1.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Option B: H-4 status (if spouse is on H-1B).</strong> Valid immigration status, but no work authorization until H-4 EAD is approved (3–6 months). Requires your spouse's H-1B to be stable and their employer supportive. File the H-4 application immediately as a protective measure, even while pursuing Option A.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Option C: B-2 extension (last resort).</strong> Buys up to 6 months. You CANNOT work on B-2 — not even informally, not for a friend's startup, not as a consultant. Violation terminates your ability to adjust status in the US. Use only if actively pursuing Option A.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Option D: O-1 (extraordinary ability).</strong> If you have significant publications, patents, awards, or industry recognition, you may qualify. Requires 1–3 months and $5–10K in attorney fees. Investigate immediately in parallel — it won't be fast enough alone but may be the answer.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>Do NOT travel internationally.</strong> Once you leave the US, re-entry requires a valid H-1B visa stamp. If your visa stamp is expired, you cannot re-enter without getting a new stamp at a US consulate abroad — a process that can take weeks to months.</span></li>
+        <li onclick="toggle(this)"><div class="check-box"></div><span class="item-text"><strong>If I-485 is pending >180 days: you have EAD.</strong> If your EAD card has been approved, you can work for ANY employer immediately. You are not truly in a 60-day crisis — you have job flexibility. Still consult an attorney to understand status maintenance.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 4: The financial decisions -->
+  <div class="phase ph-30day">
+    <div class="phase-header" onclick="togglePhase(this)">
+      <div class="phase-num">4</div>
+      <div class="phase-title">
+        <h3>The 5 Financial Decisions You Must Get Right</h3>
+        <p>These mistakes cost immigrants tens of thousands — or everything</p>
+      </div>
+      <div class="phase-toggle">▾</div>
+    </div>
+    <div class="phase-body">
+      <div class="alert-danger"><strong>Decision 1: Never touch the 401(k).</strong><br>I'll say it again. The math on early withdrawal for an H-1B holder who might leave the US: income tax (37%) + 10% penalty + potential 30% NRA withholding on top = you could receive as little as 20 cents on the dollar. A $300,000 401(k) could net you $60,000. Leave it. Borrow if desperate. Do not cash out.</div>
+      <div class="alert-warn"><strong>Decision 2: Decide what to do with your vested RSU shares.</strong><br>Vested RSUs are shares you already own outright — there is no post-termination deadline to sell them. They sit in your brokerage account and can be held indefinitely. The real decision is whether to hold concentrated single-stock exposure during a period of financial uncertainty, or sell and diversify into cash. In most layoff situations, selling to build liquidity is the right financial move — but it is your choice, not a deadline.</div>
+      <div class="alert-info"><strong>Decision 3: Do not accept a below-market offer in panic.</strong><br>The 60-day clock creates pressure that employers know about. Some will offer below-market compensation to a visibly desperate candidate. Know your market rate. Premium processing ($2,805) is worth paying to give yourself 15 more business days of negotiating time.</div>
+      <div class="alert-info"><strong>Decision 4: The PERM restart calculation.</strong><br>If your I-485 has NOT been filed, changing employers means the new employer must file a new PERM. Your priority date (from the I-140) is preserved if your old I-140 is not revoked. Ask: Is my old employer likely to revoke my I-140? Contact an attorney before assuming anything.</div>
+      <div class="alert-success"><strong>Decision 5: If you had prior good planning, this is manageable.</strong><br>6-month emergency fund, no house bought before I-485, FBAR filed, RSU shares tracked — if you built these foundations, a layoff is stressful but not catastrophic. If you haven't, the next job is to build them. That's what financial planning is for.</div>
+    </div>
+  </div>
+
+  <div class="alert-info" style="margin:24px 0;padding:16px;border-radius:10px">
+    <strong>Where you are in the immigration timeline determines everything.</strong><br>
+    A layoff 3 years into your H-1B career is a completely different event than a layoff with your I-485 pending for 6 months. The difference is the difference between a financial crisis and a minor inconvenience. Knowing your exact status is the foundation of all planning.
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>Don't Navigate This Alone</h2>
+  <p>A layoff is a financial event as much as an immigration one. In a 30-minute call, I help immigrant tech professionals understand the financial decisions at stake — protecting assets, managing cash flow, and building a plan that works regardless of what happens next on the visa front. I work on the financial side. For immigration questions, I will point you to the right attorney.</p>
+  <a href="https://calendly.com/startyourfinancesright/30min" class="cta-btn" target="_blank">Book Your Free 30-Minute Call →</a>
+  <div class="cta-sub">No cost. No obligation. Specific to your situation — not generic advice.</div>
+  <div style="margin-top:32px;border-top:1px solid #0C447C;padding-top:24px;font-size:12px;color:#378ADD">
+    <strong>Kingshuk Bannerjee</strong> · Start Your Finances Right<br>
+    Former Semiconductor EDA Engineer · Series 65 Licensed · CFP Candidate<br>
+    Financial planner for immigrant tech professionals. I work on the financial architecture — not immigration or tax advice.
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Start Your Finances Right · <a href="https://calendly.com/startyourfinancesright/30min">Book a Call</a></p>
+  <p style="margin-top:6px">For educational purposes only. Not legal or immigration advice. Consult a qualified immigration attorney for your specific situation.</p>
+</footer>
+
+<div class="sticky-counter">
+  <span class="big" id="counter-days">60</span>
+  <span class="sm">days left</span>
+</div>
+
+<script>
+let allItems = document.querySelectorAll('.checklist li');
+let totalItems = allItems.length;
+
+function toggle(el){
+  el.classList.toggle('done');
+  updateProgress();
+}
+
+function updateProgress(){
+  let done = document.querySelectorAll('.checklist li.done').length;
+  let pct = Math.round(done/totalItems*100);
+  document.getElementById('prog-bar').style.width = pct+'%';
+  document.getElementById('pct-label').textContent = pct+'% complete';
+}
+
+function togglePhase(header){
+  let body = header.nextElementSibling;
+  let toggle = header.querySelector('.phase-toggle');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+</script>
+</body>
+</html>

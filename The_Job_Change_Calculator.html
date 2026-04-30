@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Change Calculator for H-1B Holders — Start Your Finances Right</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:#f5f4f0;color:#1a1a1a;line-height:1.6}
+  .hero{background:#042C53;padding:48px 24px 40px;text-align:center;color:#fff}
+  .badge{display:inline-block;background:#185FA5;color:#B5D4F4;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:18px}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,40px);line-height:1.2;margin-bottom:12px}
+  .hero h1 span{color:#378ADD}
+  .hero p{color:#85B7EB;font-size:15px;max-width:540px;margin:0 auto}
+  .container{max-width:720px;margin:0 auto;padding:32px 20px 48px}
+  .card{background:#fff;border:1px solid #d4d2c9;border-radius:12px;padding:24px;margin-bottom:20px}
+  .card h2{font-size:16px;font-weight:600;margin-bottom:4px;color:#1a1a1a}
+  .card .sub{font-size:13px;color:#6b6b68;margin-bottom:20px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:13px;font-weight:500;color:#3d3d3a;margin-bottom:6px}
+  .field input[type=range]{width:100%;accent-color:#185FA5}
+  .field-row{display:flex;align-items:center;gap:12px}
+  .field-row input[type=range]{flex:1}
+  .val-display{font-size:15px;font-weight:600;color:#185FA5;min-width:90px;text-align:right;white-space:nowrap}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #eceae4}
+  .toggle-row:last-child{border-bottom:none}
+  .toggle-label h4{font-size:14px;font-weight:500;color:#1a1a1a}
+  .toggle-label p{font-size:12px;color:#6b6b68}
+  .toggle-switch{position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0}
+  .toggle-switch input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;margin:0}
+  .track{width:44px;height:24px;background:#d4d2c9;border-radius:12px;transition:background .2s;pointer-events:none}
+  .toggle-switch input:checked ~ .track{background:#185FA5}
+  .thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:left .2s;pointer-events:none}
+  .toggle-switch input:checked ~ .thumb{left:23px}
+  .result-card{background:#fff;border:2px solid #185FA5;border-radius:12px;padding:24px;margin:24px 0}
+  .result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  .result-header h2{font-size:15px;font-weight:600;color:#1a1a1a}
+  .verdict-badge{font-size:13px;font-weight:600;padding:6px 16px;border-radius:20px}
+  .verdict-go{background:#EAF3DE;color:#3B6D11}
+  .verdict-wait{background:#FAEEDA;color:#854F0B}
+  .verdict-no{background:#FCEBEB;color:#A32D2D}
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .result-stat{background:#f7f6f2;border-radius:8px;padding:14px}
+  .result-stat .lbl{font-size:11px;color:#6b6b68;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+  .result-stat .num{font-size:22px;font-weight:700;color:#1a1a1a}
+  .result-stat .num.red{color:#A32D2D}
+  .result-stat .num.green{color:#3B6D11}
+  .result-stat .note{font-size:11px;color:#9c9a92;margin-top:2px}
+  .breakdown{border-top:1px solid #eceae4;padding-top:16px;margin-top:4px}
+  .breakdown-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:5px 0}
+  .breakdown-row .item{color:#3d3d3a}
+  .breakdown-row .amount{font-weight:500}
+  .breakdown-row.total{border-top:1px solid #d4d2c9;margin-top:6px;padding-top:10px;font-weight:600;font-size:14px}
+  .neg{color:#A32D2D}
+  .pos{color:#3B6D11}
+  .neutral{color:#1a1a1a}
+  .insight{border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;line-height:1.5}
+  .insight-info{background:#E6F1FB;border-left:3px solid #378ADD;color:#0C447C}
+  .insight-warn{background:#FAEEDA;border-left:3px solid #BA7517;color:#633806}
+  .insight-success{background:#EAF3DE;border-left:3px solid #639922;color:#27500A}
+  .insight-danger{background:#FCEBEB;border-left:3px solid #E24B4A;color:#791F1F}
+  @media(max-width:480px){.result-grid{grid-template-columns:1fr}}
+  .cta-section{background:#042C53;color:#fff;padding:40px 24px;text-align:center;margin-top:0;border-radius:0 0 12px 12px}
+  .cta-section h2{font-family:'Playfair Display',serif;font-size:clamp(20px,4vw,28px);margin-bottom:10px}
+  .cta-section p{color:#85B7EB;font-size:14px;max-width:480px;margin:0 auto 24px}
+  .cta-btn{display:inline-block;background:#378ADD;color:#fff;font-size:15px;font-weight:600;padding:12px 28px;border-radius:8px;text-decoration:none;transition:background .2s}
+  .cta-btn:hover{background:#185FA5}
+  .cta-sub{font-size:12px;color:#85B7EB;margin-top:10px}
+  footer{background:#1a1a1a;color:#6b6b68;text-align:center;padding:16px;font-size:12px}
+  footer a{color:#378ADD;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">H-1B Job Change Calculator</div>
+  <h1>Should You Take the <span>New Job Offer</span>?</h1>
+  <p>Model the RSU cliff, PERM restart cost, AC-21 status, and new offer premium — all in one calculation built specifically for H-1B holders.</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>Your current situation</h2>
+    <div class="sub">Tell us about your current role and immigration status</div>
+
+    <div class="field">
+      <label>Unvested RSUs at current employer (what you'd forfeit by leaving)</label>
+      <div class="field-row">
+        <input type="range" id="unvested" min="0" max="800000" step="10000" value="200000" oninput="calc()">
+        <span class="val-display" id="unvested-val">$200,000</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Current annual total comp (base + RSU annual vest + bonus)</label>
+      <div class="field-row">
+        <input type="range" id="current-comp" min="100000" max="1000000" step="10000" value="400000" oninput="calc()">
+        <span class="val-display" id="current-comp-val">$400,000</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Years until likely green card approval (estimate)</label>
+      <div class="field-row">
+        <input type="range" id="gc-years" min="1" max="20" step="1" value="5" oninput="calc()">
+        <span class="val-display" id="gc-years-val">5 years</span>
+      </div>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-label">
+        <h4>AC-21 protection active</h4>
+        <p>I-485 has been pending for 180+ days AND I-140 is approved</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="ac21" onchange="calc()">
+        <div class="track"></div>
+        <div class="thumb"></div>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <div class="toggle-label">
+        <h4>I-140 approved (not yet pending I-485)</h4>
+        <p>Priority date is locked — portable if I-140 not revoked</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="i140" onchange="calc()" checked>
+        <div class="track"></div>
+        <div class="thumb"></div>
+      </label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>The new offer</h2>
+    <div class="sub">What the new employer is offering</div>
+
+    <div class="field">
+      <label>New annual base salary</label>
+      <div class="field-row">
+        <input type="range" id="new-base" min="100000" max="600000" step="5000" value="280000" oninput="calc()">
+        <span class="val-display" id="new-base-val">$280,000</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>New annual RSU vest (year 2+, after sign-on)</label>
+      <div class="field-row">
+        <input type="range" id="new-rsu" min="0" max="600000" step="10000" value="200000" oninput="calc()">
+        <span class="val-display" id="new-rsu-val">$200,000</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Sign-on bonus (year 1)</label>
+      <div class="field-row">
+        <input type="range" id="signon" min="0" max="400000" step="10000" value="150000" oninput="calc()">
+        <span class="val-display" id="signon-val">$150,000</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>PERM restart delay (months, if AC-21 not active and I-140 not portable)</label>
+      <div class="field-row">
+        <input type="range" id="perm-delay" min="0" max="48" step="3" value="18" oninput="calc()">
+        <span class="val-display" id="perm-delay-val">18 months</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="result-card" id="result-card">
+    <div class="result-header">
+      <h2>Decision analysis</h2>
+      <div class="verdict-badge" id="verdict-badge">Calculating...</div>
+    </div>
+    <div class="result-grid">
+      <div class="result-stat">
+        <div class="lbl">Year 1 net outcome</div>
+        <div class="num" id="y1-net">—</div>
+        <div class="note">vs. staying at current job</div>
+      </div>
+      <div class="result-stat">
+        <div class="lbl">5-year cumulative gain</div>
+        <div class="num" id="5yr-gain">—</div>
+        <div class="note">new total vs. staying</div>
+      </div>
+      <div class="result-stat">
+        <div class="lbl">Immigration cost</div>
+        <div class="num" id="imm-cost">—</div>
+        <div class="note">PERM restart penalty</div>
+      </div>
+      <div class="result-stat">
+        <div class="lbl">Break-even point</div>
+        <div class="num" id="breakeven">—</div>
+        <div class="note">When you're ahead financially</div>
+      </div>
+    </div>
+    <div class="breakdown" id="breakdown-section"></div>
+    <div id="insight-box"></div>
+  </div>
+
+  <div class="card" style="background:#f7f6f2;border-style:dashed">
+    <h2 style="font-size:14px;margin-bottom:8px">What this calculator doesn't model</h2>
+    <p style="font-size:13px;color:#6b6b68;line-height:1.6">
+      Tax differences between employers (CA vs Texas base difference). Startup equity upside/risk. Career trajectory differences. Quality of life at new vs. current employer. Family disruption. The emotional cost of immigration limbo vs. the stress of the known. These are real factors — run the numbers here, then talk to someone who understands the full picture.
+    </p>
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>The Numbers Tell Part of the Story</h2>
+  <p>The financial side of a job change for H-1B and green card holders is genuinely complex — RSU forfeiture, sign-on after-tax math, the GC restart cost, the career premium needed to justify the move. I help you run that analysis clearly so the financial decision is separate from the immigration one. For the immigration mechanics, you will need an attorney — I can help you think through the financial picture.</p>
+  <a href="https://calendly.com/startyourfinancesright/30min" class="cta-btn" target="_blank">Book a Free 30-Minute Call →</a>
+  <div class="cta-sub">Bring your numbers. We'll run the analysis together.</div>
+  <div style="margin-top:24px;border-top:1px solid #0C447C;padding-top:20px;font-size:12px;color:#378ADD">
+    <strong>Kingshuk Bannerjee</strong> · Start Your Finances Right<br>
+    Former Semiconductor EDA Engineer · Series 65 Licensed · CFP Candidate · Financial planning only — not immigration or tax advice
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Start Your Finances Right · <a href="https://calendly.com/startyourfinancesright/30min">Book a Call</a></p>
+  <p style="margin-top:4px">Educational tool only. Not financial advice. Individual situations vary significantly.</p>
+</footer>
+
+<script>
+function fmt(n){
+  return (n<0?'-':'')+' $'+Math.abs(Math.round(n)).toLocaleString();
+}
+function fmtYrs(n){
+  if(n<1) return Math.round(n*12)+' months';
+  return n.toFixed(1)+' yrs';
+}
+function setDisplay(id,val,cls){
+  let el = document.getElementById(id);
+  el.textContent = val;
+  el.className = 'num '+cls;
+}
+
+function calc(){
+  let unvested    = +document.getElementById('unvested').value;
+  let curComp     = +document.getElementById('current-comp').value;
+  let gcYears     = +document.getElementById('gc-years').value;
+  let ac21        = document.getElementById('ac21').checked;
+  let i140        = document.getElementById('i140').checked;
+  let newBase     = +document.getElementById('new-base').value;
+  let newRsu      = +document.getElementById('new-rsu').value;
+  let signon      = +document.getElementById('signon').value;
+  let permDelay   = +document.getElementById('perm-delay').value; // months
+
+  // Update display labels
+  document.getElementById('unvested-val').textContent    = '$'+unvested.toLocaleString();
+  document.getElementById('current-comp-val').textContent= '$'+curComp.toLocaleString();
+  document.getElementById('gc-years-val').textContent    = gcYears+' year'+(gcYears===1?'':'s');
+  document.getElementById('new-base-val').textContent    = '$'+newBase.toLocaleString();
+  document.getElementById('new-rsu-val').textContent     = '$'+newRsu.toLocaleString();
+  document.getElementById('signon-val').textContent      = '$'+signon.toLocaleString();
+  document.getElementById('perm-delay-val').textContent  = permDelay+' months';
+
+  // New comp calculation
+  let newCompY1    = newBase + newRsu + signon; // year 1
+  let newCompY2    = newBase + newRsu;          // year 2+
+  let permCostYr1  = 0;
+
+  // PERM restart: only applies if NOT AC-21, and I-140 may not be portable
+  let permRestart = !ac21;
+  let permCost = 0;
+  if(permRestart){
+    // During PERM delay months, no GC progress — cost = opportunity cost of comp compression
+    // Simplified: PERM delay adds months of stress and potential below-market offers
+    // Rough model: assume 10% comp compression during uncertainty period
+    permCost = curComp * 0.10 * (permDelay/12);
+    // Plus legal fees
+    permCost += 18000;
+  }
+
+  // Year 1 outcome
+  let y1Loss = unvested;         // RSU forfeiture
+  let y1Gain = signon + (newBase - (curComp * 0.6)) + (newRsu - (curComp * 0.4)); // simplified
+  // More accurate: compare against current comp
+  let currentY1 = curComp;
+  let actualNewY1 = newBase + newRsu + signon;
+  let netY1 = actualNewY1 - currentY1 - unvested - permCost;
+
+  // 5-year cumulative
+  let newTotal5 = newCompY1 + (newCompY2 * 4);
+  let curTotal5 = curComp * 5;
+  let net5 = newTotal5 - curTotal5 - unvested - permCost;
+
+  // Break-even
+  // Year 1: behind by (unvested + permCost - signon - base diff)
+  let annualGain = newCompY2 - curComp;
+  let initialDeficit = unvested + permCost - signon;
+  let breakEven = initialDeficit > 0 && annualGain > 0 ? initialDeficit / annualGain : 0;
+
+  setDisplay('y1-net', fmt(netY1), netY1>0?'green':'red');
+  setDisplay('5yr-gain', fmt(net5), net5>0?'green':'red');
+  setDisplay('imm-cost', permRestart ? fmt(-permCost) : '$0 (AC-21 active)', permRestart ? 'red' : 'green');
+  setDisplay('breakeven', breakEven <= 0 ? 'Immediately' : fmtYrs(breakEven), breakEven<=1?'green':breakEven<=3?'neutral':'red');
+
+  // Breakdown
+  let bd = document.getElementById('breakdown-section');
+  let rows = [
+    ['Unvested RSU forfeiture', -unvested],
+    ['Sign-on bonus (year 1)', signon],
+    ['Base salary difference (year 1)', newBase - Math.round(curComp*0.6)],
+    ['RSU difference (year 1)', newRsu - Math.round(curComp*0.4)],
+  ];
+  if(permRestart) rows.push(['Immigration/PERM restart cost', -Math.round(permCost)]);
+  let html = '<p style="font-size:12px;font-weight:600;color:#6b6b68;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Year 1 breakdown</p>';
+  rows.forEach(([label, amount]) => {
+    html += `<div class="breakdown-row"><span class="item">${label}</span><span class="amount ${amount>=0?'pos':'neg'}">${fmt(amount)}</span></div>`;
+  });
+  html += `<div class="breakdown-row total"><span class="item">Net year 1 outcome</span><span class="amount ${netY1>=0?'pos':'neg'}">${fmt(netY1)}</span></div>`;
+  bd.innerHTML = html;
+
+  // Insight
+  let insight = '';
+  let iClass = 'insight-info';
+  let badge = '';
+  let badgeClass = '';
+  if(ac21){
+    insight = '<strong>AC-21 is active.</strong> Your green card process continues with the new employer — no PERM restart. The job change decision is now purely financial: does the offer package outweigh the unvested RSU forfeiture?';
+    iClass = 'insight-success';
+    badge = annualGain > 0 ? 'Likely worth considering' : 'Evaluate carefully';
+    badgeClass = annualGain > 0 ? 'verdict-go' : 'verdict-wait';
+  } else if(permRestart && i140){
+    insight = '<strong>No AC-21 yet.</strong> Your I-140 is approved, which means your priority date is portable — but only if your current employer doesn\'t revoke the I-140. Confirm this with an immigration attorney before giving notice. The PERM restart adds months and cost.';
+    iClass = 'insight-warn';
+    badge = netY1 > 50000 ? 'Potentially worth it' : 'Proceed with caution';
+    badgeClass = netY1 > 50000 ? 'verdict-go' : 'verdict-wait';
+  } else if(permRestart && !i140){
+    insight = '<strong>Full PERM restart required.</strong> Changing employers now means starting the green card process from scratch. Your new priority date will be the PERM filing date at the new employer. This is the highest-cost immigration scenario.';
+    iClass = 'insight-danger';
+    badge = net5 > 200000 ? 'Only if premium is very large' : 'Likely not worth it now';
+    badgeClass = net5 > 200000 ? 'verdict-wait' : 'verdict-no';
+  }
+  document.getElementById('insight-box').innerHTML = `<div class="insight ${iClass}" style="margin-top:14px">${insight}</div>`;
+  document.getElementById('verdict-badge').textContent = badge;
+  document.getElementById('verdict-badge').className = 'verdict-badge '+badgeClass;
+}
+
+calc();
+</script>
+</body>
+</html>
