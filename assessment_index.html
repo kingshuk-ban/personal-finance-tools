@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Your Finances Right — Find Your Path</title>
+<meta name="description" content="Two questions to find the right financial resources for where you are right now.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --night:  #0D1520;
+  --panel:  rgba(255,255,255,0.04);
+  --panel2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --bord2:  rgba(255,255,255,0.14);
+  --text:   #E8E2D8;
+  --muted:  #7A7570;
+  --dim:    #4A4540;
+
+  --explorer:  #C8952A;
+  --navigator: #2E7CF6;
+  --optimizer: #1A9B78;
+  --patient:   #8B6FD4;
+
+  --explorer-bg:  rgba(200,149,42,0.1);
+  --navigator-bg: rgba(46,124,246,0.1);
+  --optimizer-bg: rgba(26,155,120,0.1);
+  --patient-bg:   rgba(139,111,212,0.1);
+
+  --explorer-bdr:  rgba(200,149,42,0.3);
+  --navigator-bdr: rgba(46,124,246,0.3);
+  --optimizer-bdr: rgba(26,155,120,0.3);
+  --patient-bdr:   rgba(139,111,212,0.3);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--night);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -5%, rgba(46,124,246,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 92% 92%, rgba(139,111,212,0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* NAV */
+nav {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 48px;
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: .01em; }
+.brand span { color: var(--navigator); }
+.nav-hint { font-size: 12px; color: var(--dim); letter-spacing: .06em; text-transform: uppercase; }
+
+/* STAGE */
+.stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 24px; position: relative; z-index: 1; }
+
+/* SCREENS */
+.screen { display: none; width: 100%; max-width: 680px; animation: fadeUp .35s ease both; }
+.screen.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* PROGRESS DOTS */
+.dots { display: flex; gap: 7px; margin-bottom: 44px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: all .3s; }
+.dot.on { background: var(--navigator); width: 20px; border-radius: 3px; }
+.dot.done { background: var(--dim); }
+
+/* QUESTION */
+.step-label { font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: block; }
+.q-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px,5vw,44px); line-height: 1.18; font-weight: 700; color: var(--text); margin-bottom: 8px; letter-spacing: -.015em; }
+.q-title em { font-style: italic; color: var(--navigator); font-weight: 400; }
+.q-hint { font-size: 15px; color: var(--muted); margin-bottom: 32px; font-weight: 300; line-height: 1.6; }
+
+/* OPTION CARDS (Q1) */
+.options { display: flex; flex-direction: column; gap: 9px; }
+.opt {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px 20px; cursor: pointer;
+  display: flex; align-items: center; gap: 14px;
+  transition: background .18s, border-color .18s, transform .15s;
+  user-select: none;
+}
+.opt:hover { background: var(--panel2); border-color: var(--bord2); transform: translateX(3px); }
+.opt.selected { border-color: var(--navigator); background: var(--navigator-bg); }
+.opt-ico { width: 34px; height: 34px; border-radius: 8px; background: var(--panel2); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.opt-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; line-height: 1.3; }
+.opt-sub { font-size: 12px; color: var(--muted); font-weight: 300; line-height: 1.4; }
+
+/* CHECKBOX GRID (Q2) */
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 28px; }
+.chk {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 13px 15px; cursor: pointer;
+  display: flex; align-items: center; gap: 11px;
+  transition: background .18s, border-color .18s;
+  user-select: none;
+}
+.chk:hover { background: var(--panel2); border-color: var(--bord2); }
+.chk.on { border-color: var(--navigator); background: var(--navigator-bg); }
+.chkbox {
+  width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid var(--bord2); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: transparent;
+  transition: background .18s, border-color .18s, color .18s;
+}
+.chk.on .chkbox { background: var(--navigator); border-color: var(--navigator); color: #fff; }
+.chk-lbl { font-size: 13px; color: var(--text); font-weight: 400; line-height: 1.4; }
+
+/* BUTTONS */
+.cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--navigator); color: #fff;
+  font-size: 14px; font-weight: 500; font-family: 'Outfit', sans-serif;
+  padding: 13px 26px; border-radius: 10px; border: none; cursor: pointer;
+  transition: opacity .2s, transform .15s; letter-spacing: .02em;
+}
+.cta:hover { opacity: .87; transform: translateY(-2px); }
+.skip { font-size: 12px; color: var(--muted); cursor: pointer; margin-left: 14px; font-weight: 300; border: none; background: none; font-family: 'Outfit', sans-serif; }
+.skip:hover { color: var(--text); }
+
+/* WELCOME */
+.w-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+.w-eyebrow::before { content: ''; display: block; width: 26px; height: 1.5px; background: var(--navigator); }
+.w-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px,6vw,60px); line-height: 1.1; font-weight: 700; color: var(--text); margin-bottom: 20px; letter-spacing: -.02em; }
+.w-title em { font-style: italic; color: var(--navigator); font-weight: 400; }
+.w-sub { font-size: 17px; color: var(--muted); max-width: 500px; line-height: 1.75; margin-bottom: 40px; font-weight: 300; }
+.w-start {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--navigator); color: #fff;
+  font-size: 15px; font-weight: 500; font-family: 'Outfit', sans-serif;
+  padding: 15px 30px; border-radius: 12px; border: none; cursor: pointer;
+  transition: opacity .2s, transform .2s; letter-spacing: .02em;
+}
+.w-start:hover { opacity: .87; transform: translateY(-3px); }
+.w-meta { margin-top: 16px; font-size: 12px; color: var(--dim); font-weight: 300; }
+
+/* ── RESULT SCREEN ── */
+.res-top { margin-bottom: 32px; }
+.res-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+.res-tag::before { content: ''; display: block; width: 24px; height: 1.5px; }
+.res-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px,5vw,46px); font-weight: 700; line-height: 1.15; color: var(--text); margin-bottom: 8px; letter-spacing: -.01em; }
+.res-title em { font-style: italic; font-weight: 400; }
+.res-why { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 560px; font-weight: 300; }
+
+/* Primary recommendation card */
+.rec-card {
+  border-radius: 16px; border: 1.5px solid; padding: 26px 28px; margin-bottom: 28px;
+}
+.rec-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; display: block; }
+.rec-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.rec-card p { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 18px; font-weight: 300; }
+.rec-features { list-style: none; margin-bottom: 22px; display: flex; flex-direction: column; gap: 6px; }
+.rec-features li { font-size: 13px; color: var(--muted); display: flex; align-items: flex-start; gap: 8px; font-weight: 300; line-height: 1.5; }
+.rec-features li::before { font-weight: 500; flex-shrink: 0; }
+.rec-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 500; font-family: 'Outfit', sans-serif;
+  padding: 12px 24px; border-radius: 10px; text-decoration: none;
+  transition: opacity .2s, transform .15s; letter-spacing: .02em;
+}
+.rec-cta:hover { opacity: .87; transform: translateY(-2px); }
+
+/* Override section */
+.override-label { font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); margin-bottom: 12px; display: block; }
+.override-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 20px; }
+.ov-card {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; cursor: pointer; text-decoration: none;
+  display: block;
+  transition: background .18s, border-color .18s, transform .15s;
+}
+.ov-card:hover { background: var(--panel2); transform: translateY(-2px); }
+.ov-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
+.ov-desc { font-size: 11px; color: var(--muted); font-weight: 300; line-height: 1.4; }
+
+/* Explorer overrides */
+.ov-explorer { border-color: var(--explorer-bdr) !important; }
+.ov-explorer .ov-name { color: var(--explorer); }
+.ov-explorer:hover { background: var(--explorer-bg) !important; }
+
+/* Navigator overrides */
+.ov-navigator { border-color: var(--navigator-bdr) !important; }
+.ov-navigator .ov-name { color: var(--navigator); }
+.ov-navigator:hover { background: var(--navigator-bg) !important; }
+
+/* Optimizer overrides */
+.ov-optimizer { border-color: var(--optimizer-bdr) !important; }
+.ov-optimizer .ov-name { color: var(--optimizer); }
+.ov-optimizer:hover { background: var(--optimizer-bg) !important; }
+
+/* Patient overrides */
+.ov-patient { border-color: var(--patient-bdr) !important; }
+.ov-patient .ov-name { color: var(--patient); }
+.ov-patient:hover { background: var(--patient-bg) !important; }
+
+/* Result theme classes */
+.theme-explorer .res-tag { color: var(--explorer); }
+.theme-explorer .res-tag::before { background: var(--explorer); }
+.theme-explorer .res-title em { color: var(--explorer); }
+.theme-explorer .rec-card { background: var(--explorer-bg); border-color: var(--explorer-bdr); }
+.theme-explorer .rec-label { color: var(--explorer); }
+.theme-explorer .rec-features li::before { color: var(--explorer); content: '→'; }
+.theme-explorer .rec-cta { background: var(--explorer); color: #fff; }
+
+.theme-navigator .res-tag { color: var(--navigator); }
+.theme-navigator .res-tag::before { background: var(--navigator); }
+.theme-navigator .res-title em { color: var(--navigator); }
+.theme-navigator .rec-card { background: var(--navigator-bg); border-color: var(--navigator-bdr); }
+.theme-navigator .rec-label { color: var(--navigator); }
+.theme-navigator .rec-features li::before { color: var(--navigator); content: '→'; }
+.theme-navigator .rec-cta { background: var(--navigator); color: #fff; }
+
+.theme-optimizer .res-tag { color: var(--optimizer); }
+.theme-optimizer .res-tag::before { background: var(--optimizer); }
+.theme-optimizer .res-title em { color: var(--optimizer); }
+.theme-optimizer .rec-card { background: var(--optimizer-bg); border-color: var(--optimizer-bdr); }
+.theme-optimizer .rec-label { color: var(--optimizer); }
+.theme-optimizer .rec-features li::before { color: var(--optimizer); content: '→'; }
+.theme-optimizer .rec-cta { background: var(--optimizer); color: #fff; }
+
+.theme-patient .res-tag { color: var(--patient); }
+.theme-patient .res-tag::before { background: var(--patient); }
+.theme-patient .res-title em { color: var(--patient); }
+.theme-patient .rec-card { background: var(--patient-bg); border-color: var(--patient-bdr); }
+.theme-patient .rec-label { color: var(--patient); }
+.theme-patient .rec-features li::before { color: var(--patient); content: '→'; }
+.theme-patient .rec-cta { background: var(--patient); color: #fff; }
+
+.retry { font-size: 12px; color: var(--dim); cursor: pointer; background: none; border: none; font-family: 'Outfit', sans-serif; font-weight: 300; padding: 0; }
+.retry:hover { color: var(--muted); }
+
+/* FOOTER */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 16px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+}
+footer p { font-size: 11px; color: var(--dim); font-weight: 300; }
+footer a { color: var(--dim); text-decoration: none; }
+footer a:hover { color: var(--muted); }
+
+@media (max-width: 580px) {
+  nav { padding: 16px 20px; }
+  .nav-hint { display: none; }
+  footer { padding: 16px 20px; }
+  .checks { grid-template-columns: 1fr; }
+  .override-grid { grid-template-columns: 1fr 1fr; }
+  .w-title { font-size: 34px; }
+  .res-title { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="#">Start Your Finances <span>Right</span></a>
+  <span class="nav-hint">Find your path</span>
+</nav>
+
+<div class="stage">
+
+  <!-- WELCOME -->
+  <div class="screen active" id="s-welcome">
+    <div class="w-eyebrow">Start Your Finances Right</div>
+    <h1 class="w-title">Find your<br><em>financial path</em></h1>
+    <p class="w-sub">Two quick questions. We profile where you are and recommend the right starting point — then you choose.</p>
+    <button class="w-start" onclick="show('s-q1')">
+      Find my path
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <p class="w-meta">Less than 60 seconds · No email required</p>
+  </div>
+
+  <!-- Q1 -->
+  <div class="screen" id="s-q1">
+    <div class="dots"><div class="dot on" id="d1"></div><div class="dot" id="d2"></div></div>
+    <span class="step-label">Question 1 of 2</span>
+    <h2 class="q-title">How long have you been<br><em>in the United States?</em></h2>
+    <p class="q-hint">Helps us understand your starting point and complexity level.</p>
+    <div class="options">
+      <div class="opt" onclick="pickQ1('new',this)">
+        <div class="opt-ico">🌱</div>
+        <div><div class="opt-title">Less than 2 years</div><div class="opt-sub">Recently arrived, building the foundation</div></div>
+      </div>
+      <div class="opt" onclick="pickQ1('mid',this)">
+        <div class="opt-ico">⚙️</div>
+        <div><div class="opt-title">2 to 7 years</div><div class="opt-sub">Growing income, navigating visas, complexity accumulating</div></div>
+      </div>
+      <div class="opt" onclick="pickQ1('deep',this)">
+        <div class="opt-ico">🏗️</div>
+        <div><div class="opt-title">8 to 15 years</div><div class="opt-sub">Deep in the H-1B or green card journey, meaningful assets built</div></div>
+      </div>
+      <div class="opt" onclick="pickQ1('long',this)">
+        <div class="opt-ico">🏛️</div>
+        <div><div class="opt-title">15+ years / Green card or citizen</div><div class="opt-sub">Long-term resident, focused on optimization and wealth</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="screen" id="s-q2">
+    <div class="dots"><div class="dot done"></div><div class="dot on"></div></div>
+    <span class="step-label">Question 2 of 2</span>
+    <h2 class="q-title">Which of these<br><em>apply to you?</em></h2>
+    <p class="q-hint">Select all that apply. This fine-tunes the recommendation.</p>
+    <div class="checks">
+      <div class="chk" id="c-rsu"       onclick="tog('rsu')">  <div class="chkbox" id="b-rsu">✓</div>      <span class="chk-lbl">Unvested RSUs or stock options</span></div>
+      <div class="chk" id="c-visa"      onclick="tog('visa')"> <div class="chkbox" id="b-visa">✓</div>     <span class="chk-lbl">H-1B or green card in progress</span></div>
+      <div class="chk" id="c-india"     onclick="tog('india')"><div class="chkbox" id="b-india">✓</div>    <span class="chk-lbl">NRE/NRO accounts or India assets</span></div>
+      <div class="chk" id="c-par"   onclick="tog('par')">  <div class="chkbox" id="b-par">✓</div>      <span class="chk-lbl">Supporting parents financially</span></div>
+      <div class="chk" id="c-port" onclick="tog('port')"> <div class="chkbox" id="b-port">✓</div>     <span class="chk-lbl">Investment portfolio over $500K</span></div>
+      <div class="chk" id="c-none"      onclick="tog('none')"> <div class="chkbox" id="b-none">✓</div>     <span class="chk-lbl">None of the above</span></div>
+    </div>
+    <button class="cta" onclick="showResult()">
+      Show my recommendation
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="skip" onclick="showResult()">Skip — just show me</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="s-result">
+    <!-- filled dynamically -->
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Start Your Finances Right · Kingshuk Bannerjee · Series 65 Licensed · CFP Candidate</p>
+  <p>Financial planning only · Not legal or tax advice · <a href="https://calendly.com/startyourfinancesright/30min" target="_blank">Book a call</a></p>
+</footer>
+
+<script>
+var q1 = null;
+var sel = { rsu:false, visa:false, india:false, par:false, port:false, none:false };
+
+var PATHS = {
+  explorer: {
+    theme: 'theme-explorer',
+    segment: 'Explorer',
+    title: 'an <em>Explorer</em>',
+    label: 'The Tortoise Finance',
+    cardTitle: 'Personal finance for real life',
+    cardDesc: 'Free courses, tools, ebooks, and practical guides covering the fundamentals — budgeting, building wealth, home buying, and investing from first principles. No jargon, no complexity you do not need yet.',
+    features: ['Free 7-day IDEA course — build your financial framework', 'Free financial planning tool — see your full picture', '8-guide clarity bundle — first steps to wealth-building', 'Home purchase and investing deep-dives'],
+    cta: 'Go to The Tortoise Finance',
+    url: './personal-finance/index.html'
+  },
+  navigator: {
+    theme: 'theme-navigator',
+    segment: 'Navigator',
+    title: 'a <em>Navigator</em>',
+    label: 'SYFR Specialist Guides',
+    cardTitle: 'Specialist guides for immigrant tech professionals',
+    cardDesc: 'Five in-depth guides built for the intersection of immigration timing, equity compensation, India-US accounts, and a compressed retirement timeline. No generic advice — specific frameworks for your situation.',
+    features: ['The India-US Financial Crossings Guide — NRE/NRO, PFIC, DTAA, FATCA', 'Estate Tax Guide — the $60K exemption trap explained', 'Retirement Sequencing — the compressed timeline framework', 'FBAR & Reporting Checklist — before your tax appointment'],
+    cta: 'Go to SYFR Guides',
+    url: './guides/index.html'
+  },
+  optimizer: {
+    theme: 'theme-optimizer',
+    segment: 'Optimizer',
+    title: 'an <em>Optimizer</em>',
+    label: 'Free Financial Tools',
+    cardTitle: 'Interactive tools for analytical minds',
+    cardDesc: 'Five browser-based financial tools — no login, no data stored. Built for people who want to model their actual situation across stress scenarios, not read generic advice.',
+    features: ['Financial Collision Map — stress-test 2–3 major decisions at once', 'One Shock Away — map your true financial fragility score', 'Retirement Planner — full projection across all account types', 'Systematic Risk Diversifier — 10 asset classes, backtested 2014–2024'],
+    cta: 'Go to Free Tools',
+    url: './tools/'
+  },
+  patient: {
+    theme: 'theme-patient',
+    segment: 'Patient',
+    title: 'a <em>Patient investor</em>',
+    label: 'Investment Management',
+    cardTitle: 'Professional management for serious wealth',
+    cardDesc: 'A fiduciary investment advisory practice built specifically for immigrant tech professionals with meaningful assets — cross-border aware, equity-compensation fluent, and built on technology infrastructure that generic advisors do not have.',
+    features: ['RSU strategy, concentrated stock, and equity compensation management', 'Cross-border portfolio construction — US and India assets together', 'Estate planning coordination for non-citizen and dual-citizen situations', 'Technology-enabled risk-adjusted portfolio structure'],
+    cta: 'Learn more & join the waitlist',
+    url: './ria/index.html'
+  }
+};
+
+var OTHER_LABELS = {
+  explorer:  { name: 'Explorer',  desc: 'General personal finance foundations', cls: 'ov-explorer',  url: './personal-finance/index.html' },
+  navigator: { name: 'Navigator', desc: 'H-1B, RSU, India-US complexity',       cls: 'ov-navigator', url: './guides/index.html' },
+  optimizer: { name: 'Optimizer', desc: 'Interactive financial planning tools',  cls: 'ov-optimizer', url: './tools/' },
+  patient:   { name: 'Patient',   desc: 'Professional investment management',    cls: 'ov-patient',   url: './ria/index.html' }
+};
+
+var WHY = {
+  explorer:  'Based on your profile, you are in the foundation-building stage. The right place to start is with clear frameworks, not complex tools.',
+  navigator: 'Your profile shows real financial complexity — immigration timing, equity compensation, and cross-border obligations. Generic advice does not apply to you.',
+  optimizer: 'You have a solid foundation and are ready to go deeper. Interactive tools that model your actual situation are the right next step.',
+  patient:   'Your profile indicates substantial assets and readiness for professional management. You have moved past the self-service stage.'
+};
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function pickQ1(val, el) {
+  q1 = val;
+  document.querySelectorAll('#s-q1 .opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  setTimeout(() => show('s-q2'), 260);
+}
+
+function tog(key) {
+  if (key === 'none') {
+    var was = sel.none;
+    Object.keys(sel).forEach(k => sel[k] = false);
+    sel.none = !was;
+  } else {
+    sel.none = false;
+    sel[key] = !sel[key];
+  }
+  Object.keys(sel).forEach(function(k) {
+    var c = document.getElementById('c-' + k);
+    var b = document.getElementById('b-' + k);
+    if (!c) return;
+    sel[k] ? c.classList.add('on') : c.classList.remove('on');
+  });
+}
+
+function route() {
+  var complex = sel.rsu || sel.visa || sel.india || sel.par;
+  if (sel.port) return 'patient';
+  if (complex)  return 'navigator';
+  if (q1 === 'long' || q1 === 'deep') return 'optimizer';
+  if (q1 === 'mid') return complex ? 'navigator' : 'explorer';
+  return 'explorer';
+}
+
+function showResult() {
+  var pick = route();
+  var p = PATHS[pick];
+
+  var feats = p.features.map(f => '<li>' + f + '</li>').join('');
+
+  var others = Object.keys(OTHER_LABELS)
+    .filter(k => k !== pick)
+    .map(function(k) {
+      var o = OTHER_LABELS[k];
+      return '<a class="ov-card ' + o.cls + '" href="' + o.url + '">' +
+             '<div class="ov-name">' + o.name + '</div>' +
+             '<div class="ov-desc">' + o.desc + '</div></a>';
+    }).join('');
+
+  document.getElementById('s-result').innerHTML =
+    '<div class="res-top ' + p.theme + '">' +
+      '<div class="res-tag">Your recommendation</div>' +
+      '<h2 class="res-title">You are ' + p.title + '</h2>' +
+      '<p class="res-why">' + WHY[pick] + '</p>' +
+    '</div>' +
+    '<div class="rec-card ' + p.theme + '">' +
+      '<span class="rec-label">' + p.label + '</span>' +
+      '<h3>' + p.cardTitle + '</h3>' +
+      '<p>' + p.cardDesc + '</p>' +
+      '<ul class="rec-features">' + feats + '</ul>' +
+      '<a class="rec-cta ' + p.theme + '" href="' + p.url + '">' +
+        p.cta +
+        ' <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
+      '</a>' +
+    '</div>' +
+    '<span class="override-label">Or explore by interest</span>' +
+    '<div class="override-grid">' + others + '</div>' +
+    '<button class="retry" onclick="restart()">← Start over</button>';
+
+  show('s-result');
+}
+
+function restart() {
+  q1 = null;
+  Object.keys(sel).forEach(k => {
+    sel[k] = false;
+    var c = document.getElementById('c-' + k);
+    if (c) c.classList.remove('on');
+  });
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  show('s-welcome');
+}
+</script>
+</body>
+</html>
