@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Tortoise Finance — Slow, Steady, and Actually Getting There</title>
+<meta name="description" content="Personal finance resources for real people — free courses, tools, ebooks, and guides. No jargon. No hustle. Just a clear path forward.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Nunito:wght@300;400;500;600&family=Nunito+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:    #FAF5ED;
+  --cream2:   #F2EAD8;
+  --cream3:   #E8DEC8;
+  --warm:     #3A2A1A;
+  --warm2:    #5C4230;
+  --warm3:    #8A6A52;
+  --terra:    #C4622D;
+  --terra2:   #E07B42;
+  --terra3:   #F5C49A;
+  --sage:     #6B8F71;
+  --sage2:    #9AB89E;
+  --sage3:    #D4E8D6;
+  --gold:     #C8952A;
+  --gold2:    #E8B84B;
+  --gold3:    #FDE9B0;
+  --border:   rgba(58,42,26,0.1);
+  --border2:  rgba(58,42,26,0.06);
+  --shadow:   0 2px 20px rgba(58,42,26,0.08);
+  --shadow2:  0 8px 40px rgba(58,42,26,0.12);
+  --r:        14px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--cream);
+  color: var(--warm);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.tortoise-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--terra);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.nav-brand-text {
+  font-family: 'Fraunces', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--warm);
+  letter-spacing: -.01em;
+}
+.nav-brand-text span { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 24px; list-style: none; }
+.nav-links a {
+  font-size: 14px;
+  color: var(--warm3);
+  text-decoration: none;
+  font-weight: 400;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--warm); }
+.nav-cta {
+  background: var(--terra) !important;
+  color: #fff !important;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  transition: background .2s !important;
+}
+.nav-cta:hover { background: var(--terra2) !important; }
+
+/* ── HERO ── */
+.hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 72px 48px 64px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.hero-left {}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 20px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--terra);
+}
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(36px, 4vw, 52px);
+  line-height: 1.14;
+  color: var(--warm);
+  margin-bottom: 20px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--terra);
+  font-weight: 400;
+}
+.hero-sub {
+  font-size: 17px;
+  color: var(--warm2);
+  line-height: 1.75;
+  margin-bottom: 32px;
+  font-weight: 300;
+  max-width: 440px;
+}
+.hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-block;
+  background: var(--terra);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 13px 26px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background .2s, transform .15s;
+  font-family: 'Nunito', sans-serif;
+}
+.btn-primary:hover { background: var(--terra2); transform: translateY(-2px); }
+.btn-ghost {
+  display: inline-block;
+  color: var(--warm2);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--cream3);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+}
+.btn-ghost:hover { color: var(--terra); border-color: var(--terra); }
+
+/* Hero right — decorative card stack */
+.hero-right {
+  position: relative;
+  height: 380px;
+}
+.hero-card {
+  position: absolute;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  box-shadow: var(--shadow2);
+}
+.hc1 { width: 260px; top: 20px; left: 20px; transform: rotate(-3deg); }
+.hc2 { width: 260px; top: 80px; left: 80px; transform: rotate(1.5deg); z-index: 2; }
+.hc3 { width: 200px; top: 200px; left: 0; transform: rotate(-1deg); z-index: 1; }
+.hc-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
+.hc-title { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; color: var(--warm); line-height: 1.3; margin-bottom: 6px; }
+.hc-sub { font-size: 12px; color: var(--warm3); font-weight: 300; line-height: 1.5; }
+.hc-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-top: 10px;
+}
+.pill-free { background: var(--sage3); color: var(--sage); }
+.pill-paid { background: var(--gold3); color: var(--gold); }
+
+/* ── SECTION WRAPPER ── */
+.section { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+.section-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+/* ── SECTION HEADER ── */
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.section-head h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--warm);
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+.section-head h2 em { font-style: italic; color: var(--terra); font-weight: 400; }
+.section-head p {
+  font-size: 14px;
+  color: var(--warm3);
+  max-width: 320px;
+  text-align: right;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ── FREE RESOURCE CARDS ── */
+.free-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 64px;
+}
+.free-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px 28px 22px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .25s, transform .25s;
+  position: relative;
+  overflow: hidden;
+}
+.free-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.fc-sage::before { background: linear-gradient(90deg, var(--sage), var(--sage2)); }
+.fc-gold::before  { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+.free-card:hover { box-shadow: var(--shadow2); transform: translateY(-3px); }
+.free-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  width: fit-content;
+}
+.badge-free { background: var(--sage3); color: var(--sage); }
+.badge-tool { background: var(--gold3); color: var(--gold); }
+.free-card h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--warm);
+  line-height: 1.25;
+  margin-bottom: 10px;
+  letter-spacing: -.01em;
+}
+.free-card p {
+  font-size: 14px;
+  color: var(--warm2);
+  line-height: 1.7;
+  flex: 1;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+.free-card ul {
+  list-style: none;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.free-card ul li {
+  font-size: 13px;
+  color: var(--warm3);
+  display: flex;
+  gap: 8px;
+  line-height: 1.5;
+}
+.free-card ul li::before { content: '✓'; color: var(--sage); font-weight: 700; flex-shrink: 0; }
+.card-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 11px 22px;
+  border-radius: 10px;
+  transition: background .2s, transform .15s;
+  width: fit-content;
+  font-family: 'Nunito', sans-serif;
+}
+.action-sage { background: var(--sage3); color: var(--sage); }
+.action-sage:hover { background: var(--sage2); color: #fff; transform: translateY(-1px); }
+.action-gold { background: var(--gold3); color: var(--gold); }
+.action-gold:hover { background: var(--gold2); color: #fff; transform: translateY(-1px); }
+
+/* ── PRODUCT SECTION ── */
+.product-featured {
+  background: linear-gradient(135deg, var(--warm) 0%, var(--warm2) 100%);
+  border-radius: 20px;
+  padding: 40px 44px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.product-featured::after {
+  content: '🐢';
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  font-size: 120px;
+  opacity: .06;
+  pointer-events: none;
+}
+.feat-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--terra3);
+  margin-bottom: 12px;
+  display: block;
+}
+.product-featured h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  letter-spacing: -.02em;
+}
+.product-featured h3 em { font-style: italic; color: var(--terra3); font-weight: 400; }
+.product-featured .feat-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  font-weight: 300;
+}
+.book-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.book-list li {
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+.book-list li span { font-size: 14px; flex-shrink: 0; }
+.feat-price {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.feat-price .price-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 300;
+}
+.feat-price .price-num {
+  font-family: 'Fraunces', serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+.feat-price .price-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  display: block;
+  margin-top: 4px;
+}
+.btn-buy {
+  display: block;
+  background: var(--terra);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 10px;
+  text-decoration: none;
+  text-align: center;
+  transition: background .2s, transform .15s;
+  font-family: 'Nunito', sans-serif;
+  width: 100%;
+}
+.btn-buy:hover { background: var(--terra2); transform: translateY(-2px); }
+
+/* Individual products */
+.products-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 64px;
+}
+.prod-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 26px 26px 22px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .25s, transform .25s;
+}
+.prod-card:hover { box-shadow: var(--shadow2); transform: translateY(-3px); }
+.prod-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.prod-tag::before { content: ''; display: block; width: 16px; height: 2px; background: var(--terra); }
+.prod-card h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--warm);
+  line-height: 1.25;
+  margin-bottom: 10px;
+  letter-spacing: -.01em;
+}
+.prod-card p {
+  font-size: 13px;
+  color: var(--warm2);
+  line-height: 1.7;
+  flex: 1;
+  margin-bottom: 16px;
+  font-weight: 300;
+}
+.prod-includes {
+  list-style: none;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.prod-includes li {
+  font-size: 12px;
+  color: var(--warm3);
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+}
+.prod-includes li::before { content: '→'; color: var(--terra); flex-shrink: 0; }
+.prod-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--border2);
+}
+.prod-price {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--warm);
+}
+.btn-get {
+  display: inline-block;
+  background: var(--cream2);
+  color: var(--warm);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background .2s;
+  font-family: 'Nunito', sans-serif;
+  border: 1px solid var(--border);
+}
+.btn-get:hover { background: var(--terra); color: #fff; border-color: var(--terra); }
+
+/* ── BRIDGE ── */
+.bridge {
+  background: var(--cream2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 44px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 64px;
+}
+.bridge h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--warm);
+  margin-bottom: 10px;
+  letter-spacing: -.01em;
+}
+.bridge h3 em { font-style: italic; color: var(--terra); font-weight: 400; }
+.bridge p {
+  font-size: 14px;
+  color: var(--warm2);
+  line-height: 1.7;
+  max-width: 520px;
+  font-weight: 300;
+}
+.bridge-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 14px;
+}
+.bridge-tag {
+  font-size: 11px;
+  background: rgba(196,98,45,.1);
+  color: var(--terra);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.btn-bridge {
+  display: inline-block;
+  background: var(--warm);
+  color: var(--cream);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 13px 24px;
+  border-radius: 10px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .2s, transform .15s;
+  font-family: 'Nunito', sans-serif;
+}
+.btn-bridge:hover { background: var(--terra); transform: translateY(-2px); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+footer p { font-size: 12px; color: var(--warm3); line-height: 1.6; }
+footer a { color: var(--warm3); }
+.footer-brand {
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--warm2);
+}
+.footer-brand span { color: var(--terra); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  nav { padding: 14px 20px; }
+  .nav-links li:not(:last-child) { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 48px 20px; gap: 0; }
+  .hero-right { display: none; }
+  .section { padding: 0 20px; }
+  .free-grid { grid-template-columns: 1fr; }
+  .product-featured { grid-template-columns: 1fr; }
+  .products-pair { grid-template-columns: 1fr; }
+  .bridge { grid-template-columns: 1fr; }
+  footer { padding: 20px; }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes float { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-8px) rotate(-3deg)} }
+@keyframes float2 { 0%,100%{transform:translateY(0) rotate(1.5deg)} 50%{transform:translateY(-5px) rotate(1.5deg)} }
+.hc1 { animation: float 6s ease-in-out infinite; }
+.hc2 { animation: float2 5s ease-in-out infinite 1s; }
+.hc3 { animation: float 7s ease-in-out infinite 2s; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="tortoise-icon">🐢</div>
+    <span class="nav-brand-text">The Tortoise <span>Finance</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#free">Free Resources</a></li>
+    <li><a href="#products">Guides & Courses</a></li>
+    <li><a href="https://kingshuk-ban.github.io/personal-finance-tools/guides/" target="_blank">SYFR Specialist Guides</a></li>
+    <li><a href="https://calendly.com/startyourfinancesright/30min" target="_blank" class="nav-cta">Book a Call</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <span class="hero-eyebrow">The Tortoise Finance</span>
+    <h1>Slow, steady — and <em>actually</em> getting there</h1>
+    <p class="hero-sub">Personal finance doesn't have to be overwhelming. Free courses, tools, and practical guides that meet you where you are — whether you're just starting out or ready to go deeper.</p>
+    <div class="hero-actions">
+      <a href="#free" class="btn-primary">Explore Free Resources</a>
+      <a href="#products" class="btn-ghost">See all guides →</a>
+    </div>
+  </div>
+  <div class="hero-right" aria-hidden="true">
+    <div class="hero-card hc1">
+      <div class="hc-label">Free · 7-day course</div>
+      <div class="hc-title">The IDEA of Personal Finance</div>
+      <div class="hc-sub">A framework that actually makes sense — in 7 days</div>
+      <span class="hc-pill pill-free">Start free →</span>
+    </div>
+    <div class="hero-card hc2">
+      <div class="hc-label">8-guide bundle</div>
+      <div class="hc-title">The Immigrant's Financial Clarity Bundle</div>
+      <div class="hc-sub">From first steps to building real wealth</div>
+      <span class="hc-pill pill-paid">Get the bundle</span>
+    </div>
+    <div class="hero-card hc3">
+      <div class="hc-label">Free tool</div>
+      <div class="hc-title">Financial Planning Tool</div>
+      <div class="hc-sub">Your full picture, in one place</div>
+      <span class="hc-pill pill-free">Try it free</span>
+    </div>
+  </div>
+</section>
+
+<div class="section"><hr class="section-divider"></div>
+
+<!-- FREE RESOURCES -->
+<div class="section" id="free">
+  <div class="section-head">
+    <h2>Start here — <em>completely free</em></h2>
+    <p>No email required. Just open and use.</p>
+  </div>
+
+  <div class="free-grid">
+    <!-- 7-day course -->
+    <div class="free-card fc-sage">
+      <span class="free-badge badge-free">✦ Free Course</span>
+      <h3>The IDEA of Personal Finance — 7-Day Course</h3>
+      <p>A structured introduction to the one framework that ties all of personal finance together. Built for anyone who has felt confused about where to start — or why their current approach isn't clicking.</p>
+      <ul>
+        <li>7 short daily lessons, each under 15 minutes</li>
+        <li>The IDEA framework explained from first principles</li>
+        <li>Actionable at every income level</li>
+        <li>Works whether you're 22 or 52</li>
+      </ul>
+      <a href="https://ideapersonalfinance.lovable.app" target="_blank" class="card-action action-sage">
+        Start the free course →
+      </a>
+    </div>
+
+    <!-- planning tool -->
+    <div class="free-card fc-gold">
+      <span class="free-badge badge-tool">⚡ Free Tool</span>
+      <h3>The Financial Planning Tool</h3>
+      <p>A clear-eyed look at your full financial picture — income, expenses, savings, goals, and gaps — without a spreadsheet or a subscription. Runs entirely in your browser.</p>
+      <ul>
+        <li>Map your current financial foundation</li>
+        <li>Set and track medium-term goals</li>
+        <li>See where your money is actually going</li>
+        <li>No login. No data stored. Yours entirely.</li>
+      </ul>
+      <a href="https://www.startyourmoneyright.com" target="_blank" class="card-action action-gold">
+        Open the tool →
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="section"><hr class="section-divider"></div>
+
+<!-- PAID PRODUCTS -->
+<div class="section" id="products">
+  <div class="section-head">
+    <h2>Go <em>deeper</em> with the full guides</h2>
+    <p>Built from real experience. No filler, no fluff.</p>
+  </div>
+
+  <!-- Featured bundle -->
+  <div class="product-featured">
+    <div>
+      <span class="feat-eyebrow">★ Most popular · 8-guide bundle</span>
+      <h3>The Immigrant's <em>Financial Clarity</em> Bundle</h3>
+      <p class="feat-desc">Most financial advice assumes you started at 22 and have no complications. These eight guides were written for everyone else — new arrivals, growing families, and anyone navigating money across two worlds.</p>
+      <ul class="book-list">
+        <li><span>📘</span> Financial First Steps — build your US foundation</li>
+        <li><span>📘</span> Beyond the Basics — create real financial resilience</li>
+        <li><span>📘</span> From Money Myths to Freedom — reset your money mindset</li>
+        <li><span>📘</span> The Budgeting Personality Guide — find what fits how you think</li>
+        <li><span>📘</span> The Perfect Fit — financial alignment as a couple</li>
+        <li><span>📘</span> From Arrival to Abundance — 4-step roadmap to wealth-building</li>
+        <li><span>📘</span> Rethinking Real Estate — invest smarter, not riskier</li>
+        <li><span>📘</span> The Foundation of Wealth — master the three levels of investing</li>
+      </ul>
+    </div>
+    <div>
+      <div class="feat-price">
+        <span class="price-label">Complete bundle</span>
+        <span class="price-num">$49</span>
+        <span class="price-sub">All 8 guides · Instant download</span>
+      </div>
+      <a href="https://start-your-finances-right.kit.com/products/the-organization-bundle" target="_blank" class="btn-buy">Get the Bundle →</a>
+    </div>
+  </div>
+
+  <!-- Individual products -->
+  <div class="products-pair">
+    <!-- Home purchase -->
+    <div class="prod-card">
+      <div class="prod-tag">Guide + Workbook</div>
+      <h3>How to Buy Your Home Financially Right</h3>
+      <p>The financial decisions behind a home purchase are more complex than most people realise — especially when your income is variable, your goals are evolving, or your timeline is uncertain. This guide walks through the full picture.</p>
+      <ul class="prod-includes">
+        <li>How much home you can actually afford (not what the bank says)</li>
+        <li>Timing the purchase against your other financial goals</li>
+        <li>The true cost of homeownership beyond the mortgage</li>
+        <li>Workbook with your own numbers baked in</li>
+      </ul>
+      <div class="prod-footer">
+        <span class="prod-price">$27</span>
+        <a href="https://start-your-finances-right.kit.com/products/the-inside-out-home-purchase" target="_blank" class="btn-get">Get this guide →</a>
+      </div>
+    </div>
+
+    <!-- IDEA full -->
+    <div class="prod-card">
+      <div class="prod-tag">Complete Course + Workbook</div>
+      <h3>The IDEA of Personal Finance — Full Edition</h3>
+      <p>The free 7-day course introduces the framework. This is the complete system — the full guide, a structured workbook, and the exercises that turn the IDEA into a personalised financial plan you will actually use.</p>
+      <ul class="prod-includes">
+        <li>Complete IDEA framework — all four pillars in depth</li>
+        <li>Structured workbook with guided exercises</li>
+        <li>Build a personalised plan, not a generic template</li>
+        <li>Pairs with the free 7-day course as the natural next step</li>
+      </ul>
+      <div class="prod-footer">
+        <span class="prod-price">$27</span>
+        <a href="https://start-your-finances-right.kit.com/products/the-idea-of-personal-finance" target="_blank" class="btn-get">Get this guide →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BRIDGE TO SYFR -->
+<div class="section">
+  <div class="bridge">
+    <div>
+      <h3>Dealing with H-1B, green card, or <em>India-US</em> complexity?</h3>
+      <p>These guides cover personal finance for everyone. But immigrant tech professionals on H-1B and green card paths face a different set of problems — RSU taxation, FBAR obligations, compressed retirement timelines, estate tax exposure, and cross-border family obligations. That intersection has its own specialist practice.</p>
+      <div class="bridge-tags">
+        <span class="bridge-tag">H-1B / Green Card</span>
+        <span class="bridge-tag">RSU & Equity Comp</span>
+        <span class="bridge-tag">FBAR & FATCA</span>
+        <span class="bridge-tag">India-US Planning</span>
+        <span class="bridge-tag">Compressed Timeline</span>
+      </div>
+    </div>
+    <a href="https://kingshuk-ban.github.io/personal-finance-tools/guides/" target="_blank" class="btn-bridge">Explore SYFR Guides →</a>
+  </div>
+</div>
+
+<footer>
+  <div>
+    <span class="footer-brand">The Tortoise <span>Finance</span></span>
+    <p style="margin-top:4px">© 2026 · A Kingshuk Bannerjee practice · <a href="https://calendly.com/startyourfinancesright/30min">Book a call</a></p>
+    <p style="margin-top:4px">Educational and informational purposes only. Not legal, tax, or investment advice.</p>
+  </div>
+  <p style="font-size:12px;color:var(--warm3);text-align:right;max-width:320px;line-height:1.6">Slow and steady wins. Not because fast is bad — but because <em>consistent</em> beats frantic every single time.</p>
+</footer>
+
+</body>
+</html>
