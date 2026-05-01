@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Financial Tools — Start Your Finances Right</title>
+<meta name="description" content="Five free browser-based financial planning tools. No login, no data stored, no fluff.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --night:  #0D1520;
+  --night2: #111D2E;
+  --panel:  rgba(255,255,255,0.04);
+  --panel2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --bord2:  rgba(255,255,255,0.13);
+  --text:   #E8E2D8;
+  --muted:  #7A7570;
+  --dim:    #3E3A36;
+  --teal:   #1A9B78;
+  --teal2:  #12705A;
+  --teal-bg: rgba(26,155,120,0.1);
+  --teal-bd: rgba(26,155,120,0.25);
+  --blue:   #2E7CF6;
+  --amber:  #C8952A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--night);color:var(--text);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 45% at 50% -5%,rgba(26,155,120,0.07) 0%,transparent 55%);pointer-events:none;z-index:0}
+
+nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;border-bottom:1px solid var(--border)}
+.brand{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--text);text-decoration:none}
+.brand span{color:var(--teal)}
+.nav-links{display:flex;align-items:center;gap:24px;list-style:none}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-back{font-size:12px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px}
+.nav-back:hover{color:var(--text)}
+
+.hero{max-width:1100px;margin:0 auto;padding:64px 48px 52px;position:relative;z-index:1}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';display:block;width:24px;height:1.5px;background:var(--teal)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,52px);line-height:1.15;font-weight:700;color:var(--text);margin-bottom:14px;letter-spacing:-.02em}
+.hero h1 em{font-style:italic;color:var(--teal);font-weight:400}
+.hero p{font-size:16px;color:var(--muted);max-width:540px;line-height:1.75;font-weight:300}
+
+.stat-row{display:flex;align-items:center;gap:32px;margin-top:28px;flex-wrap:wrap}
+.stat{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;font-weight:300}
+.stat-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0}
+
+.grid{max-width:1100px;margin:0 auto;padding:0 48px 64px;position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+
+.tool-card{background:var(--night2);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .25s,transform .25s,box-shadow .25s;text-decoration:none}
+.tool-card:hover{border-color:var(--bord2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+.card-top{height:4px;width:100%}
+.card-body{padding:22px 22px 18px;flex:1;display:flex;flex-direction:column}
+.card-icon{font-size:22px;margin-bottom:14px}
+.card-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--text);line-height:1.25;margin-bottom:8px}
+.card-desc{font-size:13px;color:var(--muted);line-height:1.65;font-weight:300;flex:1;margin-bottom:16px}
+.card-features{list-style:none;margin-bottom:18px;display:flex;flex-direction:column;gap:5px}
+.card-features li{font-size:12px;color:var(--muted);display:flex;gap:7px;font-weight:300;line-height:1.4}
+.card-features li::before{content:'→';color:var(--teal);flex-shrink:0}
+.card-footer{padding:14px 22px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.open-btn{font-size:12px;font-weight:500;color:var(--teal);display:flex;align-items:center;gap:6px;text-decoration:none;transition:gap .2s}
+.tool-card:hover .open-btn{gap:9px}
+.privacy-note{font-size:11px;color:var(--dim)}
+
+/* Accent colors per tool */
+.t-collision .card-top{background:linear-gradient(90deg,#E24B4A,#E87B42)}
+.t-collision .card-label,.t-collision .card-features li::before,.t-collision .open-btn{color:#E87B42}
+
+.t-shock .card-top{background:linear-gradient(90deg,#C8952A,#E8B84B)}
+.t-shock .card-label,.t-shock .card-features li::before,.t-shock .open-btn{color:#C8952A}
+
+.t-wealth .card-top{background:linear-gradient(90deg,#2E7CF6,#4B96FF)}
+.t-wealth .card-label,.t-wealth .card-features li::before,.t-wealth .open-btn{color:#2E7CF6}
+
+.t-retire .card-top{background:linear-gradient(90deg,#1A9B78,#4ECBA0)}
+.t-retire .card-label,.t-retire .card-features li::before,.t-retire .open-btn{color:#1A9B78}
+
+.t-risk .card-top{background:linear-gradient(90deg,#8B6FD4,#B49EE8)}
+.t-risk .card-label,.t-risk .card-features li::before,.t-risk .open-btn{color:#8B6FD4}
+
+.cta-strip{max-width:1100px;margin:0 auto 64px;padding:0 48px;position:relative;z-index:1}
+.cta-inner{background:var(--night2);border:1px solid var(--border);border-radius:14px;padding:32px 36px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.cta-inner h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);margin-bottom:6px}
+.cta-inner p{font-size:14px;color:var(--muted);max-width:420px;line-height:1.65;font-weight:300}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-size:13px;font-weight:500;padding:12px 24px;border-radius:10px;text-decoration:none;white-space:nowrap;transition:opacity .2s,transform .15s;font-family:'Outfit',sans-serif}
+.cta-btn:hover{opacity:.88;transform:translateY(-2px)}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:16px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer p{font-size:11px;color:var(--dim);font-weight:300}
+footer a{color:var(--dim);text-decoration:none}
+footer a:hover{color:var(--muted)}
+
+@media(max-width:640px){nav{padding:16px 20px}.nav-links{display:none}.hero{padding:44px 20px 36px}.grid{padding:0 20px 48px}.cta-strip{padding:0 20px}.cta-inner{flex-direction:column}footer{padding:16px 20px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="../index.html">Start Your Finances <span>Right</span></a>
+  <ul class="nav-links">
+    <li><a href="../index.html">← Find my path</a></li>
+    <li><a href="../guides/index.html">Specialist guides</a></li>
+    <li><a href="https://calendly.com/startyourfinancesright/30min" target="_blank">Book a call</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Free Tools</div>
+  <h1>Financial planning tools for<br><em>analytical minds</em></h1>
+  <p>Five browser-based tools built for people who want to model their actual financial situation — not read generic advice. No login. No data stored. Everything runs locally in your browser.</p>
+  <div class="stat-row">
+    <span class="stat"><span class="stat-dot"></span>5 tools</span>
+    <span class="stat"><span class="stat-dot"></span>Free forever</span>
+    <span class="stat"><span class="stat-dot"></span>No login required</span>
+    <span class="stat"><span class="stat-dot"></span>No data collected</span>
+  </div>
+</div>
+
+<div class="grid">
+
+  <a class="tool-card t-collision" href="../financial-collision-map.html">
+    <div class="card-top"></div>
+    <div class="card-body">
+      <div class="card-icon">💥</div>
+      <div class="card-label">Stress Testing</div>
+      <div class="card-title">Financial Collision Map</div>
+      <div class="card-desc">What happens when two or three major financial decisions collide? Model the impact across 5 key metrics when things go wrong simultaneously.</div>
+      <ul class="card-features">
+        <li>Map decisions over a 5-year horizon</li>
+        <li>Stress scenarios: job loss, market drop, forced relocation</li>
+        <li>Full collision matrix — individual + combined impact</li>
+      </ul>
+    </div>
+    <div class="card-footer">
+      <a class="open-btn" href="../financial-collision-map.html">Open tool <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <span class="privacy-note">No data stored</span>
+    </div>
+  </a>
+
+  <a class="tool-card t-shock" href="../one-shock-away.html">
+    <div class="card-top"></div>
+    <div class="card-body">
+      <div class="card-icon">🚨</div>
+      <div class="card-label">Fragility Analysis</div>
+      <div class="card-title">One Shock Away</div>
+      <div class="card-desc">How close are you to a financial crisis if one thing goes wrong? Map your true fragility score across income stability, debt, assets, and safety net.</div>
+      <ul class="card-features">
+        <li>Scored dashboard across 5 risk dimensions</li>
+        <li>Heat map of your highest-risk areas</li>
+        <li>Prioritized action plan to reduce fragility</li>
+      </ul>
+    </div>
+    <div class="card-footer">
+      <a class="open-btn" href="../one-shock-away.html">Open tool <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <span class="privacy-note">No data stored</span>
+    </div>
+  </a>
+
+  <a class="tool-card t-wealth" href="../medium-term-wealth-builder.html">
+    <div class="card-top"></div>
+    <div class="card-body">
+      <div class="card-icon">📈</div>
+      <div class="card-label">Goal Planning</div>
+      <div class="card-title">Medium-Term Wealth Builder</div>
+      <div class="card-desc">The 1–7 year horizon most tools ignore. Map specific goals to accounts by liquidity tier and get monthly savings targets with a funding allocation.</div>
+      <ul class="card-features">
+        <li>Goals by priority and timeline</li>
+        <li>Accounts mapped by liquidity tier</li>
+        <li>Monthly savings targets and gap analysis</li>
+      </ul>
+    </div>
+    <div class="card-footer">
+      <a class="open-btn" href="../medium-term-wealth-builder.html">Open tool <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <span class="privacy-note">No data stored</span>
+    </div>
+  </a>
+
+  <a class="tool-card t-retire" href="../retirement-planner-saving.html">
+    <div class="card-top"></div>
+    <div class="card-body">
+      <div class="card-icon">🏦</div>
+      <div class="card-label">Retirement Planning</div>
+      <div class="card-title">Retirement Planner</div>
+      <div class="card-desc">Comprehensive retirement projection across all account types. Models Roth conversions, withdrawal ordering, RMDs, and produces a printable PDF report.</div>
+      <ul class="card-features">
+        <li>401(k), Roth IRA, HSA, Social Security, real estate</li>
+        <li>Tax bucket projections and Roth conversion ladder</li>
+        <li>Optimal drawdown order and early retirement strategies</li>
+      </ul>
+    </div>
+    <div class="card-footer">
+      <a class="open-btn" href="../retirement-planner-saving.html">Open tool <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <span class="privacy-note">No data stored</span>
+    </div>
+  </a>
+
+  <a class="tool-card t-risk" href="../systematic-risk-diversifier.html">
+    <div class="card-top"></div>
+    <div class="card-body">
+      <div class="card-icon">⚖️</div>
+      <div class="card-label">Portfolio Construction</div>
+      <div class="card-title">Systematic Risk Diversifier</div>
+      <div class="card-desc">Build and backtest a portfolio across 10 asset classes and 30 ETFs. Compare up to 5 strategies against historical data from 2014 to 2024.</div>
+      <ul class="card-features">
+        <li>10 asset classes · 30 ETFs · preset portfolios</li>
+        <li>CAGR, Sharpe, Sortino, Max Drawdown, correlation matrix</li>
+        <li>Side-by-side comparison of up to 5 portfolios</li>
+      </ul>
+    </div>
+    <div class="card-footer">
+      <a class="open-btn" href="../systematic-risk-diversifier.html">Open tool <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <span class="privacy-note">No data stored</span>
+    </div>
+  </a>
+
+</div>
+
+<div class="cta-strip">
+  <div class="cta-inner">
+    <div>
+      <h3>Want a personalised analysis?</h3>
+      <p>The tools model the numbers. A 30-minute call maps your specific situation — immigration timeline, equity comp, India-US obligations — and tells you what to do first. Financial planning only, not immigration or tax advice.</p>
+    </div>
+    <a class="cta-btn" href="https://calendly.com/startyourfinancesright/30min" target="_blank">
+      Book a free 30-minute call →
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Start Your Finances Right · <a href="../index.html">← Back to assessment</a></p>
+  <p>Educational tools only · Not financial, tax, or legal advice</p>
+</footer>
+
+</body>
+</html>
